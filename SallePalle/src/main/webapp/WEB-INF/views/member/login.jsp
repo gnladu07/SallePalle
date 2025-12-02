@@ -28,7 +28,7 @@
 			<label>비밀번호</label>
 			<div>
 				<input type="password" name="userpw" placeholder="Password"
-				       required>
+				       required >
 			</div>
 		</div>
 	</fieldset>

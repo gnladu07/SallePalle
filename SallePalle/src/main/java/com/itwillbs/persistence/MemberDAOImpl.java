@@ -23,8 +23,12 @@ public class MemberDAOImpl implements MemberDAO {
 
 	@Override
 	public MemberVO selectOne(String userid) {
-		// TODO Auto-generated method stub
-		return null;
+		logger.info(" selectOne()실행! ");
+		
+		MemberVO resultVO = sqlSession.selectOne(NAMESPACE + "selectOne", userid);
+		
+		logger.info(" selectOne()끝! ");
+		return resultVO;
 	}
 
 	@Override

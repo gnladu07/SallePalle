@@ -46,7 +46,16 @@ public class MemberController {
 		return "redirect:/member/login";
 	}
 	
+	@GetMapping("/login")
+	public void loginGET() {
+		logger.info(" loginGET()실행! ");
+	}
 	
+	// 개인정보 상세보기
+	@GetMapping("/read")
+	public void readGET() {
+		logger.info(" readGET() 실행! ");
+	}
 	
 	
 

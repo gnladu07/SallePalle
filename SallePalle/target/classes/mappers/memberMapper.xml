@@ -2,6 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.mapper.MemberMapper">
+	<!-- resultMap 설정 -->
+	<resultMap id="memberMap" type="MemberVO" >
+		<id property="userid" column="userid"/>
+		<result property="userpw" column="userpw" />
+	    <result property="username" column="username" />
+	    <result property="nickname" column="nickname" />
+	    <result property="email" column="email" />
+	    <result property="gender" column="gender" />
+	    <result property="toplct_id" column="toplct_id" />
+	    <result property="detail_address" column="detail_address" />
+	    <result property="profile_img" column="profile_img" />
+	    <result property="seller_status" column="seller_status" />
+	    <result property="provider" column="provider" />
+	    <result property="enable_flag" column="enable_flag" />
+	
+	    <result property="regdate" column="regdate" />
+	    <result property="updatedate" column="updatedate" />
+	    <result property="deleted_at" column="deleted_at" />
+	
+	    <result property="agree_terms_required" column="agree_terms_required" />
+	    <result property="agree_privacy_required" column="agree_privacy_required" />
+	    <result property="agree_location_optional" column="agree_location_optional" />
+	    <result property="agree_marketing_email" column="agree_marketing_email" />
+	    <result property="agree_marketing_sms" column="agree_marketing_sms" />
+	    
+	    <collection property="authList" ofType="MemberAuthVO">
+	    	<result property="userid" column="userid" />
+	    	<result property="auth" column="auth" />
+	    </collection>
+	</resultMap>
+
 	<!-- 회원가입 -->
 	<insert id="insertMember">
 		insert into member (
@@ -14,7 +45,7 @@
 		values (
 			#{userid}, #{userpw}, #{username}, #{nickname}, #{email}, #{gender}, 
 			#{toplct_id}, #{detail_address}, 
-			'/img/default_profile.png', 'N', 'LOCAL', '1', 
+			'default_profile.png', 'N', 'LOCAL', '1', 
 			#{agree_terms_required}, #{agree_privacy_required}, #{agree_location_optional}, 
 			#{agree_marketing_email}, #{agree_marketing_sms} 
 		)
@@ -25,4 +56,35 @@
 		insert into member_auth (userid, auth) 
 		values (#{userid}, #{auth})
 	</insert>
+	
+	<!-- 회원 정보 가져오기 -->
+	<select id="selectOne" resultMap="memberMap">
+		    SELECT
+		        m.member_id,
+		        m.userid,
+		        m.userpw,
+		        m.username,
+		        m.nickname,
+		        m.email,
+		        m.gender,
+		        m.toplct_id,
+		        m.detail_address,
+		        m.profile_img,
+		        m.seller_status,
+		        m.provider,
+		        m.enable_flag,
+		        m.regdate,
+		        m.updatedate,
+		        m.deleted_at,
+		        m.agree_terms_required,
+		        m.agree_privacy_required,
+		        m.agree_location_optional,
+		        m.agree_marketing_email,
+		        m.agree_marketing_sms,
+		        a.auth
+		    FROM member m
+		    LEFT JOIN member_auth a
+		        ON m.userid = a.userid
+		    WHERE m.userid = #{userid}
+	</select>
 </mapper>
