@@ -5,6 +5,7 @@ import com.itwillbs.domain.MemberVO;
 
 public interface MemberDAO {
 	
+	// 회원 정보 가져오기
 	public MemberVO selectOne(String userid);
 
 	// 회원 가입 처리

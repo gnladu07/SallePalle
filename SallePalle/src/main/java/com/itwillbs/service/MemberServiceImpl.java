@@ -28,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
 		// 기본 권한 부여
 		MemberAuthVO auth = new MemberAuthVO();
 		auth.setUserid(vo.getUserid());
-		auth.setAuth("ROLE_USER");
+		auth.setAuth("ROLE_MEMBER");
 		memberDAO.insertAuth(auth);
 	}
 

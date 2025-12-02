@@ -1,5 +1,7 @@
 package com.itwillbs.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,40 +20,49 @@ import com.itwillbs.security.CustomUserDetailsService;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	private static final Logger logger 
+		= LoggerFactory.getLogger(SecurityConfig.class);
 
-	// 비밀번호 암호화 객체 등록
+	// 비밀번호 암호화 핸들러 등록
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
+		logger.info(" 비밀번호 암호화 핸들러 실행! ");
 		return new BCryptPasswordEncoder();
 	}
 	
 	// CustomUserDetailsService 등록
 	@Bean
 	public CustomUserDetailsService customUserDetailsService() {
+		logger.info(" customUserDetailsService메서드 실행! ");
 		return new CustomUserDetailsService();
 	}
 	
-	// 로그인 성공 핸들러 객체 등록
+	// 로그인 성공 핸들러 등록
 	@Bean
 	public CustomLoginSuccessHandler customLoginSuccessHandler() {
+		logger.info(" 로그인 성공 핸들러 실행! ");
 		return new CustomLoginSuccessHandler();
 	}
 	
-	// 로그인 실패 핸들러 객체 등록
+	// 로그인 실패 핸들러 등록
 	@Bean
 	public CustomLoginFailureHandler customLoginFailureHandler() {
+		logger.info(" 로그인 실패 핸들러 실행! ");
 		return new CustomLoginFailureHandler();
 	}
 	
-	// 로그아웃 핸들러 객체 등록
+	// 로그아웃 핸들러 등록
 	@Bean
 	public CustomLogoutSuccessHandler customLogoutSuccessHandler() {
+		logger.info(" 로그아웃 핸들러 실행! ");
 		return new CustomLogoutSuccessHandler();
 	}
 	
-	// 미 권한 유저 제어 핸들어 객체 등록
+	// 미 권한 유저 제어 핸들어 등록
 	@Bean
 	public CustomAccessDeniedHandler accessDeniedHandler() {
+		logger.info(" 미 권한 유저 제어 핸들어 실행! ");
 		return new CustomAccessDeniedHandler();
 	}
 	
@@ -67,23 +78,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		http.csrf().disable(); // ← 현재 CSRF 전체 끄는 설정 (AJAX 때문에 OK)
-
 		http.authorizeRequests()
-			// permitAll() 구간 
-			.antMatchers(
-					"/member/emailCode",   // AJAX 이메일 인증번호 발송
-					"/member/join",       // 회원가입 화면(GET)
-					"/member/join/**",    // 회원가입 처리(POST)
-					"/member/login",
-					"/main/header"
-			).permitAll()
+			// 공용 URL
+			.antMatchers("/main/header", "/member/emailCode").permitAll()
+			.antMatchers("/member/login", "/member/login", "/member/join").permitAll()
 			
 			// ADMIN 권한
 			.antMatchers("/admin/**", "/security/**").hasRole("ADMIN")
 			
 			// MEMBER 권한
 			.antMatchers("/member/**").hasRole("MEMBER")
-			
 			.anyRequest().authenticated()
 			.and()
 			
