@@ -1,0 +1,21 @@
+[외부 라이브러리 추가 항목]25/11/19ver
+   mysql-connector-j       => MySQL 사용 목적
+   mybatis                 => MyBatis 사용 목적
+   mybatis-spring          => 스프링-MyBatis 연동하기 위한 라이브러리
+   spring-jdbc             => JDBC(DB연결시 사용)
+   spring-test             => 연결 테스트시 사용
+   HikariCP                => 커넥션 풀
+   lombok                  => get/set/toString 등 한번에 처리
+   log4jdbc-log4j2-jdbc4.1 => JDBC SQL 로그 출력 및 DB 쿼리 디버깅 목적
+   jackson-databind        => JSON 데이터 직렬화/역직렬화(Object ↔ JSON 변환) 목적
+   JavaMail API JAR        => 메일 송수신 처리(이메일 전송 기능 구현) 목적
+   JavaMail API            => 스프링에서 이메일 전송 기능을 구현하기 위한 API (JavaMailSender와 함께 사용)
+   Spring Context Support  => 메일, 스케줄링, 캐시 등 스프링 보조 기능을 확장 지원하기 위한 목적
+   commons-fileupload      => 파일 업로드 처리 목적 (멀티파트 요청 처리용)
+   commons-io              => 파일 입출력(IO) 기능 보조 라이브러리로, 스트림 처리·파일 경로 처리 등을 편하게 하기 위한 목적
+   thumbnailator           => 이미지 썸네일 생성 라이브러리로, 업로드된 이미지를 간단하게 리사이징/썸네일 생성하기 위한 목적
+   org.json                => JSON 파싱 및 생성 목적 (가벼운 JSON 처리 라이브러리)
+   spring-security-web     => Spring Security 웹 보안 기능(인증·인가 필터) 제공 목적
+   spring-security-core    => Spring Security의 핵심 보안 기능(암호화, 인증 매커니즘 등) 제공 목적
+   spring-security-config  => Spring Security 설정(XML/Java Config)을 지원하기 위한 목적
+   spring-security-taglibs => JSP에서 <sec:authorize> 등 보안 태그를 사용하기 위한 목적

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.mapper.MemberMapper">
+	<!-- 회원가입 -->
+	<insert id="insertMember">
+		insert into member (
+			userid, userpw, username, nickname, email, gender, 
+			toplct_id, detail_address, 
+			profile_img, seller_status, provider, enable_flag, 
+			agree_terms_required, agree_privacy_required, agree_location_optional, 
+			agree_marketing_email, agree_marketing_sms
+		)
+		values (
+			#{userid}, #{userpw}, #{username}, #{nickname}, #{email}, #{gender}, 
+			#{toplct_id}, #{detail_address}, 
+			'/img/default_profile.png', 'N', 'LOCAL', '1', 
+			#{agree_terms_required}, #{agree_privacy_required}, #{agree_location_optional}, 
+			#{agree_marketing_email}, #{agree_marketing_sms} 
+		)
+	</insert>
+
+	<!-- 회원 권한 추가 -->
+	<insert id="insertAuth">
+		insert into member_auth (userid, auth) 
+		values (#{userid}, #{auth})
+	</insert>
+</mapper>
