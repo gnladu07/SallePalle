@@ -14,11 +14,20 @@
         location.href='/member/login';
     </script>
 </c:if>
+<c:if test="${!empty imageMsg}">
+    <script>alert("${imageMsg}");</script>
+</c:if>
+<c:if test="${!empty msg}">
+    <script>alert("${msg}");</script>
+</c:if>
 	<h1>/views/read.jsp</h1>
 	<fieldset>
 		<legend>회원정보</legend>
 		<div>
-			<img src="/upload/${loginInfo.profile_img}" width="100" height="100">
+			<img src="/upload/${loginInfo.profile_img}" width="150" style="border-radius:50%;">
+		</div>
+		<div>
+			<a href="/member/profileEdit">프로필 변경</a>
 		</div>
 		<ul>
 			<li>아이디: ${loginInfo.userid }</li>
@@ -30,6 +39,7 @@
 		</ul>
 		<hr>
 		<a href="/member/update">회원정보수정</a>
+		<a href="/main/header">홈으로</a>
 	</fieldset>
 	<script type="text/javascript">
 		var updateInfo = '${updateInfo}';
