@@ -31,34 +31,40 @@
 
     <!-- 아이디 -->
     <div>
+    	<label>아이디</label>
         <input type="text" name="userid" id="userid" placeholder="아이디 입력 (5~20자)" required>
         <div id="useridMsg"></div>
     </div>
 
     <!-- 비밀번호 -->
     <div>
+    	<label>비밀번호</label>
         <input type="password" name="userpw" id="userpw" placeholder="비밀번호 (8~12자)" required>
         <div id="userpwMsg"></div>
     </div>
 
     <!-- 실명 -->
     <div>
+    	<label>실명</label>
         <input type="text" name="username" placeholder="실명" required>
     </div>
 
     <!-- 닉네임 -->
     <div>
+    	<label>닉네임</label>
         <input type="text" name="nickname" placeholder="닉네임" required>
     </div>
 
     <!-- 성별 -->
     <div>
+    	<label>성별</label>
         <label><input type="radio" name="gender" value="M" required> 남자</label>
         <label><input type="radio" name="gender" value="F" required> 여자</label>
     </div>
 
     <!-- 이메일 + 인증번호 -->
     <div>
+    	<label>이메일</label>
         <input type="email" name="email" id="email" placeholder="이메일 입력" required>
         <button type="button" id="btnEmailAuth">인증번호 받기</button>
         <div id="emailMsg"></div>
@@ -72,6 +78,7 @@
 
     <!-- 지역 선택 -->
     <div>
+    	<label>거주 지역</label>
         <select name="toplct_id" required>
             <option value="">-- 지역 선택 --</option>
             <c:forEach var="loc" items="${topList}">

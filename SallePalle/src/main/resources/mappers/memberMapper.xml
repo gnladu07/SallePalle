@@ -87,4 +87,60 @@
 		        ON m.userid = a.userid
 		    WHERE m.userid = #{userid}
 	</select>
+	
+	<!-- 프로필 이미지 변경 -->
+	<update id="updateProfileImg">
+		update member 
+		set profile_img = #{profile_img}, 
+			updatedate = now() 
+		where userid = #{userid}
+	</update>
+	
+	<!-- 기본 프로필 이미지로 초기화 -->
+	<update id="updateProfileToDefault">
+		update member 
+		set profile_img = 'default_profile.png' 
+		where userid = #{userid}
+	</update>
+	
+	<!-- 개인정보 수정 -->
+	<update id="updateMember">
+		update member 
+		set 
+			nickname = #{nickname}, 
+			toplct_id = #{toplct_id}, 
+			detail_address = #{detail_address}, 
+			email = #{email} 
+		where userid = #{userid}
+	</update>
+	
+	<!-- 히스토리 저장 -->
+	<insert id="insertMemberHistory">
+		insert into update_member_history 
+		(userid, changed_field, old_value, new_value, changed_by) 
+		values 
+		(#{userid}, #{changed_field}, #{old_value}, #{new_value}, #{changed_by})
+	</insert>
+	
+	<!-- 개인정보 초기 상태로 초기화 -->
+	<update id="rollbackMemberInfo">
+		update member 
+		set 
+			nickname = (select old_value from update_member_history 
+						where userid = #{userid} and changed_field = 'nickname' 
+						order by changed_at asc limit 1), 
+						
+			toplct_id = (select old_value from update_member_history 
+						 where userid = #{userid} and changed_field = 'toplct_id' 
+						 order by changed_at asc limit 1), 
+			
+			detail_address = (select old_value from update_member_history 
+						      where userid = #{userid} and changed_field = 'detail_address' 
+						      order by changed_at asc limit 1), 
+			
+			email = (select old_value from update_member_history 
+					 where userid = #{userid} and changed_field = 'email' 
+					 order by changed_at asc limit 1) 
+			where userid = #{userid}
+	</update>
 </mapper>
