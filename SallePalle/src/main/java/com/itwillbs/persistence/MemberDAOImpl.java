@@ -40,6 +40,16 @@ public class MemberDAOImpl implements MemberDAO {
 		
 		logger.info(" DAOImpl: insertMember() 끝!");
 	}
+	
+	@Override
+	public int countUserid(String userid) {
+	    logger.info(" DAOImpl: countUserid() 실행!");
+
+	    int result = sqlSession.selectOne(NAMESPACE + "countUserid", userid);
+
+	    logger.info(" DAOImpl: countUserid() 결과 = " + result);
+	    return result;
+	}
 
 	@Override
 	public void insertAuth(MemberAuthVO vo) {
@@ -93,6 +103,16 @@ public class MemberDAOImpl implements MemberDAO {
 		sqlSession.update(NAMESPACE + "rollbackMemberInfo", userid);
 		
 		logger.info(" DAOImpl: rollbackMemberInfo() 끝! ");
+	}
+
+	@Override
+	public void deactivateMember(String userid) {
+		logger.info(" DAOImpl: deactivateMember() 실행! ");
+		
+		sqlSession.update(NAMESPACE +"deactivateMember", userid);
+		
+		logger.info(" DAOImpl: deactivateMember() 끝! ");
+		
 	}
 
 

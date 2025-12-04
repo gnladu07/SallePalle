@@ -6,12 +6,20 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style type="text/css">
+	.ok { color: blue !important; font-size: 13px; }
+    .no { color: red !important; font-size: 13px; }
+    .hint { color: green !important; font-size: 13px; }
+</style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 <body>
-<c:if test="${not empty msg}">
+<c:if test="${!empty msg}">
     <script>alert("${msg}");</script>
+</c:if>
+<c:if test="${!empty mailMsg}">
+    <script>alert("${mailMsg}");</script>
 </c:if>
 	<form action="/member/update" method="post">
 	<input type="hidden" id="emailVerified" name="emailVerified" value="false">
@@ -26,7 +34,11 @@
 		        <select name="toplct_id" required>
 		            <option value="">-- 지역 선택 --</option>
 		            <c:forEach var="loc" items="${topList}">
-		                <option value="${loc.toplct_id}">
+		                <option value="${loc.toplct_id}"
+		                	<c:if test="${loc.toplct_id == loginInfo.toplct_id}">
+		                		selected
+		                	</c:if>
+		                >
 		                    ${loc.toplct_name}
 		                </option>
 		            </c:forEach>

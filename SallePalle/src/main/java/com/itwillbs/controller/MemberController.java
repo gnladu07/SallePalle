@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +39,17 @@ public class MemberController {
 		return "member/join";
 	}
 	
+	// 아이디 중복 체크
+	@PostMapping("/checkUserid")
+	@ResponseBody
+	public String checkUseridPOST(@RequestParam("userid") String userid) {
+		logger.info(" checkUseridPOST()실행! ");
+		userid = userid.trim();
+		
+	    boolean exists = mService.isUseridExists(userid);
+	    return exists ? "exists" : "ok";
+	}
+	
 	@PostMapping("/emailCode")
 	@ResponseBody
 	public int emailCodePOST(@RequestParam("email") String email) {
@@ -45,9 +57,16 @@ public class MemberController {
 	}
 	
 	@PostMapping("/join")
-	public String joinPOST(MemberVO vo) {
-		mService.memberJoin(vo);
-		return "redirect:/member/login";
+	public String joinPOST(MemberVO vo,
+			               RedirectAttributes rttr) {
+	    try {
+	        mService.memberJoin(vo); // 중복 이메일일 경우 여기서 DuplicateKeyException 발생
+	        return "redirect:/member/login";
+
+	    } catch (DuplicateKeyException e) {
+	        rttr.addFlashAttribute("msg", "이미 사용중인 이메일입니다!");
+	        return "redirect:/member/join";
+	    }
 	}
 	
 	@GetMapping("/login")
@@ -135,14 +154,19 @@ public class MemberController {
 	        return "redirect:/member/update";
 	    }
 
-	    // 서비스 호출 (정보 변경 + 히스토리 기록)
-	    mService.updateMemberWithHistory(vo);
-
-	    // 세션 최신화
-	    session.setAttribute("loginInfo", mService.selectOne(vo.getUserid()));
-	    rttr.addFlashAttribute("msg", "회원 정보가 수정되었습니다.");
-
-	    return "redirect:/member/read";
+	    try {
+	    	// 서비스 호출 (정보 변경 + 히스토리 기록)
+	    	mService.updateMemberWithHistory(vo);
+	    	
+	    	// 세션 최신화
+	    	session.setAttribute("loginInfo", mService.selectOne(vo.getUserid()));
+	    	rttr.addFlashAttribute("msg", "회원 정보가 수정되었습니다.");
+	    	
+	    	return "redirect:/member/read";
+		} catch (DuplicateKeyException e) {
+			rttr.addFlashAttribute("mailMsg", "이미 사용중인 이메일입니다!");
+	        return "redirect:/member/update";
+		}
 	}
 	
 	@PostMapping("/update/reset")
@@ -158,6 +182,34 @@ public class MemberController {
 
 	    return "success";
 	}
+	
+	// 회원탈퇴 - 비밀번호 검증
+	@PostMapping("/checkPw")
+	@ResponseBody
+	public String checkPwPOST(@RequestParam("userpw") String userpw,
+	                          HttpSession session) {
 
+	    MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+	    String userid = loginInfo.getUserid();
+
+	    boolean match = mService.checkPassword(userid, userpw);
+
+	    return match ? "ok" : "fail";
+	}
+
+	// 회원탈퇴
+	@PostMapping("/delete")
+	@ResponseBody
+	public String deletePOST(HttpSession session) {
+
+	    MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+	    String userid = loginInfo.getUserid();
+
+	    mService.deactivateMember(userid);
+
+	    session.invalidate();
+
+	    return "success";
+	}
 	
 }

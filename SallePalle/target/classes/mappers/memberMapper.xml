@@ -50,6 +50,13 @@
 			#{agree_marketing_email}, #{agree_marketing_sms} 
 		)
 	</insert>
+	
+	<!-- 아이디 중복 체크  -->
+	<select id="countUserid" resultType="int">
+		select count(*) 
+		from member 
+		where userid = #{userid} 
+	</select>
 
 	<!-- 회원 권한 추가 -->
 	<insert id="insertAuth">
@@ -142,5 +149,13 @@
 					 where userid = #{userid} and changed_field = 'email' 
 					 order by changed_at asc limit 1) 
 			where userid = #{userid}
+	</update>
+	
+	<!-- 회원탈퇴 -->
+	<update id="deactivateMember">
+		update member 
+		set enable_flag = '0', 
+			deleted_at = now() 
+		where userid = #{userid}
 	</update>
 </mapper>
