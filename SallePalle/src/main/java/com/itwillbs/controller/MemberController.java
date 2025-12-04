@@ -212,4 +212,10 @@ public class MemberController {
 	    return "success";
 	}
 	
+	// 아이디 찾기
+	@GetMapping("/findId")
+	public void findIdGET() {
+		logger.info(" findIdGET()실행! ");
+	}
+	
 }
