@@ -1,4 +1,8 @@
 package com.itwillbs.service;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -13,6 +17,7 @@ import com.itwillbs.component.MailComponent;
 import com.itwillbs.domain.MemberAuthVO;
 import com.itwillbs.domain.MemberHistoryVO;
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.domain.PasswordResetTokenVO;
 import com.itwillbs.persistence.MemberDAO;
 
 @Service
@@ -215,6 +220,97 @@ public class MemberServiceImpl implements MemberService {
 				                                          userid));
 		logger.info(" MServiceImpl: deactivateMember() 끝! ");
 	}
+
+	@Override
+	public String findUseridByPassword(String inputPw) {
+		logger.info(" MServiceImpl: findUseridByPassword() 실행! ");
+		
+		List<MemberVO> list = memberDAO.findAllMembersForIdSearch();
+		
+		 // 모든 회원의 암호화된 비밀번호와 비교
+        for(MemberVO vo : list) {
+            if(pwEncoder.matches(inputPw, vo.getUserpw())) {
+                return vo.getUserid(); 
+            }
+        }
+		
+		logger.info(" MServiceImpl: findUseridByPassword() 끝! ");
+		return null;
+	}
+
+	@Override
+	public boolean sendResetLink(String userid, String email) {
+		logger.info(" MServiceImpl: sendResetLink() 실행! ");
+		
+        MemberVO input = new MemberVO();
+        input.setUserid(userid);
+        input.setEmail(email);
+
+        MemberVO member = memberDAO.findMemberByIdAndEmail(input);
+        if(member == null) return false;
+
+        // 토큰 생성
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expire = LocalDateTime.now().plusMinutes(30);
+
+        PasswordResetTokenVO tokenVO = new PasswordResetTokenVO();
+        tokenVO.setUserid(userid);
+        tokenVO.setToken(token);
+        tokenVO.setExpire_time(expire);
+
+        memberDAO.insertResetToken(tokenVO);
+
+        String link = "http://localhost:8088/member/resetPw?token=" + token;
+
+        // HTML 메일 본문
+        String html = ""
+            + "<p>아래 링크를 클릭하여 비밀번호를 재설정하세요.</p>"
+            + "<p><a href='" + link + "' style='font-size:16px; color:blue;'>비밀번호 재설정하기</a></p>"
+            + "<br>"
+            + "<p>만약 링크가 클릭되지 않는다면 아래 주소를 브라우저에 직접 복사하여 이용해주세요:</p>"
+            + "<p>" + link + "</p>";
+        
+        mailComponent.sendMassage(
+            email,
+            "비밀번호 재설정 링크 안내",
+            html
+        );
+		
+		logger.info(" MServiceImpl: sendResetLink() 끝! ");
+		return true;
+	}
+
+	@Override
+	public boolean validateToken(String token) {
+		logger.info(" MServiceImpl: validateToken() 실행! ");
+		
+		PasswordResetTokenVO vo = memberDAO.findByToken(token);
+		if(vo == null) return false;
+		
+		logger.info(" MServiceImpl: validateToken() 끝! ");
+		return vo.getExpire_time().isAfter(LocalDateTime.now());
+	}
+
+	@Override
+	public boolean resetPassword(String token, String newPw) {
+		logger.info(" MServiceImpl: resetPassword() 실행! ");
+		
+		PasswordResetTokenVO tokenVO = memberDAO.findByToken(token);
+        if(tokenVO == null) return false;
+
+        MemberVO member = new MemberVO();
+        member.setUserid(tokenVO.getUserid());
+        member.setUserpw(passwordEncoder.encode(newPw));
+
+        memberDAO.updatePassword(member);
+
+        // 토큰 삭제
+        memberDAO.deleteToken(token);
+		
+		logger.info(" MServiceImpl: resetPassword() 끝! ");
+		return true;
+	}
+
 
 
 

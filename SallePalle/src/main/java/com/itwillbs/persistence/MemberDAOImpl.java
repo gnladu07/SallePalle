@@ -1,5 +1,7 @@
 package com.itwillbs.persistence;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.itwillbs.domain.MemberAuthVO;
 import com.itwillbs.domain.MemberHistoryVO;
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.domain.PasswordResetTokenVO;
 
 @Repository
 public class MemberDAOImpl implements MemberDAO {
@@ -114,6 +117,64 @@ public class MemberDAOImpl implements MemberDAO {
 		logger.info(" DAOImpl: deactivateMember() 끝! ");
 		
 	}
+
+	@Override
+	public List<MemberVO> findAllMembersForIdSearch() {
+		logger.info(" DAOImpl: findAllMembersForIdSearch() 실행! ");
+		
+		List<MemberVO> resultVO = sqlSession.selectList(NAMESPACE + "findAllMembersForIdSearch");
+		
+		logger.info(" DAOImpl: findAllMembersForIdSearch() 끝! ");
+		return resultVO;
+	}
+
+	@Override
+	public MemberVO findMemberByIdAndEmail(MemberVO input) {
+		logger.info(" DAOImpl: findMemberByIdAndEmail() 실행! ");
+		
+		MemberVO resultVO = sqlSession.selectOne(NAMESPACE + "findMemberByIdAndEmail", input);
+		
+		logger.info(" DAOImpl: findMemberByIdAndEmail() 끝! ");
+		return resultVO;
+	}
+
+	@Override
+	public void insertResetToken(PasswordResetTokenVO tokenVO) {
+		logger.info(" DAOImpl: insertResetToken() 실행! ");
+		
+		sqlSession.insert(NAMESPACE + "insertResetToken", tokenVO);
+		
+		logger.info(" DAOImpl: insertResetToken() 끝! ");
+	}
+
+	@Override
+	public PasswordResetTokenVO findByToken(String token) {
+		logger.info(" DAOImpl: PasswordResetTokenVO() 실행! ");
+		
+		PasswordResetTokenVO resultVO = sqlSession.selectOne(NAMESPACE + "findByToken", token);
+		
+		logger.info(" DAOImpl: PasswordResetTokenVO() 끝! ");
+		return resultVO;
+	}
+
+	@Override
+	public void updatePassword(MemberVO member) {
+		logger.info(" DAOImpl: updatePassword() 실행! ");
+		
+		sqlSession.update(NAMESPACE + "updatePassword", member);
+		
+		logger.info(" DAOImpl: updatePassword() 끝! ");
+	}
+
+	@Override
+	public void deleteToken(String token) {
+		logger.info(" DAOImpl: deleteToken() 실행! ");
+		
+		sqlSession.delete(NAMESPACE + "deleteToken", token);
+		
+		logger.info(" DAOImpl: deleteToken() 끝! ");
+	}
+
 
 
 

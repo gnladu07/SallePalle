@@ -218,4 +218,78 @@ public class MemberController {
 		logger.info(" findIdGET()실행! ");
 	}
 	
+	// 아이디 찾기 처리
+	@PostMapping("/findId")
+    public String findIdPOST(@RequestParam("userpw") String inputPw,
+                             RedirectAttributes rttr,
+                             Model model) {
+		logger.info(" findIdPOST()실행! ");
+        String userid = mService.findUseridByPassword(inputPw);
+
+        if(userid == null) {
+            model.addAttribute("msg", "입력한 비밀번호로 조회되는 아이디가 없습니다.");
+            return "/member/findId"; // 그대로 머무름
+        }
+
+        // login.jsp에서 alert 띄우기 위한 전달값
+        rttr.addFlashAttribute("foundId", userid);
+
+        logger.info(" findIdPOST()끝! ");
+        return "redirect:/member/login"; 
+    }
+	
+    // 비밀번호 찾기 페이지
+    @GetMapping("/findPw")
+    public String findPwGET() {
+    	logger.info(" findPwGET() 실행! ");
+    	return "/member/findPw";
+    }
+	
+	// 링크 발송 요청
+	@PostMapping("/findPw")
+	public String findPwPOST(@RequestParam("userid") String userid,
+	                         @RequestParam("email") String email,
+	                         RedirectAttributes rttr,
+	                         Model model) {
+		logger.info(" findPwPOST()실행! ");
+	    boolean result = mService.sendResetLink(userid, email);
+
+	    if(!result) {
+	        model.addAttribute("msg", "입력한 정보와 일치하는 회원이 없습니다.");
+	        return "/member/findPw";
+	    }
+
+	    rttr.addFlashAttribute("pwMsg", "비밀번호 재설정 링크를 이메일로 보냈습니다!");
+	    logger.info(" findPwPOST()끝! ");
+	    return "redirect:/member/login";
+	}
+	
+	// 링크 클릭 시 비밀번호 재설정 페이지로 이동
+    @GetMapping("/resetPw")
+    public String resetPwGET(@RequestParam("token") String token,
+                             Model model,
+                             RedirectAttributes rttr) {
+
+        if(!mService.validateToken(token)) {
+            rttr.addFlashAttribute("pwMsg", "유효하지 않거나 만료된 링크입니다.");
+            return "redirect:/member/login";
+        }
+
+        model.addAttribute("token", token);
+        return "/member/resetPw";
+    }
+
+    // 비밀번호 실제 변경
+    @PostMapping("/resetPw")
+    public String resetPwPOST(@RequestParam("token") String token,
+                              @RequestParam("newPw") String newPw,
+                              RedirectAttributes rttr) {
+
+    	mService.resetPassword(token, newPw);
+
+        rttr.addFlashAttribute("rePwMsg", "비밀번호가 성공적으로 변경되었습니다!");
+        return "redirect:/member/login";
+    }
+
+	
 }

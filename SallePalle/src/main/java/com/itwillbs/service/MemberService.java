@@ -36,5 +36,17 @@ public interface MemberService {
 	// 회원탈퇴
 	public void deactivateMember(String userid);
 
+	// 아이디 찾기
+	public String findUseridByPassword(String inputPw);
+
+	// 비밀번호 찾기 - 링크 발송 요청
+	public boolean sendResetLink(String userid, String email);
+
+	// 비밀번호 찾기 - 링크 클릭 시 비밀번호 재설정 페이지로 이동
+	public boolean validateToken(String token);
+
+	// 비밀번호 찾기 - 비밀번호 실제 변경
+	public boolean resetPassword(String token, String newPw);
+
 
 }
