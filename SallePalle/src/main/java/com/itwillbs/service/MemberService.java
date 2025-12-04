@@ -12,6 +12,9 @@ public interface MemberService {
 	// 회원 가입 처리
 	public void memberJoin(MemberVO vo);
 	
+	// 아이디 중복 체크 
+	public boolean isUseridExists(String userid);
+	
 	// 이메일 인증 처리
 	public int emailSendCode(String email);
 
@@ -26,5 +29,12 @@ public interface MemberService {
 	
 	// 개인정보 초기화
 	public void rollbackMemberInfo(String userid);
+
+	// 회원탈퇴 - 비밀번호 검증
+	public boolean checkPassword(String userid, String userpw);
+
+	// 회원탈퇴
+	public void deactivateMember(String userid);
+
 
 }

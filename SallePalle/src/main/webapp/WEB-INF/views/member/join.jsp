@@ -20,6 +20,9 @@
 
 </head>
 <body>
+<c:if test="${!empty msg}">
+    <script>alert("${msg}");</script>
+</c:if>
 
 <h1>회원가입</h1>
 
@@ -33,6 +36,7 @@
     <div>
     	<label>아이디</label>
         <input type="text" name="userid" id="userid" placeholder="아이디 입력 (5~20자)" required>
+        <button type="button" id="btnCheckId">중복검사</button>
         <div id="useridMsg"></div>
     </div>
 
@@ -113,12 +117,24 @@
 </fieldset>
 
 </form>
+<!-- 아이디 중복 모달 -->
+<div id="idModal" style="
+    display:none;
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+    
+    <div style="background:white; padding:20px; width:300px; border-radius:10px; text-align:center;">
+        <h3 id="idModalMsg">결과 메시지</h3>
+        <button type="button" id="idModalClose">닫기</button>
+    </div>
 
+</div>
 
 <script>
 
 	let emailAuthCode = "";
 	let emailVerified = false;
+	let idAvailable = false;
 
 	// 정규식 패턴
 	const useridRegex = /^[a-zA-Z0-9-_@]{5,20}$/;
@@ -137,7 +153,7 @@
 	 
 	 if (useridRegex.test(val)) {
 	     $("#useridMsg")
-	         .html("사용 가능한 아이디입니다.")
+	         .html("조건식에 만족합니다. 중복검사를 진행해주세요!")
 	         .removeClass("no hint")
 	         .addClass("ok");
 	 } else {
@@ -181,7 +197,7 @@
 	    checkJoinReady();
 	});
 
-	// 2) 이메일 인증번호 AJAX 요청
+	// 이메일 인증번호 AJAX 요청
 	$("#btnEmailAuth").click(function(){
 	    const email = $("#email").val().trim();
 	
@@ -222,8 +238,7 @@
 	});
 
 
-   // 3) 카카오 주소찾기 API
-
+    // 카카오 주소찾기 API
 	$("#detail_address").click(function(){
 	    new daum.Postcode({
 	        oncomplete: function(data){
@@ -233,8 +248,7 @@
 	});
 
 
-   // 4) 모든 조건 만족하면 submit 활성화
-
+    // 조건 만족시 submit 활성화
 	function checkJoinReady(){
 	    let id_ok = useridRegex.test($("#userid").val());
 	    let pw_ok = userpwRegex.test($("#userpw").val());
@@ -245,6 +259,63 @@
 	        $("#joinSubmit").prop("disabled", true);
 	    }
 	}
+   
+	// 중복검사 버튼 클릭
+	$("#btnCheckId").click(function(){
+
+	    const userid = $("#userid").val().trim();
+
+	    if(userid === ""){
+	        showIdModal("아이디를 입력해주세요.");
+	        return;
+	    }
+
+	    if(!useridRegex.test(userid)){
+	        showIdModal("아이디 형식이 올바르지 않습니다.");
+	        return;
+	    }
+
+	    $.ajax({
+	        url: "/member/checkUserid",
+	        type: "post",
+	        data: {
+	            userid: userid,
+	            "${_csrf.parameterName}": "${_csrf.token}"
+	        },
+	        success: function(result){
+
+	            if(result === "exists"){
+	                idAvailable = false;
+	                showIdModal("이미 사용중인 아이디입니다.");
+	                $("#useridMsg").html("이미 사용중인 아이디입니다.")
+	                               .removeClass("ok hint")
+	                               .addClass("no");
+	            } else {
+	                idAvailable = true;
+	                showIdModal("사용 가능한 아이디입니다!");
+	                $("#useridMsg").html("사용 가능한 아이디입니다.")
+	                               .removeClass("no hint")
+	                               .addClass("ok");
+	            }
+
+	            checkJoinReady();
+	        },
+	        error: function(){
+	            showIdModal("서버 오류! 다시 시도해주세요.");
+	        }
+	    });
+
+	});
+
+	// 모달 함수
+	function showIdModal(msg){
+	    $("#idModalMsg").html(msg);
+	    $("#idModal").css("display", "flex");
+	}
+
+	$("#idModalClose").click(function(){
+	    $("#idModal").hide();
+	});
 </script>
 
 </body>

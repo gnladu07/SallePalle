@@ -11,6 +11,9 @@ public interface MemberDAO {
 
 	// 회원 가입 처리
 	public void insertMember(MemberVO vo);
+	
+	// 아이디 중복 체크 
+	public int countUserid(String userid);
 
 	// 회원 권한 부여
 	public void insertAuth(MemberAuthVO vo);
@@ -25,6 +28,9 @@ public interface MemberDAO {
 	public void updateMember(MemberVO vo);
 	public void insertMemberHistory(MemberHistoryVO memberHistoryVO);
 	public void rollbackMemberInfo(String userid);
+
+	// 회원탈퇴
+	public void deactivateMember(String userid);
 
 
 }

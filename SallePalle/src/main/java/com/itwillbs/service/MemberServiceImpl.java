@@ -18,6 +18,8 @@ import com.itwillbs.persistence.MemberDAO;
 @Service
 public class MemberServiceImpl implements MemberService {
 
+    private final BCryptPasswordEncoder passwordEncoder;
+
 	private static final Logger logger 
 		= LoggerFactory.getLogger(MemberServiceImpl.class);
 	
@@ -25,6 +27,10 @@ public class MemberServiceImpl implements MemberService {
 	@Inject private PasswordEncoder pwEncoder;
 	@Inject private MailComponent mailComponent;
 	@Inject private FileComponent fileComponent;
+
+    MemberServiceImpl(BCryptPasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 	
 	@Override
 	public MemberVO selectOne(String userid) {
@@ -54,6 +60,13 @@ public class MemberServiceImpl implements MemberService {
 		memberDAO.insertAuth(auth);
 		
 		logger.info(" MServiceImpl: memberJoin() 끝! ");
+	}
+	
+	@Override
+	public boolean isUseridExists(String userid) {
+		logger.info(" MServiceImpl: isUseridExists()실행! ");
+		logger.info(" MServiceImpl: isUseridExists()끝! ");
+	    return memberDAO.countUserid(userid) > 0;
 	}
 
 	@Override
@@ -176,6 +189,31 @@ public class MemberServiceImpl implements MemberService {
 		memberDAO.rollbackMemberInfo(userid);
 		
 		logger.info(" MServiceImpl: rollbackMemberInfo() 끝! ");
+	}
+
+	@Override
+	public boolean checkPassword(String userid, String userpw) {
+		logger.info(" MServiceImpl: checkPassword() 실행! ");
+		
+		MemberVO vo = memberDAO.selectOne(userid);
+		
+		logger.info(" MServiceImpl: checkPassword() 끝! ");
+		return passwordEncoder.matches(userpw, vo.getUserpw());
+	}
+
+	@Override
+	public void deactivateMember(String userid) {
+		logger.info(" MServiceImpl: deactivateMember() 실행! ");
+		
+		memberDAO.deactivateMember(userid);
+		
+		// 히스토리 테이블에도 기록
+		memberDAO.insertMemberHistory(new MemberHistoryVO(userid, 
+				                                          "account_status", 
+				                                          "active", 
+				                                          "deleted", 
+				                                          userid));
+		logger.info(" MServiceImpl: deactivateMember() 끝! ");
 	}
 
 
