@@ -13,17 +13,20 @@ public class MailComponent {
 	
 	@Autowired private JavaMailSender mailSender;
 	
-	public int sendMassage(String email, String string, String string2) {
+	public int sendMassage(String email, String subject, String htmlContent) {
 		MimeMessage message = mailSender.createMimeMessage();
 		try {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 			helper.setFrom("gnlaud07@naver.com");
 			helper.setTo(email);
-			helper.setSubject(string);
-			helper.setText(string2);
+			helper.setSubject(subject);
+
+			// 핵심: HTML 이메일 전송
+			helper.setText(htmlContent, true);   // true = HTML 모드
+
 			mailSender.send(message);
 			return 1;
-			
+
 		} catch (MessagingException e) {
 			e.printStackTrace();
 			return 0;

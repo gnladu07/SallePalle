@@ -1,8 +1,11 @@
 package com.itwillbs.persistence;
 
+import java.util.List;
+
 import com.itwillbs.domain.MemberAuthVO;
 import com.itwillbs.domain.MemberHistoryVO;
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.domain.PasswordResetTokenVO;
 
 public interface MemberDAO {
 	
@@ -31,6 +34,17 @@ public interface MemberDAO {
 
 	// 회원탈퇴
 	public void deactivateMember(String userid);
+
+	// 아이디 찾기
+	public List<MemberVO> findAllMembersForIdSearch();
+
+	// 비밀번호 찾기
+	public MemberVO findMemberByIdAndEmail(MemberVO input);
+	public void insertResetToken(PasswordResetTokenVO tokenVO);	
+	public PasswordResetTokenVO findByToken(String token);
+	public void updatePassword(MemberVO member);
+	public void deleteToken(String token);
+
 
 
 }

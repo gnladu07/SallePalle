@@ -8,6 +8,21 @@
 <title>Insert title here</title>
 </head>
 <body>
+	<c:if test="${!empty rePwMsg}">
+		<script>
+		    alert("${rePwMsg}");
+		</script>
+	</c:if>
+	<c:if test="${!empty pwMsg}">
+		<script>
+		    alert("${pwMsg}");
+		</script>
+	</c:if>
+	<c:if test="${not empty foundId}">
+		<script>
+		    alert("아이디는 '${foundId}' 입니다.");
+		</script>
+	</c:if>
 	<form action="/member/loginProcess" method="post">
 	<!-- hidden타입 csrf 토큰 정보 -->
 	<input type="hidden" name="${_csrf.parameterName }" 

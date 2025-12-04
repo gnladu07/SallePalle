@@ -81,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 			// 공용 URL
 			.antMatchers("/main/header", "/member/emailCode", "/member/checkUserid", "/member/findId").permitAll()
-			.antMatchers("/member/login", "/member/login", "/member/join").permitAll()
+			.antMatchers("/member/login", "/member/login", "/member/join", "/member/findPw", "/member/resetPw").permitAll()
 			
 			// ADMIN 권한
 			.antMatchers("/admin/**", "/security/**").hasRole("ADMIN")
