@@ -175,6 +175,25 @@ public class MemberDAOImpl implements MemberDAO {
 		logger.info(" DAOImpl: deleteToken() 끝! ");
 	}
 
+	@Override
+	public MemberVO findByProviderId(String providerId) {
+		logger.info(" DAOImpl: findByProviderId() 실행! ");
+		
+		MemberVO resultVO = sqlSession.selectOne(NAMESPACE + "findByProviderId", providerId);
+		
+		logger.info(" DAOImpl: findByProviderId() 끝! ");
+		return resultVO;
+	}
+
+	@Override
+	public void insertSocialMember(MemberVO vo) {
+		logger.info(" DAOImpl: insertSocialMember() 실행! ");
+		
+		sqlSession.insert(NAMESPACE + "insertSocialMember", vo);
+		
+		logger.info(" DAOImpl: insertSocialMember() 끝! ");
+	}
+
 
 
 
