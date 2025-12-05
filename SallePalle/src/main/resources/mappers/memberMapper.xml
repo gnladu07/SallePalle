@@ -205,23 +205,4 @@
         set userpw = #{userpw} 
         where userid = #{userid}
     </update>
-    
-    <!-- 소셜회원가입 - 네이버 -->
-    <select id="findByProviderId" resultMap="memberMap">
-    	select * from member 
-    	where provider_id = #{provider_id}
-    </select>
-    
-    <insert id="insertSocialMember">
-    	insert into member (
-    		userid, userpw, username, nickname, email, gender,
-	        provider, provider_id, mobile, 
-	        seller_status, enable_flag, profile_img
-    	) 
-    	values (
-    		#{provider_id}, #{userpw}, #{username}, #{nickname}, #{email}, #{gender},
-	        #{provider}, #{provider_id}, #{mobile}, 
-	        'N', '1', 'default_profile.png'
-    	)
-    </insert>
 </mapper>

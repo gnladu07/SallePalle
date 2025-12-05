@@ -25,15 +25,16 @@
 </c:if>
 <form method="post">
 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-<input type="hidden" name="provider" value="NAVER">
-<input type="hidden" name="provider_id" value="${naverVO.provider_id}">
+<c:if test="${!empty naverVO}">
+    <input type="hidden" name="provider" value="NAVER">
+    <input type="hidden" name="provider_id" value="${naverVO.provider_id}">
+</c:if>
+<c:if test="${empty naverVO}">
+    <input type="hidden" name="provider" value="LOCAL">
+</c:if>
 
 <fieldset>
     <legend>회원가입</legend>
-	<a href="${naverLoginURL}">
-	    <button type="button">네이버 개인정보 불러오기</button>
-	</a>
-
     <!-- 아이디 -->
     <div>
     	<label>아이디</label>
