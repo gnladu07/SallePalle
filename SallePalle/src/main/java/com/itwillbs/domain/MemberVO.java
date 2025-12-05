@@ -18,6 +18,11 @@ import lombok.Data;
 //	    profile_img     VARCHAR(255) DEFAULT '/img/default_profile.png',  -- 기본 프로필 이미지
 //	    seller_status   CHAR(1) DEFAULT 'N' CHECK (seller_status IN ('N','W','Y')),  -- 판매 권한(N: 일반회원 / W: 승인 대기 / Y: 승인됨)
 //	    provider        VARCHAR(50) DEFAULT 'LOCAL',             -- 로그인 제공자(LOCAL/KAKAO/NAVER)
+
+//		provider_id     VARCHAR(200) DEFAULT NULL,  -- ★ 추가된 외부로그인 고유ID
+//		mobile          VARCHAR(20) DEFAULT NULL CHECK (mobile REGEXP '^[0-9]{3}-[0-9]{4}-[0-9]{4}$'),
+//		birth6          CHAR(6) DEFAULT NULL CHECK (birth6 REGEXP '^[0-9]{6}$'),
+
 //	    enable_flag     CHAR(1) DEFAULT '1',                     -- 계정 활성화 여부(1/0)
 //	    regdate         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,     -- 가입일
 //	    updatedate      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,          -- 업데이트일
@@ -49,6 +54,11 @@ public class MemberVO {
 	private String profile_img;				// 기본 프로필 이미지
 	private String seller_status;			// 판매 권한(N: 일반회원 / W: 승인 대기 / Y: 승인됨)
 	private String provider;				// 로그인 제공자(LOCAL/KAKAO/NAVER)	
+	
+	private String provider_id;				// 외부 로그인 아이디
+	private String mobile;					// 휴대폰 번호
+	private String birth6;					// 생년월일 6자리
+	
 	private String enable_flag;				// 계정 활성화 여부(1/0)
 	
 	private Timestamp regdate;				// 가입일

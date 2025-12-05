@@ -61,6 +61,7 @@ public class MemberController {
 			               RedirectAttributes rttr) {
 	    try {
 	        mService.memberJoin(vo); // 중복 이메일일 경우 여기서 DuplicateKeyException 발생
+	        rttr.addFlashAttribute("joinMsg", "정상적으로 회원가입되었습니다!");
 	        return "redirect:/member/login";
 
 	    } catch (DuplicateKeyException e) {

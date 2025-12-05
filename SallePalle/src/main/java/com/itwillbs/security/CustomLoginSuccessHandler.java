@@ -1,6 +1,7 @@
 package com.itwillbs.security;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -49,6 +50,10 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		// 세션 저장 -> 모든 JSP, 컨트롤러에서 사용 가능
 		request.getSession().setAttribute("loginInfo", loginInfo);
 		
+        //로그인 성공 메시지 만들기
+		String username = loginInfo.getUsername();  
+		String welcomeMsg = URLEncoder.encode(username + "님 환영합니다!", "UTF-8");
+		
 		logger.info(" 회원 정보 확인: {} ", loginInfo);
 		
 		// 권한 리스트 (ROLE_MEMBER, ROLE_ADMIN ...) 조회
@@ -63,7 +68,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 			logger.info(" 관리자 권한을 포함한 사용자가 로그인 성공! ");
 			
 			// 관리자 페이지로 이동
-			response.sendRedirect("/admin");
+			response.sendRedirect("/admin?msg=" + welcomeMsg);
 			
 			return;
 		}
@@ -72,13 +77,13 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 			logger.info(" 멤버 권한을 포함한 사용자가 로그인 성공! ");
 			
 			// 멤버 페이지로 이동
-			response.sendRedirect("/main/header");
+			response.sendRedirect("/main/header?msg=" + welcomeMsg);
 			
 			return;
 		}
 		
 		// 그 외 권한
-		response.sendRedirect("/");
+		response.sendRedirect("/?msg=" + welcomeMsg);
 		
 	}
 

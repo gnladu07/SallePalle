@@ -15,8 +15,12 @@
 	    <result property="profile_img" column="profile_img" />
 	    <result property="seller_status" column="seller_status" />
 	    <result property="provider" column="provider" />
+	    
+	    <result property="provider_id" column="provider_id"/>
+	    <result property="mobile" column="mobile"/>
+	    <result property="birth6" column="birth6"/>
+	    	    
 	    <result property="enable_flag" column="enable_flag" />
-	
 	    <result property="regdate" column="regdate" />
 	    <result property="updatedate" column="updatedate" />
 	    <result property="deleted_at" column="deleted_at" />
@@ -38,14 +42,14 @@
 		insert into member (
 			userid, userpw, username, nickname, email, gender, 
 			toplct_id, detail_address, 
-			profile_img, seller_status, provider, enable_flag, 
+			profile_img, seller_status, provider, provider_id, mobile, birth6, enable_flag, 
 			agree_terms_required, agree_privacy_required, agree_location_optional, 
 			agree_marketing_email, agree_marketing_sms
 		)
 		values (
 			#{userid}, #{userpw}, #{username}, #{nickname}, #{email}, #{gender}, 
 			#{toplct_id}, #{detail_address}, 
-			'default_profile.png', 'N', 'LOCAL', '1', 
+			'default_profile.png', 'N', #{provider}, #{provider_id}, #{mobile}, #{birth6}, '1', 
 			#{agree_terms_required}, #{agree_privacy_required}, #{agree_location_optional}, 
 			#{agree_marketing_email}, #{agree_marketing_sms} 
 		)
@@ -79,6 +83,9 @@
 		        m.profile_img,
 		        m.seller_status,
 		        m.provider,
+		        m.provider_id,
+		        m.mobile,
+		        m.birth6,
 		        m.enable_flag,
 		        m.regdate,
 		        m.updatedate,

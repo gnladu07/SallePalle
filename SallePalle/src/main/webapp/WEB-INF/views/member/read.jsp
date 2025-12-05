@@ -31,12 +31,14 @@
 			<a href="/member/profileEdit">프로필 변경</a>
 		</div>
 		<ul>
-			<li>아이디: ${loginInfo.userid }</li>
-			<li>실명  : ${loginInfo.username }</li>
-			<li>닉네임: ${loginInfo.nickname }</li>
-			<li>이메일: ${loginInfo.email }</li>
-			<li>성별  : ${loginInfo.gender }</li>
-			<li>주소  : ${loginInfo.detail_address }</li>
+			<li>아이디  : ${loginInfo.userid }</li>
+			<li>실명    : ${loginInfo.username }</li>
+			<li>닉네임  : ${loginInfo.nickname }</li>
+			<li>이메일  : ${loginInfo.email }</li>
+			<li>번호    : ${loginInfo.mobile }</li>
+			<li>생년월일: ${loginInfo.birth6 }</li>
+			<li>성별    : ${loginInfo.gender }</li>
+			<li>주소    : ${loginInfo.detail_address }</li>
 		</ul>
 		<hr>
 		<a href="/member/update"><button type="button">회원정보수정</button></a>

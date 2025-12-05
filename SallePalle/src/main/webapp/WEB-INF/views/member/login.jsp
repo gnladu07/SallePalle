@@ -8,6 +8,11 @@
 <title>Insert title here</title>
 </head>
 <body>
+	<c:if test="${!empty joinMsg}">
+		<script>
+		    alert("${joinMsg}");
+		</script>
+	</c:if>
 	<c:if test="${!empty rePwMsg}">
 		<script>
 		    alert("${rePwMsg}");

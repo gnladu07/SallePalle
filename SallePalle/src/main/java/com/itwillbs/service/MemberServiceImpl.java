@@ -55,6 +55,26 @@ public class MemberServiceImpl implements MemberService {
 		// 비밀번호 암호화 
 		vo.setUserpw(pwEncoder.encode(vo.getUserpw()));
 		
+		// LOCAL 권한 넣어주기
+		if(vo.getProvider() == null || vo.getProvider().trim().equals("")) {
+		    vo.setProvider("LOCAL");
+		}
+		
+		// provider_id는 로컬가입이므로 null
+		vo.setProvider_id(null);
+		
+		// mobile 빈 값이면 null 처리
+	    if (vo.getMobile() != null && vo.getMobile().trim().equals("")) {
+	        vo.setMobile(null);
+	    }
+	    
+	    // birth6 무효값 방지: null 또는 6자리가 아니면 null로 강제
+	    if (vo.getBirth6() != null) {
+	        if (!vo.getBirth6().matches("^[0-9]{6}$")) {
+	            vo.setBirth6(null);
+	        }
+	    }
+		
 		// 회원 DB 저장
 		memberDAO.insertMember(vo);
 		
