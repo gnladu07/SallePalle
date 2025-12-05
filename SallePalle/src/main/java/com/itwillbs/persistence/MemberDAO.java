@@ -45,6 +45,10 @@ public interface MemberDAO {
 	public void updatePassword(MemberVO member);
 	public void deleteToken(String token);
 
+	// 소셜 회원 가입 - 네이버
+	public MemberVO findByProviderId(String providerId);
+	public void insertSocialMember(MemberVO vo);
+
 
 
 }

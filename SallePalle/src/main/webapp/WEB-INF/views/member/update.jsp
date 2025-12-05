@@ -5,14 +5,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>회원 정보 수정</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <style type="text/css">
 	.ok { color: blue !important; font-size: 13px; }
     .no { color: red !important; font-size: 13px; }
     .hint { color: green !important; font-size: 13px; }
 </style>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 <body>
 <c:if test="${!empty msg}">
@@ -24,11 +24,58 @@
 	<form action="/member/update" method="post">
 	<input type="hidden" id="emailVerified" name="emailVerified" value="false">
 		<fieldset>
-			<label>개인정보 수정</label>
+			<legend>개인정보 수정</legend>
+			<!-- 아이디 -->
+		    <div>
+		    	<label>아이디</label>
+		        <input type="text" name="userid" id="userid" value="${loginInfo.userid }" disabled>
+		    </div>
+		    
+		    <!-- 실명 -->
+		    <div>
+		    	<label>실명</label>
+		        <input type="text" name="username" value="${loginInfo.username }" disabled>
+		    </div>
+		    
+		    <!-- 닉네임 -->
 			<div>			
 			   <label>닉네임</label>
 			   <input type="text" name="nickname" value="${loginInfo.nickname}">
 			</div>
+			
+			<!-- 이메일 + 인증번호 -->
+			<div>			
+			   <label>이메일</label>
+			   <input type="text" name="email" id="email" value="${loginInfo.email}">
+			   <button type="button" id="btnEmailAuth">인증번호 받기</button>	
+			   <div id="emailMsg"></div>
+			</div>
+			<div>
+				<label>인증번호</label>
+		        <input type="text" id="emailCode" placeholder="인증번호 입력">
+		        <button type="button" id="btnEmailCheck">확인</button>
+		        <div id="emailCodeMsg"></div>
+		    </div>
+		    
+		    <!-- 휴대폰 번호 -->
+		    <div>
+		        <label>휴대폰 번호</label>
+		        <input type="text" name="mobile" value="${loginInfo.mobile }" disabled>
+		    </div>
+		    
+		    <!-- 생년월일 -->
+		    <div>
+		    	<label>생년월일</label>
+		    	<input type="text" name="birth6" value="${loginInfo.birth6 }" disabled>
+		    </div>
+			
+			<!-- 성별 -->
+			<div>
+				<label>성별</label>
+				<input type="text" name="gender" value="${loginInfo.gender }" disabled>
+			</div>
+			
+			<!-- 지역 + 상세 주소 -->
 			<div>
 		    	<label>거주 지역</label>
 		        <select name="toplct_id" required>
@@ -48,17 +95,7 @@
 			   <label>상세 주소</label>
 			   <input type="text" name="detail_address" id="detail_address" value="${loginInfo.detail_address}">
 			</div>
-			<div>			
-			   <label>이메일</label>
-			   <input type="text" name="email" id="email" value="${loginInfo.email}">
-			   <button type="button" id="btnEmailAuth">인증번호 받기</button>	
-			   <div id="emailMsg"></div>
-			</div>
-			<div>
-		        <input type="text" id="emailCode" placeholder="인증번호 입력">
-		        <button type="button" id="btnEmailCheck">확인</button>
-		        <div id="emailCodeMsg"></div>
-		    </div>
+
 			
 			<button type="submit">저장</button>
 			<button type="button" id="btnReset">수정 내용 초기화</button>

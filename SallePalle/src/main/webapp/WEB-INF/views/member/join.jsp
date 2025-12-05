@@ -23,19 +23,23 @@
 <c:if test="${!empty msg}">
     <script>alert("${msg}");</script>
 </c:if>
-
-<h1>회원가입</h1>
-
 <form method="post">
 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+<input type="hidden" name="provider" value="NAVER">
+<input type="hidden" name="provider_id" value="${naverVO.provider_id}">
 
 <fieldset>
     <legend>회원가입</legend>
+	<a href="${naverLoginURL}">
+	    <button type="button">네이버 개인정보 불러오기</button>
+	</a>
 
     <!-- 아이디 -->
     <div>
     	<label>아이디</label>
-        <input type="text" name="userid" id="userid" placeholder="아이디 입력 (5~20자)" required>
+        <input type="text" name="userid" 
+       		               value="${naverVO.provider_id}" 
+                           placeholder="아이디 입력 (5~20자)" required>
         <button type="button" id="btnCheckId">중복검사</button>
         <div id="useridMsg"></div>
     </div>
@@ -50,20 +54,24 @@
     <!-- 실명 -->
     <div>
     	<label>실명</label>
-        <input type="text" name="username" placeholder="실명" required>
+        <input type="text" name="username" 
+                           value="${naverVO.username}" required>
     </div>
 
     <!-- 닉네임 -->
     <div>
     	<label>닉네임</label>
-        <input type="text" name="nickname" placeholder="닉네임" required>
+        <input type="text" name="nickname"
+                           value="${naverVO.nickname}" required>
     </div>
 
     <!-- 성별 -->
     <div>
     	<label>성별</label>
-        <label><input type="radio" name="gender" value="M" required> 남자</label>
-        <label><input type="radio" name="gender" value="F" required> 여자</label>
+        <label><input type="radio" name="gender" value="M" 
+                      ${naverVO.gender == 'M' ? 'checked' : ''}> 남자</label>
+        <label><input type="radio" name="gender" value="F" 
+                      ${naverVO.gender == 'F' ? 'checked' : ''}> 여자</label>
     </div>
 
     <!-- 이메일 + 인증번호 -->
@@ -75,6 +83,7 @@
     </div>
 
     <div>
+    	<label>인증번호</label>
         <input type="text" id="emailCode" placeholder="인증번호 입력">
         <button type="button" id="btnEmailCheck">확인</button>
         <div id="emailCodeMsg"></div>
@@ -135,7 +144,7 @@
     <!-- 휴대폰 번호 -->
     <div>
         <label>휴대폰 번호</label>
-        <input type="text" name="mobile" id="mobile" placeholder="010-1234-5678" required>
+        <input type="text" name="mobile" id="mobile" placeholder="010-1234-5678" value="${naverVO.mobile}" required>
         <div id="mobileMsg"></div>
     </div>
     
