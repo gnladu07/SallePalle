@@ -98,6 +98,47 @@
         <input type="text" name="detail_address" id="detail_address" 
                placeholder="상세주소 찾기 (클릭)" readonly required >
     </div>
+    
+    <!-- 생년월일 -->
+    <div>
+        <label>생년월일</label><br>
+
+        <select id="birth_year" required>
+            <option value="">년도</option>
+            <%
+                int yearNow = java.time.LocalDate.now().getYear();
+                for(int y = yearNow - 100; y <= yearNow - 10; y++){
+            %>
+                <option value="<%=y%>"><%=y%></option>
+            <%
+                }
+            %>
+        </select>
+
+        <select id="birth_month" required>
+            <option value="">월</option>
+            <c:forEach begin="1" end="12" var="m">
+                <option value="${m < 10 ? '0'+m : m}">${m}</option>
+            </c:forEach>
+        </select>
+
+        <select id="birth_day" required>
+            <option value="">일</option>
+            <c:forEach begin="1" end="31" var="d">
+                <option value="${d < 10 ? '0'+d : d}">${d}</option>
+            </c:forEach>
+        </select>
+
+        <input type="hidden" name="birth6" id="birth6">
+    </div>
+
+    <!-- 휴대폰 번호 -->
+    <div>
+        <label>휴대폰 번호</label>
+        <input type="text" name="mobile" id="mobile" placeholder="010-1234-5678" required>
+        <div id="mobileMsg"></div>
+    </div>
+    
 
     <!-- 약관 동의 -->
     <div>
@@ -315,6 +356,36 @@
 
 	$("#idModalClose").click(function(){
 	    $("#idModal").hide();
+	});
+	
+	// 생년월일 검증
+	function pad2(n) {
+	    return n.toString().padStart(2, '0');
+	}
+	
+	$("form").on("submit", function() {
+	
+	    let yy = $("#birth_year").val().substring(2, 4);   // 1993 → 93
+	    let mm = pad2($("#birth_month").val());            // 1 → 01
+	    let dd = pad2($("#birth_day").val());              // 9 → 09
+	
+	    let birth6 = yy + mm + dd;
+	
+	    // 숨겨진 필드에 세팅
+	    $("#birth6").val(birth6);
+	});
+
+	// 휴대폰 번호 검증
+	const mobileRegex = /^[0-9]{3}-[0-9]{4}-[0-9]{4}$/;
+
+	$("#mobile").on("keyup", function(){
+	    let val = $(this).val().trim();
+
+	    if(mobileRegex.test(val)){
+	        $("#mobileMsg").html("사용 가능한 번호입니다.").removeClass("no").addClass("ok");
+	    } else {
+	        $("#mobileMsg").html("형식: 010-1234-5678").removeClass("ok").addClass("no");
+	    }
 	});
 </script>
 
