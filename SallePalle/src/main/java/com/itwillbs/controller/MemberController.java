@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.itwillbs.component.FileComponent;
-import com.itwillbs.component.NaverLoginComponent;
 import com.itwillbs.domain.MemberVO;
 import com.itwillbs.service.MemberService;
 import com.itwillbs.service.TopLocationService;
@@ -31,14 +29,11 @@ public class MemberController {
 	
 	@Inject private MemberService mService;
 	@Inject private TopLocationService tLService;
-	@Inject private NaverLoginComponent nLComponent;
 	
 	@GetMapping("/join")
 	public String joinGET(Model model) {
 		logger.info(" joinGET실행! ");
-		String naverLoginURL = nLComponent.getAuthorizationUrl();
 		model.addAttribute("topList", tLService.getTopLocationList());
-		model.addAttribute("naverLoginURL",naverLoginURL);
 		return "member/join";
 	}
 	
