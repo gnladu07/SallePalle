@@ -11,7 +11,7 @@ import lombok.Data;
 //	    userpw          VARCHAR(255) NOT NULL,                   -- 암호화된 비밀번호
 //	    username        VARCHAR(100) NOT NULL,                   -- 실명
 //	    nickname        VARCHAR(100) NOT NULL,                   -- 닉네임
-//	    email           VARCHAR(200) NOT NULL UNIQUE,            -- 이메일 (인증 필요)
+//	    email           VARCHAR(200) NOT NULL,                   -- 이메일 (인증 필요)
 //	    gender          CHAR(1) CHECK (gender IN ('M','F')),     -- 성별(M/F)
 //	    toplct_id       INT NOT NULL,                            -- 선택형 주소 (시/군/구 FK)
 //	    detail_address  VARCHAR(255) NOT NULL,                   -- 상세 주소 입력값

@@ -53,7 +53,7 @@
 		</div>
 	</fieldset>
 	<input type="submit" value="로그인">
-	<a href="/member/joinChoice">회원가입</a>
+	<a href="/member/join">회원가입</a>
 	<a href="/member/findId">아이디 찾기</a>
 	</form>
 	
