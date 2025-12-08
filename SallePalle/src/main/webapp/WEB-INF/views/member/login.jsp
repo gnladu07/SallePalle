@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="cpath" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -61,7 +60,7 @@
 	</fieldset>
 	<input type="submit" value="로그인">
 	</form>
-	<p><img src="${cpath }/resources/naver/btn_naver.png" ><input id="loginWithNaver" type="image" src="${cpath }/resources/naver/btn_naver.png"></p>
+	<p><input id="loginWithNaver" type="image" src="/resources/naver/btnG_su.png"></p>
 	<p><a href="/member/join">회원가입 </a>|<a href="/member/findId"> 아이디 찾기</a></p>
 	<input type="hidden" name="result">
 <script type="text/javascript">
@@ -94,10 +93,24 @@
 
 	    // 3) 팝업 닫힌 후 처리
 	    function afterClosePopup() {
+	    	
 	        const json = $('input[name="result"]').val();
+	        
+	        if (!json || json.trim() === "") {
+	            console.warn("네이버 callback 값이 없음");
+	            return;
+	        }
+	        
 	        const result = JSON.parse(json);
 	        console.log(result);
+	        
+	        // 기존회원일 때 자동 로그인 추가됨
+	        if (result.success === true) {
+	            location.href = '/main/header';     // 로그인 성공 후 이동할 페이지
+	            return;
+	        }
 
+	        // 신규회원이면 회원가입 안내
 	        if (result.success === false) {
 	            swal({
 	                title: '연동된 계정이 없습니다',
@@ -115,6 +128,8 @@
 	            });
 	        }
 	    }
+	    
+	    
 
 	});
 </script>

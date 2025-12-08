@@ -52,37 +52,29 @@ public class MemberServiceImpl implements MemberService {
 	public void memberJoin(MemberVO vo) {
 		logger.info(" MServiceImpl: memberJoin() 실행! ");
 		
-		// 비밀번호 암호화 
-		vo.setUserpw(pwEncoder.encode(vo.getUserpw()));
-		
-		// LOCAL 권한 넣어주기
-		if(vo.getProvider() == null || vo.getProvider().trim().equals("")) {
-		    vo.setProvider("LOCAL");
-		}
-		
-		// provider_id는 로컬가입이므로 null
-		vo.setProvider_id(null);
-		
-		// mobile 빈 값이면 null 처리
+		// 1) provider 값 분기
+	    if (vo.getUserpw() == null || vo.getUserpw().trim().equals("")) {
+	        throw new IllegalArgumentException("비밀번호는 반드시 입력되어야 합니다.");
+	    }
+	    vo.setUserpw(passwordEncoder.encode(vo.getUserpw()));
+
+	    // 3) 기타 값 보정
 	    if (vo.getMobile() != null && vo.getMobile().trim().equals("")) {
 	        vo.setMobile(null);
 	    }
-	    
-	    // birth6 무효값 방지: null 또는 6자리가 아니면 null로 강제
-	    if (vo.getBirth6() != null) {
-	        if (!vo.getBirth6().matches("^[0-9]{6}$")) {
-	            vo.setBirth6(null);
-	        }
+
+	    if (vo.getBirth6() != null && !vo.getBirth6().matches("^[0-9]{6}$")) {
+	        vo.setBirth6(null);
 	    }
-		
-		// 회원 DB 저장
-		memberDAO.insertMember(vo);
-		
-		// 기본 권한 부여
-		MemberAuthVO auth = new MemberAuthVO();
-		auth.setUserid(vo.getUserid());
-		auth.setAuth("ROLE_MEMBER");
-		memberDAO.insertAuth(auth);
+
+	    // 4) DB insert
+	    memberDAO.insertMember(vo);
+
+	    // 5) 권한 부여 (LOCAL, NAVER 모두 ROLE_MEMBER)
+	    MemberAuthVO auth = new MemberAuthVO();
+	    auth.setUserid(vo.getUserid());
+	    auth.setAuth("ROLE_MEMBER");
+	    memberDAO.insertAuth(auth);
 		
 		logger.info(" MServiceImpl: memberJoin() 끝! ");
 	}
@@ -332,10 +324,10 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public MemberVO selectNaverLogin(String naver_id) {
+	public MemberVO selectNaverLogin(String provider_id) {
 		logger.info(" MServiceImpl: selectNaverLogin() 실행! ");
 		
-		MemberVO resultVO = memberDAO.selectNaverLogin(naver_id);
+		MemberVO resultVO = memberDAO.selectNaverLogin(provider_id);
 		
 		logger.info(" MServiceImpl: selectNaverLogin() 끝! ");
 		return resultVO;

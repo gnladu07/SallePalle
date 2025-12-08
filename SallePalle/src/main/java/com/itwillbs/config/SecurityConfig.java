@@ -82,6 +82,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			// 공용 URL
 			.antMatchers("/main/header", "/member/emailCode", "/member/checkUserid", "/member/findId").permitAll()
 			.antMatchers("/member/login", "/member/login", "/member/join", "/member/findPw", "/member/resetPw").permitAll()
+			.antMatchers("/member/naverCallback", "/member/naverLogin").permitAll()
+			.antMatchers("/resources/**").permitAll()
 			
 			// ADMIN 권한
 			.antMatchers("/admin/**", "/security/**").hasRole("ADMIN")

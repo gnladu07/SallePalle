@@ -1,11 +1,17 @@
 package com.itwillbs.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +22,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itwillbs.component.NaverLoginComponent;
+import com.itwillbs.domain.MemberAuthVO;
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.security.CustomUserDetails;
 import com.itwillbs.service.MemberService;
 import com.itwillbs.service.TopLocationService;
 
@@ -31,6 +41,8 @@ public class MemberController {
 	@Inject private MemberService mService;
 	@Inject private TopLocationService tLService;
 	@Inject private NaverLoginComponent nLComponent;
+	
+	private ObjectMapper objectMapper = new ObjectMapper();
 	
 	@GetMapping("/join")
 	public String joinGET(Model model) {
@@ -303,25 +315,64 @@ public class MemberController {
     	logger.info(" naverCallback() 실행! ");
     	
     	// 액세스 토큰 가져오기(JSON 형태)
-    	String accessToken = nLComponent.getAccessToken(code, state);
+    	String tokenJson  = nLComponent.getAccessToken(code, state);
+    	logger.info(" code: "+ code);
+    	logger.info(" state: "+ state);
+    	
+    	// JSON 객체에서 값만 문자열로 꺼내오기
+    	 JsonNode tokenNode = objectMapper.readTree(tokenJson);
+    	 String accessToken = tokenNode.get("access_token").asText();
+    	 
+    	 logger.info(" accessToken : " + accessToken);
     	
     	// 유저 프로필 (네이버) 가져오기
-    	String userProfile = nLComponent.getProfile(accessToken);
+    	String profileJson = nLComponent.getProfile(accessToken);
+    	
+    	JsonNode profileNode = objectMapper.readTree(profileJson);
+        String safeProfileJson = profileNode.toString();
     	
     	// 팝업창의 callback.jsp 에게 보내기
-    	model.addAttribute("userProfile", userProfile);
+    	model.addAttribute("userProfile", safeProfileJson);
     	
     	logger.info(" naverCallback() 끝! ");
     }
 	@PostMapping("/naverLogin")
 	@ResponseBody
-	public String naverLogin(String naver_id, HttpSession session) {
-		String form = "{\"success\": %s}";
-		MemberVO login = mService.selectNaverLogin(naver_id);
-		form = String.format(form, login != null);
-		session.setAttribute("login", login);
-		System.out.println(login);
-		return form;
+	public String naverLogin(String provider_id, HttpSession session) {
+		MemberVO member = mService.selectNaverLogin(provider_id);
+		
+		 // 가입된 계정 없음 -> false 반환
+	    if (member == null) {
+	        return "{\"success\": false}";
+	    }
+	    
+	    // 권한 보정
+	    if (member.getAuthList() == null || member.getAuthList().isEmpty()) {
+
+	        MemberAuthVO defaultAuth = new MemberAuthVO();
+	        defaultAuth.setAuth("ROLE_MEMBER");
+
+	        List<MemberAuthVO> list = new ArrayList<>();
+	        list.add(defaultAuth);
+
+	        member.setAuthList(list);
+	    }
+	    
+	    // 강제 로그인 처리 (Spring Security)
+	    CustomUserDetails userDetails = new CustomUserDetails(member);
+
+	    UsernamePasswordAuthenticationToken authToken = 
+	    		new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+	    
+	    SecurityContextHolder.getContext().setAuthentication(authToken);
+	    session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+	            			 SecurityContextHolder.getContext());
+	    
+	    // 기존에 넣던 세션
+	    session.setAttribute("loginInfo", member);
+	    
+	    // 자동 로그인 성공 응답
+		return "{\"success\": true}";
 	}
 
 	
