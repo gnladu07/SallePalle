@@ -175,6 +175,16 @@ public class MemberDAOImpl implements MemberDAO {
 		logger.info(" DAOImpl: deleteToken() 끝! ");
 	}
 
+	@Override
+	public MemberVO selectNaverLogin(String naver_id) {
+		logger.info(" DAOImpl: selectNaverLogin() 실행! ");
+		
+		MemberVO resultVO = sqlSession.selectOne(NAMESPACE + "selectNaverLogin" , naver_id);
+		
+		logger.info(" DAOImpl: selectNaverLogin() 끝! ");
+		return resultVO;
+	}
+
 
 
 }
