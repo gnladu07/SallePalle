@@ -9,11 +9,11 @@
 
         <div class="join-options">
             <!-- 살래팔래 자체 회원가입 -->
-            <button class="join-option-btn primary" onclick="location.href='join.jsp'">
+            <button class="join-option-btn primary" onclick="location.href='/member/join'">
                 <svg class="icon" fill="white" viewBox="0 0 24 24">
                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                 </svg>
-                이메일로 회원가입
+                살래팔래 자체 회원가입
             </button>
 
             <div class="divider">또는</div>
@@ -28,7 +28,7 @@
         </div>
 
         <div class="login-link">
-            이미 계정이 있으신가요? <a href="login.jsp">로그인</a>
+            이미 계정이 있으신가요? <a href="/member/login">로그인</a>
         </div>
         <input type="hidden" name="result">
     </div>
