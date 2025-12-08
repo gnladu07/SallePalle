@@ -44,6 +44,14 @@ public class MemberController {
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
+	@GetMapping("/joinChoice")
+	public String joinChoicGET(Model model) {
+		logger.info(" joinChoicGET() 실행! ");
+		String naverLoginURL = nLComponent.getAuthorizationUrl();
+		model.addAttribute("naverLoginURL", naverLoginURL);
+		return "member/joinChoice";
+	}
+	
 	@GetMapping("/join")
 	public String joinGET(Model model) {
 		logger.info(" joinGET실행! ");

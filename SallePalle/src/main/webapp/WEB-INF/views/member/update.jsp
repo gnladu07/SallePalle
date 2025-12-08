@@ -1,18 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>회원 정보 수정</title>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<style type="text/css">
-	.ok { color: blue !important; font-size: 13px; }
-    .no { color: red !important; font-size: 13px; }
-    .hint { color: green !important; font-size: 13px; }
-</style>
+<%@ include file="../main/header.jsp"%>
 </head>
 <body>
 <c:if test="${!empty msg}">
