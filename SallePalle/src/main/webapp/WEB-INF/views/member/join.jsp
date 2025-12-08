@@ -28,6 +28,8 @@
 
 <form method="post">
 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+<input type="hidden" name="provider" value="LOCAL">
+<input type="hidden" name="provider_id">
 
 <fieldset>
     <legend>회원가입</legend>

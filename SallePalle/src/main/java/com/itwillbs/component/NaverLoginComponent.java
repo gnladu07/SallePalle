@@ -6,6 +6,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.SecureRandom;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
@@ -15,6 +17,9 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class NaverLoginComponent {
+
+	
+	private static final Logger logger = LoggerFactory.getLogger(NaverLoginComponent.class);
 
 
 	private String clientId = "bSCdMpZcof9QoefeNJGk";
@@ -61,16 +66,19 @@ public class NaverLoginComponent {
 	// 발급받은 액세스 토큰을 이용하여 사용자 프로필 정보를 획득할 수 있다
 	// 액세스 토큰만으로도, NAVER API 의 모든 권한을 부여받기 때문에 다른 값은 필요없다
 	public String getProfile(String access_token) throws URISyntaxException {
+		logger.info(" getProfile()실행! ");
 		String url = "https://openapi.naver.com/v1/nid/me";
 		URI uri = new URI(url);
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + access_token);	// Bearer AccessToken 사이에 띄어쓰기
 		
+		logger.info(" headers: "+headers);
+		
 		RestTemplate template = new RestTemplate();
 		RequestEntity<String> request = new RequestEntity<String>(headers, HttpMethod.GET, uri);
 		ResponseEntity<String> response = template.exchange(request, String.class);
-		
+		logger.info(" getProfile()끝! ");
 		return response.getBody();
 	}
 	

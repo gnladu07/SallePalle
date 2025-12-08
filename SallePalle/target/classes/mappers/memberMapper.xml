@@ -70,7 +70,7 @@
 	
 	<!-- 회원 정보 가져오기 -->
 	<select id="selectOne" resultMap="memberMap">
-		    SELECT
+		    select 
 		        m.member_id,
 		        m.userid,
 		        m.userpw,
@@ -96,10 +96,10 @@
 		        m.agree_marketing_email,
 		        m.agree_marketing_sms,
 		        a.auth
-		    FROM member m
-		    LEFT JOIN member_auth a
-		        ON m.userid = a.userid
-		    WHERE m.userid = #{userid}
+		    from member m
+		    left join member_auth a
+		        on m.userid = a.userid
+		    where m.userid = #{userid}
 	</select>
 	
 	<!-- 프로필 이미지 변경 -->
@@ -161,9 +161,13 @@
 	<!-- 회원탈퇴 -->
 	<update id="deactivateMember">
 		update member 
-		set enable_flag = '0', 
-			deleted_at = now() 
-		where userid = #{userid}
+	    set 
+	        enable_flag = '0',
+	        deleted_at = now(),
+	        provider = NULL,
+	        provider_id = NULL,
+	        profile_img = 'default_profile.png'
+	    where userid = #{userid}
 	</update>
 	
 	<!-- 비밀번호로 아이디 조회 -->
@@ -205,4 +209,15 @@
         set userpw = #{userpw} 
         where userid = #{userid}
     </update>
+    
+    <!-- 네이버 로그인 로직 -->
+    <select id="selectNaverLogin" resultMap="memberMap">
+		select 
+			m.*, 
+			a.auth
+		from member m 
+		left join member_auth a 
+		on m.userid = a.userid 
+		where m.provider_id = #{provider_id} 
+	</select>
 </mapper>

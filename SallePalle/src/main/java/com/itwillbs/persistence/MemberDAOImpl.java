@@ -176,10 +176,10 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 	@Override
-	public MemberVO selectNaverLogin(String naver_id) {
+	public MemberVO selectNaverLogin(String provider_id) {
 		logger.info(" DAOImpl: selectNaverLogin() 실행! ");
 		
-		MemberVO resultVO = sqlSession.selectOne(NAMESPACE + "selectNaverLogin" , naver_id);
+		MemberVO resultVO = sqlSession.selectOne(NAMESPACE + "selectNaverLogin" , provider_id);
 		
 		logger.info(" DAOImpl: selectNaverLogin() 끝! ");
 		return resultVO;

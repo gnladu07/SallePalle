@@ -7,6 +7,15 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+	.preview-img {
+	    width: 150px;
+	    height: 150px;
+	    border-radius: 50%;
+	    border: 1px solid #ddd;
+	    object-fit: cover;
+	}
+</style>
 </head>
 <body>
 <c:if test="${empty loginInfo}">
@@ -25,7 +34,7 @@
 	<fieldset>
 		<legend>회원정보</legend>
 		<div>
-			<img src="/upload/${loginInfo.profile_img}" width="150" style="border-radius:50%;">
+			<img src="/upload/${loginInfo.profile_img}" class="preview-img">
 		</div>
 		<div>
 			<a href="/member/profileEdit">프로필 변경</a>

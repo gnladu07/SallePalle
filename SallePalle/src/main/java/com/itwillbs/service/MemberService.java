@@ -49,7 +49,7 @@ public interface MemberService {
 	public boolean resetPassword(String token, String newPw);
 
 	// 네이버 로그인
-	public MemberVO selectNaverLogin(String naver_id);
+	public MemberVO selectNaverLogin(String provider_id);
 
 
 }
