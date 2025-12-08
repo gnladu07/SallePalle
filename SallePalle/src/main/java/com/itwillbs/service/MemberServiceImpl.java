@@ -331,6 +331,16 @@ public class MemberServiceImpl implements MemberService {
 		return true;
 	}
 
+	@Override
+	public MemberVO selectNaverLogin(String naver_id) {
+		logger.info(" MServiceImpl: selectNaverLogin() 실행! ");
+		
+		MemberVO resultVO = memberDAO.selectNaverLogin(naver_id);
+		
+		logger.info(" MServiceImpl: selectNaverLogin() 끝! ");
+		return resultVO;
+	}
+
 
 
 

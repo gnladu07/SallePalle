@@ -45,6 +45,9 @@ public interface MemberDAO {
 	public void updatePassword(MemberVO member);
 	public void deleteToken(String token);
 
+	// 네이버 로그인
+	public MemberVO selectNaverLogin(String naver_id);
+
 
 
 }

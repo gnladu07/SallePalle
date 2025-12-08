@@ -48,5 +48,8 @@ public interface MemberService {
 	// 비밀번호 찾기 - 비밀번호 실제 변경
 	public boolean resetPassword(String token, String newPw);
 
+	// 네이버 로그인
+	public MemberVO selectNaverLogin(String naver_id);
+
 
 }

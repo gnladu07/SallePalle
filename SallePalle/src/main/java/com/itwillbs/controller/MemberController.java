@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwillbs.component.NaverLoginComponent;
 import com.itwillbs.domain.MemberVO;
 import com.itwillbs.service.MemberService;
 import com.itwillbs.service.TopLocationService;
@@ -29,10 +30,13 @@ public class MemberController {
 	
 	@Inject private MemberService mService;
 	@Inject private TopLocationService tLService;
+	@Inject private NaverLoginComponent nLComponent;
 	
 	@GetMapping("/join")
 	public String joinGET(Model model) {
 		logger.info(" joinGET실행! ");
+		String naverLoginURL = nLComponent.getAuthorizationUrl();
+		model.addAttribute("naverLoginURL", naverLoginURL);
 		model.addAttribute("topList", tLService.getTopLocationList());
 		return "member/join";
 	}
@@ -69,8 +73,10 @@ public class MemberController {
 	}
 	
 	@GetMapping("/login")
-	public void loginGET() {
+	public void loginGET(Model model) {
 		logger.info(" loginGET()실행! ");
+		String naverLoginURL = nLComponent.getAuthorizationUrl();
+		model.addAttribute("naverLoginURL", naverLoginURL);
 	}
 	
 	// 개인정보 상세보기
@@ -289,6 +295,34 @@ public class MemberController {
         rttr.addFlashAttribute("rePwMsg", "비밀번호가 성공적으로 변경되었습니다!");
         return "redirect:/member/login";
     }
+    
+    // 네아로 콜백
+    @GetMapping("/naverCallback")
+    public void naverCallback(String code, String state,
+    		                  Model model) throws Exception {
+    	logger.info(" naverCallback() 실행! ");
+    	
+    	// 액세스 토큰 가져오기(JSON 형태)
+    	String accessToken = nLComponent.getAccessToken(code, state);
+    	
+    	// 유저 프로필 (네이버) 가져오기
+    	String userProfile = nLComponent.getProfile(accessToken);
+    	
+    	// 팝업창의 callback.jsp 에게 보내기
+    	model.addAttribute("userProfile", userProfile);
+    	
+    	logger.info(" naverCallback() 끝! ");
+    }
+	@PostMapping("/naverLogin")
+	@ResponseBody
+	public String naverLogin(String naver_id, HttpSession session) {
+		String form = "{\"success\": %s}";
+		MemberVO login = mService.selectNaverLogin(naver_id);
+		form = String.format(form, login != null);
+		session.setAttribute("login", login);
+		System.out.println(login);
+		return form;
+	}
 
 	
 }
