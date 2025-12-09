@@ -77,7 +77,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 			logger.info(" 멤버 권한을 포함한 사용자가 로그인 성공! ");
 			
 			// 멤버 페이지로 이동
-			response.sendRedirect("/main/header?msg=" + welcomeMsg);
+			response.sendRedirect("/main/home?msg=" + welcomeMsg);
 			
 			return;
 		}
