@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="../main/header.jsp"%>
+<%@ include file="../include/header.jsp"%>
 </head>
 <body>
 	<form action="/member/resetPw" method="post">
@@ -12,5 +12,4 @@
 	
 	    <button type="submit">비밀번호 재설정</button>
 	</form>
-</body>
-</html>
+<%@ include file="../include/footer.jsp"%>

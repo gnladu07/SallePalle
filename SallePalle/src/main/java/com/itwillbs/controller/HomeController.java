@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Handles requests for the application home page.
  */
 @Controller
-@RequestMapping("/main/*")
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -19,9 +18,17 @@ public class HomeController {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	
-	@GetMapping("/header")
+	@GetMapping("/main/home")
+	public void homeGET() {
+		logger.info(" homeGET() 실행! ");
+	}
+	@GetMapping("/include/header")
 	public void headerGET() {
-		logger.info(" headerGET 실행! ");
+		logger.info(" headerGET() 실행! ");
+	}
+	@GetMapping("/include/footer")
+	public void footerGET() {
+		logger.info(" footerGET() 실행! ");
 	}
 	
 }

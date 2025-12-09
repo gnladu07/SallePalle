@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="../main/header.jsp"%>
+<%@ include file="../include/header.jsp"%>
 </head>
 <body>
 	<form action="/member/profileEdit" method="post" enctype="multipart/form-data">
@@ -72,5 +72,4 @@
 	    });
 	});
 </script>
-</body>
-</html>
+<%@ include file="../include/footer.jsp"%>

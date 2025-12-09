@@ -87,7 +87,7 @@ public class MemberController {
 	        return "redirect:/member/login";
 
 	    } catch (DuplicateKeyException e) {
-	        rttr.addFlashAttribute("msg", "이미 사용중인 이메일입니다!");
+	        rttr.addFlashAttribute("msg", "이미 사용중인 아이디 입니다! 중복확인을 해주세요!");
 	        return "redirect:/member/join";
 	    }
 	}

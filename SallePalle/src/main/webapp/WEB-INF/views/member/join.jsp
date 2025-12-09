@@ -1,176 +1,165 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>회원가입</title>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- 카카오 주소찾기 API -->
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
-<style>
-    .ok { color: blue !important; font-size: 13px; }
-    .no { color: red !important; font-size: 13px; }
-    .hint { color: green !important; font-size: 13px; }
-</style>
-
-</head>
-<body>
+<%@ include file="../include/header.jsp"%>
 <c:if test="${!empty msg}">
     <script>alert("${msg}");</script>
 </c:if>
 
-<h1>회원가입</h1>
+<div class="main-join">
+    <div class="join-container">
+        <h1 class="join-title">회원가입</h1>
+        <p class="join-subtitle">누군가의 기억이 나에게 새로움이 되는 순간, 살래팔래</p>
 
-<form method="post">
-<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-<input type="hidden" name="provider" value="LOCAL">
-<input type="hidden" name="provider_id">
+        <form method="post" id="joinForm">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+            <input type="hidden" name="provider" value="LOCAL">
+            <input type="hidden" name="provider_id">
+            <input type="hidden" id="idCheckStatus" value="N">
 
-<fieldset>
-    <legend>회원가입</legend>
+            <!-- 아이디 -->
+            <div class="join-field">
+                <label class="join-label">아이디</label>
+                <div class="join-input-row">
+                    <input type="text" class="join-input" name="userid" id="userid" placeholder="아이디 입력 (5~20자)" required>
+                    <button type="button" class="join-btn-check" id="btnCheckId">중복검사</button>
+                </div>
+                <div id="useridMsg"></div>
+            </div>
 
-    <!-- 아이디 -->
-    <div>
-    	<label>아이디</label>
-        <input type="text" name="userid" id="userid" placeholder="아이디 입력 (5~20자)" required>
-        <button type="button" id="btnCheckId">중복검사</button>
-        <div id="useridMsg"></div>
+            <!-- 비밀번호 -->
+            <div class="join-field">
+                <label class="join-label">비밀번호</label>
+                <input type="password" class="join-input" name="userpw" id="userpw" placeholder="비밀번호 (8~20자)" required>
+                <div id="userpwMsg"></div>
+            </div>
+
+            <!-- 실명 -->
+            <div class="join-field">
+                <label class="join-label">실명</label>
+                <input type="text" class="join-input" name="username" placeholder="실명" required>
+            </div>
+
+            <!-- 닉네임 -->
+            <div class="join-field">
+                <label class="join-label">닉네임</label>
+                <input type="text" class="join-input" name="nickname" placeholder="닉네임" required>
+            </div>
+
+            <!-- 성별 -->
+            <div class="join-field">
+                <label class="join-label">성별</label>
+                <div class="join-radio-group">
+                    <label class="join-radio-label"><input type="radio" name="gender" value="M" required> 남자</label>
+                    <label class="join-radio-label"><input type="radio" name="gender" value="F" required> 여자</label>
+                </div>
+            </div>
+
+            <!-- 이메일 + 인증번호 -->
+            <div class="join-field">
+                <label class="join-label">이메일</label>
+                <div class="join-input-row">
+                    <input type="email" class="join-input" name="email" id="email" placeholder="이메일 입력" required>
+                    <button type="button" class="join-btn-check" id="btnEmailAuth">인증번호 받기</button>
+                </div>
+                <div id="emailMsg"></div>
+            </div>
+
+            <div class="join-field">
+                <div class="join-input-row">
+                    <input type="text" class="join-input" id="emailCode" placeholder="인증번호 입력">
+                    <button type="button" class="join-btn-check" id="btnEmailCheck">확인</button>
+                </div>
+                <div id="emailCodeMsg"></div>
+            </div>
+
+            <!-- 지역 선택 -->
+            <div class="join-field">
+                <label class="join-label">거주 지역</label>
+                <select class="join-select" name="toplct_id" required>
+                    <option value="">-- 지역 선택 --</option>
+                    <c:forEach var="loc" items="${topList}">
+                        <option value="${loc.toplct_id}">
+                            ${loc.toplct_name}
+                        </option>
+                    </c:forEach>
+                </select>
+            </div>
+
+            <!-- 상세주소 -->
+            <div class="join-field">
+                <label class="join-label">상세주소</label>
+                <input type="text" class="join-input" name="detail_address" id="detail_address" 
+                       placeholder="상세주소 찾기 (클릭)" readonly required>
+            </div>
+
+            <!-- 생년월일 -->
+            <div class="join-field">
+                <label class="join-label">생년월일</label>
+                <div class="join-birth-group">
+                    <select class="join-select" id="birth_year" required>
+                        <option value="">년도</option>
+                        <%
+                            int yearNow = java.time.LocalDate.now().getYear();
+                            for(int y = yearNow - 100; y <= yearNow - 10; y++){
+                        %>
+                            <option value="<%=y%>"><%=y%></option>
+                        <%
+                            }
+                        %>
+                    </select>
+
+                    <select class="join-select" id="birth_month" required>
+                        <option value="">월</option>
+                        <c:forEach begin="1" end="12" var="m">
+                            <option value="${m < 10 ? '0'+m : m}">${m}</option>
+                        </c:forEach>
+                    </select>
+
+                    <select class="join-select" id="birth_day" required>
+                        <option value="">일</option>
+                        <c:forEach begin="1" end="31" var="d">
+                            <option value="${d < 10 ? '0'+d : d}">${d}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <input type="hidden" name="birth6" id="birth6">
+            </div>
+
+            <!-- 휴대폰 번호 -->
+            <div class="join-field">
+                <label class="join-label">휴대폰 번호</label>
+                <input type="text" class="join-input" name="mobile" id="mobile" placeholder="010-1234-5678" required>
+                <div id="mobileMsg"></div>
+            </div>
+
+            <!-- 약관 동의 -->
+            <div class="join-field">
+                <label class="join-label">약관 동의</label>
+                <div class="join-checkbox-group">
+                    <label class="join-checkbox-label"><input type="checkbox" name="agree_terms_required" value="Y" required> (필수) 이용약관 동의</label>
+                    <label class="join-checkbox-label"><input type="checkbox" name="agree_privacy_required" value="Y" required> (필수) 개인정보 동의</label>
+                    <label class="join-checkbox-label"><input type="checkbox" name="agree_location_optional" value="Y"> (선택) 위치기반서비스 동의</label>
+                    <label class="join-checkbox-label"><input type="checkbox" name="agree_marketing_email" value="Y"> (선택) 마케팅 메일 수신</label>
+                    <label class="join-checkbox-label"><input type="checkbox" name="agree_marketing_sms" value="Y"> (선택) 마케팅 SMS 수신</label>
+                </div>
+            </div>
+
+            <!-- 제출 -->
+            <input type="submit" class="join-submit-btn" value="회원가입하기" id="joinSubmit" disabled>
+
+            <div class="join-login-link">
+                이미 계정이 있으신가요? <a href="login.jsp">로그인</a>
+            </div>
+        </form>
     </div>
-
-    <!-- 비밀번호 -->
-    <div>
-    	<label>비밀번호</label>
-        <input type="password" name="userpw" id="userpw" placeholder="비밀번호 (8~12자)" required>
-        <div id="userpwMsg"></div>
-    </div>
-
-    <!-- 실명 -->
-    <div>
-    	<label>실명</label>
-        <input type="text" name="username" placeholder="실명" required>
-    </div>
-
-    <!-- 닉네임 -->
-    <div>
-    	<label>닉네임</label>
-        <input type="text" name="nickname" placeholder="닉네임" required>
-    </div>
-
-    <!-- 성별 -->
-    <div>
-    	<label>성별</label>
-        <label><input type="radio" name="gender" value="M" required> 남자</label>
-        <label><input type="radio" name="gender" value="F" required> 여자</label>
-    </div>
-
-    <!-- 이메일 + 인증번호 -->
-    <div>
-    	<label>이메일</label>
-        <input type="email" name="email" id="email" placeholder="이메일 입력" required>
-        <button type="button" id="btnEmailAuth">인증번호 받기</button>
-        <div id="emailMsg"></div>
-    </div>
-
-    <div>
-        <input type="text" id="emailCode" placeholder="인증번호 입력">
-        <button type="button" id="btnEmailCheck">확인</button>
-        <div id="emailCodeMsg"></div>
-    </div>
-
-    <!-- 지역 선택 -->
-    <div>
-    	<label>거주 지역</label>
-        <select name="toplct_id" required>
-            <option value="">-- 지역 선택 --</option>
-            <c:forEach var="loc" items="${topList}">
-                <option value="${loc.toplct_id}">
-                    ${loc.toplct_name}
-                </option>
-            </c:forEach>
-        </select>
-    </div>
-
-    <!-- 상세주소 (카카오 주소찾기) -->
-    <div>
-        <input type="text" name="detail_address" id="detail_address" 
-               placeholder="상세주소 찾기 (클릭)" readonly required >
-    </div>
-    
-    <!-- 생년월일 -->
-    <div>
-        <label>생년월일</label><br>
-
-        <select id="birth_year" required>
-            <option value="">년도</option>
-            <%
-                int yearNow = java.time.LocalDate.now().getYear();
-                for(int y = yearNow - 100; y <= yearNow - 10; y++){
-            %>
-                <option value="<%=y%>"><%=y%></option>
-            <%
-                }
-            %>
-        </select>
-
-        <select id="birth_month" required>
-            <option value="">월</option>
-            <c:forEach begin="1" end="12" var="m">
-                <option value="${m < 10 ? '0'+m : m}">${m}</option>
-            </c:forEach>
-        </select>
-
-        <select id="birth_day" required>
-            <option value="">일</option>
-            <c:forEach begin="1" end="31" var="d">
-                <option value="${d < 10 ? '0'+d : d}">${d}</option>
-            </c:forEach>
-        </select>
-
-        <input type="hidden" name="birth6" id="birth6">
-    </div>
-
-    <!-- 휴대폰 번호 -->
-    <div>
-        <label>휴대폰 번호</label>
-        <input type="text" name="mobile" id="mobile" placeholder="010-1234-5678" required>
-        <div id="mobileMsg"></div>
-    </div>
-    
-
-    <!-- 약관 동의 -->
-    <div>
-        <label><input type="checkbox" name="agree_terms_required" value="Y" required> (필수) 이용약관 동의</label><br>
-        <label><input type="checkbox" name="agree_privacy_required" value="Y" required> (필수) 개인정보 동의</label><br>
-        <label><input type="checkbox" name="agree_location_optional" value="Y"> (선택) 위치기반서비스 동의</label><br>
-        <label><input type="checkbox" name="agree_marketing_email" value="Y"> (선택) 마케팅 메일 수신</label><br>
-        <label><input type="checkbox" name="agree_marketing_sms" value="Y"> (선택) 마케팅 SMS 수신</label>
-    </div>
-
-    <hr>
-
-    <div>
-        <input type="submit" value="회원가입하기" id="joinSubmit" disabled>
-    </div>
-
-</fieldset>
-
-</form>
-<!-- 아이디 중복 모달 -->
-<div id="idModal" style="
-    display:none;
-    position:fixed; top:0; left:0; width:100%; height:100%;
-    background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
-    
-    <div style="background:white; padding:20px; width:300px; border-radius:10px; text-align:center;">
+</div>
+		<!-- 아이디 중복 모달 -->
+<div id="idModal">
+    <div class="join-modal-content">
         <h3 id="idModalMsg">결과 메시지</h3>
-        <button type="button" id="idModalClose">닫기</button>
+        <button type="button" class="join-modal-btn" id="idModalClose">확인</button>
     </div>
-
 </div>
 
 <script>
@@ -327,19 +316,15 @@
 	        },
 	        success: function(result){
 
-	            if(result === "exists"){
-	                idAvailable = false;
-	                showIdModal("이미 사용중인 아이디입니다.");
-	                $("#useridMsg").html("이미 사용중인 아이디입니다.")
-	                               .removeClass("ok hint")
-	                               .addClass("no");
-	            } else {
-	                idAvailable = true;
-	                showIdModal("사용 가능한 아이디입니다!");
-	                $("#useridMsg").html("사용 가능한 아이디입니다.")
-	                               .removeClass("no hint")
-	                               .addClass("ok");
-	            }
+	        	if(result === "exists"){
+	        	    idAvailable = false;
+	        	    $("#idCheckStatus").val("N");
+	        	    showIdModal("이미 사용중인 아이디입니다.");
+	        	} else {
+	        	    idAvailable = true;
+	        	    $("#idCheckStatus").val("Y");
+	        	    showIdModal("사용 가능한 아이디입니다!");
+	        	}
 
 	            checkJoinReady();
 	        },
@@ -349,6 +334,14 @@
 	    });
 
 	});
+	
+	$("#joinForm").on("submit", function(e) {
+        if ($("#idCheckStatus").val() !== "Y") {
+            e.preventDefault();
+            alert("아이디 중복검사를 먼저 진행해주세요.");
+            return false;
+        }
+    });
 
 	// 모달 함수
 	function showIdModal(msg){
@@ -390,6 +383,4 @@
 	    }
 	});
 </script>
-
-</body>
-</html>
+<%@ include file="../include/footer.jsp"%>

@@ -80,7 +80,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable(); // ← 현재 CSRF 전체 끄는 설정 (AJAX 때문에 OK)
 		http.authorizeRequests()
 			// 공용 URL
-			.antMatchers("/main/header", "/member/emailCode", "/member/checkUserid", "/member/findId").permitAll()
+			.antMatchers("/main/home", "/member/emailCode", "/member/checkUserid", "/member/findId").permitAll()
+			.antMatchers("/include/header", "/include/footer").permitAll()
 			.antMatchers("/member/login", "/member/login", "/member/join", "/member/joinChoice", "/member/findPw", "/member/resetPw").permitAll()
 			.antMatchers("/member/naverCallback", "/member/naverLogin").permitAll()
 			.antMatchers("/resources/**").permitAll()
