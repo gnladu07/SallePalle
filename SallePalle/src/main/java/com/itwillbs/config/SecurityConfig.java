@@ -82,11 +82,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			// 공용 URL
 			.antMatchers("/main/home", "/member/emailCode", "/member/checkUserid", "/member/findId").permitAll()
 			.antMatchers("/include/header", "/include/footer").permitAll()
-			.antMatchers("/member/login", "/member/login", "/member/join", "/member/joinChoice", "/member/findPw", "/member/resetPw").permitAll()
+			.antMatchers("/member/login", "/member/join", "/member/joinChoice", "/member/findPw", "/member/resetPw").permitAll()
 			.antMatchers("/member/naverCallback", "/member/naverLogin").permitAll()
 			.antMatchers("/resources/**").permitAll()
 			
-			// ADMIN 권한
+			// ADMIN 권한			
+			.antMatchers("/admin/login").permitAll()
 			.antMatchers("/admin/**", "/security/**").hasRole("ADMIN")
 			
 			// MEMBER 권한
