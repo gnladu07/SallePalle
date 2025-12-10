@@ -910,6 +910,29 @@
 		            	2,500<fmt:formatNumber value="" pattern="#,###"/>
 		            </strong>
 		        </div>
+		        
+		        <!-- 판매 권한 UI 추가 -->
+		        <c:choose>
+		            <%-- 일반 회원(N)만 버튼 보임 --%>
+		            <c:when test="${loginInfo.seller_status == 'N'}">
+		                <button id="btnSellerRequest" 
+		                        style="padding: 7px 14px; border-radius: 8px; border:1px solid #FF6F61; 
+		                               background:white; color:#FF6F61; cursor:pointer;">
+		                    판매 권한 신청
+		                </button>
+		            </c:when>
+		
+		            <%-- 승인 대기(W) --%>
+		            <c:when test="${loginInfo.seller_status == 'W'}">
+		                <span style="font-size:13px; color:#888;">판매 권한 심사중...</span>
+		            </c:when>
+		
+		            <%-- 승인 완료(Y) --%>
+		            <c:when test="${loginInfo.seller_status == 'Y'}">
+		                <span style="font-size:13px; color:#9B59B6; font-weight:600;">판매회원</span>
+		            </c:when>
+		        </c:choose>
+		        
 		        <form action="/member/logout" method="post" >
 			        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 			        <button class="btn-logout" type="submit" >
@@ -925,9 +948,34 @@
 	</sec:authorize>
 <script type="text/javascript">
 //포인트 충전
-function chargePoint() {
-    alert('살래포인트 충전 페이지로 이동합니다.');
-	    // location.href = '/charge/point';
+	function chargePoint() {
+	    alert('살래포인트 충전 페이지로 이동합니다.');
+		    // location.href = '/charge/point';
 	}
+	
+	$(document).on("click", "#btnSellerRequest", function() {
+	    swal({
+	        title: "판매 권한 신청",
+	        text: "신청 후 처리까지 다소 시간이 소요될 수 있습니다.",
+	        icon: "warning",
+	        buttons: ["취소", "신청하기"],
+	    }).then((willApply) => {
+	        if (willApply) {
+	        	$.ajax({
+	                url: "/seller/request",
+	                type: "POST",        // ★ POST 요청
+	                data: {},            // 전송 데이터 없으면 비워도 OK
+	                success: function(result) {
+	                    // 처리 성공 후 이동
+	                    location.href = "/main/home";
+	                },
+	                error: function(xhr, status, error) {
+	                    console.log("판매 권한 신청 실패:", error);
+	                    alert("판매 권한 신청 처리 중 오류가 발생했습니다.");
+	                }
+	            });
+	        }
+	    });
+	});
 </script>
 </header>

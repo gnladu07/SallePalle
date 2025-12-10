@@ -220,4 +220,12 @@
 		on m.userid = a.userid 
 		where m.provider_id = #{provider_id} 
 	</select>
+	
+	<!-- 판매 상태 업데이트 -->
+	<update id="updateSellerStatus">
+	    update member
+	    set seller_status = #{status},
+	        updatedate = now()
+	    where member_id = #{member_id}
+	</update>
 </mapper>

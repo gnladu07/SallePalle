@@ -48,6 +48,9 @@ public interface MemberDAO {
 	// 네이버 로그인
 	public MemberVO selectNaverLogin(String provider_id);
 
+	// 판매 상태 업데이트
+	public void updateSellerStatus(int member_id, String status);
+
 
 
 }

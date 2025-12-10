@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itwillbs.mapper.SellerMapper">
+
+    <resultMap id="sellerRequestMap" type="SellerRequestVO">
+        <id property="request_id" column="request_id"/>
+        <result property="member_id" column="member_id"/>
+        <result property="status" column="status"/>
+        <result property="admin_memo" column="admin_memo"/>
+        <result property="regdate" column="regdate"/>
+        <result property="updatedate" column="updatedate"/>
+    </resultMap>
+
+    <!-- 판매 권한 신청 생성 -->
+    <insert id="insertSellerRequest">
+        insert into seller_request (member_id, status)
+        values (#{member_id}, 'W')
+    </insert>
+
+    <!-- 요청 상세 조회 -->
+    <select id="selectSellerRequest" resultMap="sellerRequestMap">
+        select * from seller_request
+        where request_id = #{request_id}
+    </select>
+
+    <!-- 상태 변경 (W/A/R) -->
+    <update id="updateSellerRequestStatus">
+        update seller_request
+        set status = #{status},
+            updatedate = now()
+        where request_id = #{request_id}
+    </update>
+
+</mapper>

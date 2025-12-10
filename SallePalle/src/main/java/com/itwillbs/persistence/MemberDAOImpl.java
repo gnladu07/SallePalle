@@ -1,6 +1,8 @@
 package com.itwillbs.persistence;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -183,6 +185,18 @@ public class MemberDAOImpl implements MemberDAO {
 		
 		logger.info(" DAOImpl: selectNaverLogin() 끝! ");
 		return resultVO;
+	}
+
+	@Override
+	public void updateSellerStatus(int member_id, String status) {
+		logger.info(" DAOImpl: updateSellerStatus() 실행! ");
+		
+		Map<String, Object> map = new HashMap<>();
+        map.put("member_id", member_id);
+        map.put("status", status);
+
+        sqlSession.update(NAMESPACE + "updateSellerStatus", map);		
+		logger.info(" DAOImpl: updateSellerStatus() 끝! ");
 	}
 
 
