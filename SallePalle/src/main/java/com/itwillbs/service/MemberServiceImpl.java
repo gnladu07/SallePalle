@@ -333,6 +333,26 @@ public class MemberServiceImpl implements MemberService {
 		return resultVO;
 	}
 
+	@Override
+	public void updateSellerStatus(int member_id, String status) {
+		logger.info(" MServiceImpl: updateSellerStatus() 실행! ");
+		
+		memberDAO.updateSellerStatus(member_id, status);
+		
+		logger.info(" MServiceImpl: updateSellerStatus() 끝! ");
+	}
+
+	@Override
+	public void insertAuth(MemberAuthVO vo) {
+		logger.info(" MServiceImpl: insertAuth() 실행! ");
+		
+		vo.setUserid(vo.getUserid());
+		vo.setAuth(vo.getAuth());
+		
+		memberDAO.insertAuth(vo);		
+		logger.info(" MServiceImpl: insertAuth() 끝! ");
+	}
+
 
 
 

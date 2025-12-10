@@ -2,6 +2,7 @@ package com.itwillbs.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.itwillbs.domain.MemberAuthVO;
 import com.itwillbs.domain.MemberVO;
 
 public interface MemberService {
@@ -50,6 +51,12 @@ public interface MemberService {
 
 	// 네이버 로그인
 	public MemberVO selectNaverLogin(String provider_id);
+
+	// 판매 상태 업데이트
+	public void updateSellerStatus(int member_id, String status);
+	
+	// 권한 추가
+    public void insertAuth(MemberAuthVO vo);
 
 
 }
