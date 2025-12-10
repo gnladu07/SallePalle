@@ -70,7 +70,7 @@ $(function() {
 
         // 기존회원이면 자동 로그인
         if (result.success === true) {
-            location.href = '/main/header';
+            location.href = '/main/home';
             return;
         }
 

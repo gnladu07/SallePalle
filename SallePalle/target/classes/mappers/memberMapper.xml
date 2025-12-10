@@ -4,7 +4,8 @@
 <mapper namespace="com.itwillbs.mapper.MemberMapper">
 	<!-- resultMap 설정 -->
 	<resultMap id="memberMap" type="MemberVO" >
-		<id property="userid" column="userid"/>
+		<id property="member_id" column="member_id"/>
+    	<result property="userid" column="userid"/>
 		<result property="userpw" column="userpw" />
 	    <result property="username" column="username" />
 	    <result property="nickname" column="nickname" />

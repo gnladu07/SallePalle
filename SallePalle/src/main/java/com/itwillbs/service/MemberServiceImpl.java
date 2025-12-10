@@ -44,6 +44,13 @@ public class MemberServiceImpl implements MemberService {
 		MemberVO resultInfo 
 			= memberDAO.selectOne(userid);
 		
+		if(resultInfo != null) {
+			logger.info(" MServiceImpl: selectOne() 결과 seller_status = [" + resultInfo.getSeller_status() + "]");
+			logger.info(" 문자열 길이 = " + (resultInfo.getSeller_status() == null ? "null" : resultInfo.getSeller_status().length()));
+	    } else {
+	    	logger.info(" MServiceImpl: selectOne() 결과가 NULL 입니다.");
+	    }
+		
 		logger.info(" MServiceImpl: selectOne() 끝! ");
 		return resultInfo;
 	}
