@@ -88,11 +88,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable(); // ← 현재 CSRF 전체 끄는 설정 (AJAX 때문에 OK)
 		http.authorizeRequests()
 			// 공용 URL
-			.antMatchers("/main/home", "/member/emailCode", "/member/checkUserid", "/member/findId").permitAll()
-			.antMatchers("/include/header", "/include/footer").permitAll()
-			.antMatchers("/member/login", "/member/join", "/member/joinChoice", "/member/findPw", "/member/resetPw").permitAll()
-			.antMatchers("/member/naverCallback", "/member/naverLogin").permitAll()
-			.antMatchers("/resources/**").permitAll()
+			.antMatchers("/main/home", "/member/emailCode", "/member/checkUserid",
+		                 "/member/findId", "/include/header", "/include/footer",
+		                 "/member/login", "/member/join", "/member/joinChoice",
+		                 "/member/findPw", "/member/resetPw",
+		                 "/member/naverCallback", "/member/naverLogin",
+		                 "/resources/**").permitAll()
 			
 			// ADMIN 권한			
 			.antMatchers("/admin/login").permitAll()
@@ -112,17 +113,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.successHandler(customLoginSuccessHandler())
 				.failureHandler(customLoginFailureHandler())
 				.permitAll()
-			.and()			
-			// 관리자 로그인
-	        .formLogin()
-	            .loginPage("/admin/login")                   // 관리자 로그인 페이지
-	            .loginProcessingUrl("/admin/loginProc")      // 관리자 인증 URL
-				.usernameParameter("userid")
-				.passwordParameter("userpw")
-	            .successHandler(customLoginSuccessHandler())   
-	            .failureHandler(adminLoginFailureHandler())   
-	            .permitAll()
-	        .and()
+			.and()		     
 			// 로그아웃 설정
 			.logout()
 				.logoutUrl("/member/logout")

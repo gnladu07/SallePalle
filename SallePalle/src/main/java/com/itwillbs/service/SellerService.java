@@ -1,5 +1,7 @@
 package com.itwillbs.service;
 
+import java.util.List;
+
 import com.itwillbs.domain.SellerRequestVO;
 
 public interface SellerService {
@@ -12,5 +14,14 @@ public interface SellerService {
 	
 	// 요청 상태 변경(W, A, R)
 	public void updateRequestStatus(int request_id, String status);
+
+	// 요청 리스트
+	public List<SellerRequestVO> getWaitingRequests();
+
+	// 요청 승인 처리
+	public void approveRequest(int request_id, int member_id);
+	
+	// 요청 거절 처리
+	public void rejectRequest(int request_id, int member_id);
 	
 }

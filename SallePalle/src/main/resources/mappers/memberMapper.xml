@@ -229,4 +229,11 @@
 	        updatedate = now()
 	    where member_id = #{member_id}
 	</update>
+	
+	<!-- member_id로 회원 조회 -->
+	<select id="readByMemberId" resultType="MemberVO">
+	    select *
+	    from member
+	    where member_id = #{member_id}
+	</select>
 </mapper>

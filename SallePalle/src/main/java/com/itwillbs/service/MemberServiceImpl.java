@@ -360,6 +360,10 @@ public class MemberServiceImpl implements MemberService {
 		logger.info(" MServiceImpl: insertAuth() 끝! ");
 	}
 
+	@Override
+    public MemberVO readByMemberId(int member_id) {
+        return memberDAO.readByMemberId(member_id);
+    }
 
 
 

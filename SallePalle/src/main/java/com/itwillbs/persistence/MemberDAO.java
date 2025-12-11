@@ -51,6 +51,9 @@ public interface MemberDAO {
 	// 판매 상태 업데이트
 	public void updateSellerStatus(int member_id, String status);
 
+	// 메일 발송용 회원 조회
+	public MemberVO readByMemberId(int member_id);
+
 
 
 }

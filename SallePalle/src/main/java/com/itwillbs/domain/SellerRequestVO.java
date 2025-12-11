@@ -24,4 +24,10 @@ public class SellerRequestVO {
 	private String admin_memo;
 	private Timestamp regdate;
 	private Timestamp updatedate;
+	
+	 // 멤버 정보 포함
+    private String userid;
+    private String username;
+    private String nickname;
+    private String email;
 }
