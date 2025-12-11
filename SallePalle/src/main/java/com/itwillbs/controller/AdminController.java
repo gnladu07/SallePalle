@@ -17,6 +17,12 @@ public class AdminController {
 	public void loginGET() {
 		log.info(" loginGET() 실행!");
 	}
+	
+	@GetMapping("/dashboard")
+    public String dashboard() {
+		log.info(" dashboard() 실행! ");
+        return "/admin/dashboard";
+    }
 
 
 }

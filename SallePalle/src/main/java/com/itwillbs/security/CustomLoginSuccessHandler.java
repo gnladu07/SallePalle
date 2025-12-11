@@ -68,7 +68,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 			logger.info(" 관리자 권한을 포함한 사용자가 로그인 성공! ");
 			
 			// 관리자 페이지로 이동
-			response.sendRedirect("/admin?msg=" + welcomeMsg);
+			response.sendRedirect("/admin/home?msg=" + welcomeMsg);
 			
 			return;
 		}
