@@ -58,5 +58,7 @@ public interface MemberService {
 	// 권한 추가
     public void insertAuth(MemberAuthVO vo);
 
+	public MemberVO readByMemberId(int member_id);
+
 
 }

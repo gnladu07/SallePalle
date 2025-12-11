@@ -199,6 +199,12 @@ public class MemberDAOImpl implements MemberDAO {
 		logger.info(" DAOImpl: updateSellerStatus() 끝! ");
 	}
 
+	@Override
+    public MemberVO readByMemberId(int member_id) {
+		logger.info(" DAOImpl: readByMemberId() 실행! ");
+        return sqlSession.selectOne(NAMESPACE + "readByMemberId", member_id);
+    }
+
 
 
 }

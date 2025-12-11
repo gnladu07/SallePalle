@@ -11,7 +11,7 @@
 	<div class="login-box">
 	    <div class="login-title">관리자 로그인</div>
 	
-	    <form action="/admin/loginProc" method="post">
+	    <form action="/member/loginProcess" method="post">
 	        <input type="text" name="userid" placeholder="관리자 ID" required>
 	        <input type="password" name="userpw" placeholder="비밀번호" required>
 	

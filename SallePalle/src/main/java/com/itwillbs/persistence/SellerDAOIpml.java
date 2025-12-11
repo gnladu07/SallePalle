@@ -1,5 +1,7 @@
 package com.itwillbs.persistence;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
@@ -48,6 +50,30 @@ public class SellerDAOIpml implements SellerDAO {
 		
 		sqlSession.update(NAMESPACE + "updateSellerRequestStatus", vo);
 		log.info(" SellerDAOIpml: updateSellerRequestStatus()끝! ");
+	}
+
+	@Override
+	public List<SellerRequestVO> getWaitingRequests() {
+		log.info(" SellerDAOIpml: getWaitingRequests()실행! ");
+		return sqlSession.selectList(NAMESPACE + "getWaitingRequests");
+	}
+
+	@Override
+    public void approveRequest(int request_id) {
+        log.info(" SellerDAOIpml: approveRequest() 실행!");
+        sqlSession.update(NAMESPACE + "approveRequest", request_id);
+    }
+	
+	@Override
+    public void rejectRequest(int request_id) {
+        log.info(" SellerDAOIpml: rejectRequest() 실행!");
+        sqlSession.update(NAMESPACE + "rejectRequest", request_id);
+    }
+
+	@Override
+	public int getMemberIdByReq(int request_id) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
