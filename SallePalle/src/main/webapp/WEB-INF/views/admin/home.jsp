@@ -11,9 +11,17 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<sec:authorize access="">
-		
-	</sec:authorize>
+	<div class="header">관리자 페이지</div>
 	
+	<div class="container">
+	    <div class="menu">
+	        <a href="/admin/members">회원 관리</a>
+	        <a href="/admin/sellerRequest">판매 권한 신청 관리</a>
+	        <a href="/admin/items">물품 관리</a>
+	    </div>
+	
+	    <h2 style="margin-top:30px;">관리자 대시보드</h2>
+	    <p>관리자 로그인 성공! 운영 기능을 선택하세요.</p>
+	</div>
 </body>
 </html>

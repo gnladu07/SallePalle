@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.itwillbs.security.AdminLoginFailureHandler;
 import com.itwillbs.security.CustomAccessDeniedHandler;
 import com.itwillbs.security.CustomLoginFailureHandler;
 import com.itwillbs.security.CustomLoginSuccessHandler;
@@ -50,6 +51,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public CustomLoginFailureHandler customLoginFailureHandler() {
 		logger.info(" 로그인 실패 핸들러 실행! ");
 		return new CustomLoginFailureHandler();
+	}
+	
+	// 어드민 로그인 실패 핸들러 등록
+	@Bean
+	public AdminLoginFailureHandler adminLoginFailureHandler() {
+		logger.info(" 관리자 로그인 핸들러 실행! ");
+		return new AdminLoginFailureHandler();
 	}
 	
 	// 로그아웃 핸들러 등록
@@ -104,8 +112,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.successHandler(customLoginSuccessHandler())
 				.failureHandler(customLoginFailureHandler())
 				.permitAll()
-			.and()
-			
+			.and()			
+			// 관리자 로그인
+	        .formLogin()
+	            .loginPage("/admin/login")                   // 관리자 로그인 페이지
+	            .loginProcessingUrl("/admin/loginProc")      // 관리자 인증 URL
+				.usernameParameter("userid")
+				.passwordParameter("userpw")
+	            .successHandler(customLoginSuccessHandler())   
+	            .failureHandler(adminLoginFailureHandler())   
+	            .permitAll()
+	        .and()
 			// 로그아웃 설정
 			.logout()
 				.logoutUrl("/member/logout")
