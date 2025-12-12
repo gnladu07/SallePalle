@@ -202,8 +202,60 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
     public MemberVO readByMemberId(int member_id) {
 		logger.info(" DAOImpl: readByMemberId() 실행! ");
+		logger.info(" DAOImpl: readByMemberId() 끝! ");
         return sqlSession.selectOne(NAMESPACE + "readByMemberId", member_id);
     }
+
+	@Override
+	public void setNotifyFlag(Map<String, Object> map) {
+		logger.info(" DAOImpl: setNotifyFlag() 실행! ");
+		sqlSession.update(NAMESPACE + "setNotifyFlag", map);
+		logger.info(" DAOImpl: setNotifyFlag() 끝! ");
+	}
+
+	@Override
+	public void updateNotifyFlag(Map<String, Object> map) {
+		logger.info(" DAOImpl: updateNotifyFlag() 실행! ");
+		sqlSession.update(NAMESPACE + "updateNotifyFlag", map);
+		logger.info(" DAOImpl: updateNotifyFlag() 끝! ");
+	}
+
+	@Override
+	public List<MemberVO> getMemberList() {
+		logger.info(" DAOImpl: getMemberList() 실행! ");
+		
+		List<MemberVO> resultVO = sqlSession.selectList(NAMESPACE + "getMemberList");
+		
+		logger.info(" DAOImpl: getMemberList() 끝! ");
+		return resultVO;
+	}
+
+	@Override
+	public void disableMember(int member_id) {
+		logger.info(" DAOImpl: disableMember() 실행! ");
+		
+		sqlSession.update(NAMESPACE + "disableMember", member_id);
+		
+		logger.info(" DAOImpl: disableMember() 끝! ");
+	}
+
+	@Override
+	public void deleteMember(int member_id) {
+		logger.info(" DAOImpl: deleteMember() 실행! ");
+		
+		sqlSession.delete(NAMESPACE + "deleteMember", member_id);
+		
+		logger.info(" DAOImpl: deleteMember() 끝! ");
+	}
+
+	@Override
+	public void enableMember(int member_id) {
+		logger.info(" DAOImpl: enableMember() 실행! ");
+		
+		sqlSession.update(NAMESPACE + "enableMember", member_id);
+		
+		logger.info(" DAOImpl: enableMember() 끝! ");		
+	}
 
 
 

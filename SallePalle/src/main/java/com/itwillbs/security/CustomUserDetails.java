@@ -63,7 +63,10 @@ public class CustomUserDetails implements UserDetails {
 	// 계정 활성화 여부
 	@Override
 	public boolean isEnabled() {
-		return member.getEnable_flag().equals("1");
+		// 주석: enable_flag를 여기서 false 처리하면 Spring Security가 "로그인 실패"로 간주하여
+		//       CustomLoginSuccessHandler로 흐름이 전달되지 않는다.
+		//       따라서 정지 계정 처리는 SuccessHandler에서 직접 구현한다.
+		return true;
 	}
 
 	@Override

@@ -34,6 +34,8 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 	private static final Logger logger 
 		= LoggerFactory.getLogger(CustomLoginSuccessHandler.class);
 	
+	@Inject private MemberService mService;
+	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, 
 										HttpServletResponse response,
@@ -58,9 +60,9 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		// 권한 리스트 (ROLE_MEMBER, ROLE_ADMIN ...) 조회
 		List<String> roleNames = authentication.getAuthorities()
-				.stream()
-				.map(GrantedAuthority::getAuthority)
-				.collect(Collectors.toList());
+											   .stream()
+											   .map(GrantedAuthority::getAuthority)
+										       .collect(Collectors.toList());
 		logger.info(" roleNames: {} ", roleNames);
 		
 		// 권한에 따른 사용자 페이지 접근 제어
@@ -80,6 +82,11 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 			response.sendRedirect("/main/home?msg=" + welcomeMsg);
 			
 			return;
+		}
+		
+		if(loginInfo.getNotify_flag().equals("Y")) {
+		    request.getSession().setAttribute("notifyMsg", "관리자 메일이 도착했습니다.");
+		    mService.setNotifyFlag(loginInfo.getMember_id(), "N");
 		}
 		
 		// 그 외 권한

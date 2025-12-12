@@ -1,6 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../include/header.jsp"%>
+<c:if test="${!empty param.errorMsg}">
+    <script>
+        alert("${param.errorMsg}");
+    </script>
+</c:if>
+<%-- <c:if test="${empty param.errorMsg and param.error == 'fail'}">
+	<script type="text/javascript">
+		alert("입력하신 사용자 정보가 없습니다! 재확인 부탁드립니다.")
+	</script>
+</c:if> --%>
 <c:if test="${!empty joinMsg}">
 	<script>
 	    alert("${joinMsg}");
@@ -28,11 +38,6 @@
 	<!-- hidden타입 csrf 토큰 정보 -->
 	<input type="hidden" name="${_csrf.parameterName }" 
 	                     value="${_csrf.token }" >
-		<c:if test="${param.error == 'fail' }">
-			<script type="text/javascript">
-				alert("입력하신 사용자 정보가 없습니다! 재확인 부탁드립니다.")
-			</script>
-		</c:if>
 		<div class="login-inputs">
 			<label class="login-label">아이디</label>
 			<div>

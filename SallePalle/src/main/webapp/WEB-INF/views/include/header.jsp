@@ -107,7 +107,7 @@
 	    background: #e9e9e9;
 	}
 	
-	/* 로그인 후 유저 정보 */
+	/* header.jsp - 로그인 후 유저 정보 */
     .user-info-group {
         display: flex;
         align-items: center;
@@ -115,6 +115,7 @@
         padding: 8px 15px;
         background: #eee;
         border-radius: 25px;
+        cursor: pointer;
     }
 
     .user-profile-img {
@@ -218,7 +219,7 @@
         color: #FF6F61;
     }
     
-    /* 3등분 레이아웃 */
+    /* header.jsp - 3등분 레이아웃 */
 	.header-col {
 	    flex: 1;
 	    display: flex;
@@ -231,6 +232,147 @@
 	
 	.header-col.right {
 	    justify-content: flex-end;
+	}
+	
+	/* header.jps - 알림 아이콘 + 뱃지 */
+	.notification-area {
+	    position: relative;
+	    margin-right: 10px;
+	}
+	
+	.bell-icon {
+	    width: 22px;
+	    height: 22px;
+	    cursor: pointer;
+	}
+	
+	.notify-badge {
+	    position: absolute;
+	    top: -3px;
+	    right: -3px;
+	    width: 10px;
+	    height: 10px;
+	    background: red;
+	    border-radius: 50%;
+	    border: 1px solid white;
+	}
+
+	/* 드롭다운 관련 CSS */
+	.user-dropdown {
+	    position: relative;
+	}
+
+	.dropdown-arrow {
+	    font-size: 10px;
+	    color: #999;
+	    transition: transform 0.3s;
+	    margin-left: 5px;
+	}
+
+	.user-dropdown.active .dropdown-arrow {
+	    transform: rotate(180deg);
+	}
+
+	.dropdown-menu {
+	    position: absolute;
+	    top: calc(100% + 10px);
+	    right: 0;
+	    width: 240px;
+	    background: white;
+	    border-radius: 12px;
+	    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+	    opacity: 0;
+	    visibility: hidden;
+	    transform: translateY(-10px);
+	    transition: all 0.3s;
+	    z-index: 1000;
+	}
+
+	.user-dropdown.active .dropdown-menu {
+	    opacity: 1;
+	    visibility: visible;
+	    transform: translateY(0);
+	}
+
+	.dropdown-header {
+	    padding: 20px;
+	    border-bottom: 1px solid #f0f0f0;
+	    text-align: center;
+	}
+
+	.dropdown-header .user-name {
+	    font-size: 16px;
+	    font-weight: 600;
+	    color: #333;
+	    margin-bottom: 5px;
+	}
+
+	.dropdown-header .user-email {
+	    font-size: 12px;
+	    color: #999;
+	}
+
+	.dropdown-stats {
+	    display: flex;
+	    padding: 15px;
+	    border-bottom: 1px solid #f0f0f0;
+	}
+
+	.stat-item {
+	    flex: 1;
+	    text-align: center;
+	}
+
+	.stat-label {
+	    font-size: 11px;
+	    color: #999;
+	    margin-bottom: 5px;
+	}
+
+	.stat-value {
+	    font-size: 15px;
+	    font-weight: 600;
+	    color: #FF6F61;
+	}
+
+	.dropdown-item {
+	    display: flex;
+	    align-items: center;
+	    gap: 12px;
+	    padding: 12px 20px;
+	    color: #333;
+	    text-decoration: none;
+	    font-size: 14px;
+	    transition: background 0.2s;
+	}
+
+	.dropdown-item:hover {
+	    background: #f8f9fa;
+	}
+
+	.dropdown-item-icon {
+	    font-size: 18px;
+	    width: 20px;
+	    text-align: center;
+	}
+
+	.dropdown-logout {
+	    border-top: 1px solid #f0f0f0;
+	}
+
+	.logout-btn-dropdown {
+	    background: none;
+	    border: none;
+	    width: 100%;
+	    text-align: left;
+	    cursor: pointer;
+	    font-family: inherit;
+	    padding: 0;
+	}
+
+	.dropdown-logout .dropdown-item {
+	    color: #FF6F61;
+	    font-weight: 500;
 	}
 
 	/* login.jsp */
@@ -861,6 +1003,14 @@
 	        alert("${param.msg}");
 	    </script>
 	</c:if>	
+	
+	<c:if test="${not empty sessionScope.notifyMsg}">
+	    <script>
+	        alert("${sessionScope.notifyMsg}");
+	    </script>
+	    <c:remove var="notifyMsg" scope="session"/>
+	</c:if>
+	
 	<div class="header-col left">
 	    <div class="logo">
 	    	<a href="/main/home">살래팔래</a>
@@ -886,89 +1036,206 @@
 		
 		<!-- 로그인 O -->
 		<sec:authorize access="isAuthenticated()">
-		    <div class="user-info-group">
-		    	<a href="/member/read">
-			    	<img src="/upload/${loginInfo.profile_img}" 
-			    	     class="user-profile-img">
-		    	</a> 
-		    	    
-		    	<span class="user-nickname">
-		    		<a href="/member/read">${loginInfo.nickname}</a>
-		    	</span>
-		    	
-		    	<div class="user-points">
-		            <span>살래P</span>
-		            <strong>
-		            	25,000<fmt:formatNumber value="" pattern="#,###"/>
-		            </strong>
-		            <button class="btn-charge" onclick="chargePoint()" title="포인트 충전">+</button>
+		    <div class="user-dropdown" id="userDropdown">
+		        <div class="user-info-group">
+		            <a href="/member/profileEdit">
+		                <img src="/upload/${loginInfo.profile_img}" 
+		                     class="user-profile-img">
+		            </a> 
+		                
+		            <span class="user-nickname">
+		                <a href="#">${loginInfo.nickname}</a>
+		            </span>
+		            
+		            <span class="dropdown-arrow">▼</span>
 		        </div>
 		        
-		        <div class="user-mileage">
-		            <span>팔래M</span>
-		            <strong>
-		            	2,500<fmt:formatNumber value="" pattern="#,###"/>
-		            </strong>
-		        </div>
-		        
-		        <!-- 판매 권한 UI 추가 -->
-		        <c:choose>
-				    <c:when test="${loginInfo.seller_status == 'N'}">
-				
-				        <form id="sellerRequestForm" action="/seller/request" method="post" style="display:none;">
-				            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-				        </form>
-				
-				        <button id="btnSellerRequest"
-				                style="padding: 7px 14px; border-radius: 8px; border:1px solid #FF6F61;
-				                       background:white; color:#FF6F61; cursor:pointer;">
-				            판매 권한 신청
-				        </button>
-				
-				    </c:when>
-				
-				    <c:when test="${loginInfo.seller_status == 'W'}">
-				        <span style="font-size:13px; color:#888;">판매 권한 심사중...</span>
-				    </c:when>
+		        <!-- 드롭다운 메뉴 -->
+		        <div class="dropdown-menu">
+		            <div class="dropdown-header">
+		                <div class="user-name">${loginInfo.nickname}</div>
+		                <div class="user-email">${loginInfo.email}</div>
+		            </div>
 
-				    <c:when test="${loginInfo.seller_status == 'Y'}">
-				        <span style="font-size:13px; color:#9B59B6; font-weight:600;">판매회원</span>
-				    </c:when>				
-				</c:choose>
-		        
-		        <form action="/member/logout" method="post" >
-			        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-			        <button class="btn-logout" type="submit" >
-			            로그아웃
-			        </button>
-			    </form>
-		    </div>  
+		            <div class="dropdown-stats">
+		                <div class="stat-item">
+		                    <div class="stat-label">살래P</div>
+		                    <div class="stat-value">25,000</div>
+		                </div>
+		                <div class="stat-item">
+		                    <div class="stat-label">팔래M</div>
+		                    <div class="stat-value">2,500</div>
+		                </div>
+		            </div>
+
+		            <a href="/member/read" class="dropdown-item">
+		                <span class="dropdown-item-icon">👤</span>
+		                <span>MY홈</span>
+		            </a>
+		            <a href="#" class="dropdown-item">
+		                <span class="dropdown-item-icon">📋</span>
+		                <span>스크랩</span>
+		            </a>
+		            <a href="#" class="dropdown-item">
+		                <span class="dropdown-item-icon">🕒</span>
+		                <span>최근본 글</span>
+		            </a>
+		            <a href="#" class="dropdown-item">
+		                <span class="dropdown-item-icon">💰</span>
+		                <span>결제내역</span>
+		            </a>
+
+		            <!-- 판매 권한 UI -->
+		            <c:choose>
+		                <c:when test="${loginInfo.seller_status == 'N'}">
+		                    <form id="sellerRequestForm" action="/seller/request" method="post" style="display:none;">
+		                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+		                    </form>
+		                    <button id="btnSellerRequest" class="dropdown-item" style="width:100%; text-align:left; background:none; border:none; cursor:pointer; padding:12px 20px;">
+		                        <span class="dropdown-item-icon">🏪</span>
+		                        <span>판매 권한 신청</span>
+		                    </button>
+		                </c:when>
+		                <c:when test="${loginInfo.seller_status == 'W'}">
+		                    <div class="dropdown-item" style="color:#888;">
+		                        <span class="dropdown-item-icon">⏳</span>
+		                        <span>판매 권한 심사중...</span>
+		                    </div>
+		                </c:when>
+		                <c:when test="${loginInfo.seller_status == 'Y'}">
+		                    <div class="dropdown-item" style="color:#9B59B6; font-weight:600;">
+		                        <span class="dropdown-item-icon">✅</span>
+		                        <span>판매회원</span>
+		                    </div>
+		                </c:when>
+		            </c:choose>
+
+				    
+		            <div class="dropdown-logout">
+		                <form action="/member/logout" method="post" style="margin:0;">
+		                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+		                    <button class="logout-btn-dropdown" type="submit">
+		                        <div class="dropdown-item">
+		                            <span class="dropdown-item-icon">🚪</span>
+		                            <span>로그아웃</span>
+		                        </div>
+		                    </button>
+		                </form>
+		            </div>
+		            <a href="#" id="notificationItem" >
+			            <!-- <img src="/resources/img/free-icon-mails-5028538.png" class="bell-icon"> -->
+			            <c:if test="${loginInfo.notify_flag == 'Y'}">
+			                <span class="notify-badge"></span>
+			            </c:if>
+			           <!--  <span>SMS 알림</span> -->
+			        </a>
+		        </div>
+		    </div>
 		</sec:authorize>
 	</div>
+	
 	<!-- 관리자만 -->
 	<sec:authorize access="hasRole('ROLE_ADMIN')">
 	    <a href="/admin">관리자 페이지</a>
 	</sec:authorize>
 <script type="text/javascript">
-	//포인트 충전
+	// jQuery - 포인트 충전
 	function chargePoint() {
 	    alert('살래포인트 충전 페이지로 이동합니다.');
-		    // location.href = '/charge/point';
+	    // location.href = '/charge/point';
 	}
 	
-	$(document).on("click", "#btnSellerRequest", function() {
+	// jQuery - 드롭다운 토글
+	$(document).ready(function() {
+	    $('.user-info-group').on('click', function(e) {
+	        e.stopPropagation();
+	        $('#userDropdown').toggleClass('active');
+	    });
 
-	    swal({
-	        title: "판매 권한 신청",
-	        text: "신청 후 처리까지 다소 시간이 소요될 수 있습니다.",
-	        icon: "warning",
-	        buttons: ["취소", "신청하기"],
-	    }).then((willApply) => {
-	        if (willApply) {
-	            document.getElementById("sellerRequestForm").submit();
+	    // 드롭다운 외부 클릭 시 닫기
+	    $(document).on('click', function(e) {
+	        if (!$(e.target).closest('#userDropdown').length) {
+	            $('#userDropdown').removeClass('active');
 	        }
 	    });
 
+	    // ESC 키로 드롭다운 닫기
+	    $(document).on('keydown', function(e) {
+	        if (e.key === 'Escape') {
+	            $('#userDropdown').removeClass('active');
+	        }
+	    });
+	    
+	    // 드롭다운 메뉴 내부 클릭 시 이벤트 전파 막기 (닫히지 않게)
+	    $('.dropdown-menu').on('click', function(e) {
+	    	if (!$(e.target).closest('a, button, form').length) {
+	            e.stopPropagation();
+	        }
+	    });
+	    
+		// jQuery - 판매 권한 신청
+		$(document).on("click", "#btnSellerRequest", function(e) {
+			
+			e.preventDefault();
+	        e.stopPropagation();
+	        
+		    swal({
+		        title: "판매 권한 신청",
+		        text: "신청 후 처리까지 다소 시간이 소요될 수 있습니다.",
+		        icon: "warning",
+		        buttons: ["취소", "신청하기"],
+		    }).then((willApply) => {
+		        if (willApply) {
+		            $("#sellerRequestForm").submit();
+		        }
+		    });
+		});
+		
+	    // 알림 클릭 시 처리
+	    $(document).on("click", "#notificationItem", function(e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        
+	        // 빨간점이 있는 경우에만 알림 메시지 표시
+	        if ($('.notify-badge').length > 0) {
+	            swal({
+	                title: "알림",
+	                text: "판매 권한 신청 메일이 발송되었습니다.\n등록된 메일을 확인해 주세요.",
+	                icon: "info",
+	                button: "확인",
+	            }).then(() => {
+	                // 알림 확인 후 빨간점 제거 (AJAX로 서버에 알림 읽음 처리)
+	                $.ajax({
+	                    url: '/member/readNotification',
+	                    type: 'POST',
+	                    data: {
+	                        "${_csrf.parameterName}": "${_csrf.token}"
+	                    },
+	                    success: function(response) {
+	                        // 빨간점 제거
+	                        $('.notify-badge').fadeOut(300, function() {
+	                            $(this).remove();
+	                        });
+	                    },
+	                    error: function() {
+	                        // 에러가 나도 일단 UI에서는 제거
+	                        $('.notify-badge').fadeOut(300, function() {
+	                            $(this).remove();
+	                        });
+	                    }
+	                });
+	            });
+	        } else {
+	            // 빨간점이 없으면 일반 알림 페이지로 이동
+	            swal({
+	                title: "알림",
+	                text: "확인할 새로운 알림이 없습니다.",
+	                icon: "info",
+	                button: "확인",
+	            });
+	        }
+	    });
 	});
+	
 </script>
 </header>

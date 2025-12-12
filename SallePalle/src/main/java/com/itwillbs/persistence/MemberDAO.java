@@ -1,6 +1,7 @@
 package com.itwillbs.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import com.itwillbs.domain.MemberAuthVO;
 import com.itwillbs.domain.MemberHistoryVO;
@@ -51,9 +52,26 @@ public interface MemberDAO {
 	// 판매 상태 업데이트
 	public void updateSellerStatus(int member_id, String status);
 
-	// 메일 발송용 회원 조회
+	// (어드민)멤버 정보 조회
 	public MemberVO readByMemberId(int member_id);
 
+	// 메일 발송 정보 조회
+	public void setNotifyFlag(Map<String, Object> map);
+
+	// 알림 메일 발송 여부를 저장
+	public void updateNotifyFlag(Map<String, Object> map);
+
+	// 회원 리스트
+	public List<MemberVO> getMemberList();
+
+	// 회원 정지
+	public void disableMember(int member_id);
+	
+	// 회원 정지 해제
+	public void enableMember(int member_id);
+
+	// 회원 삭제
+	public void deleteMember(int member_id);
 
 
 }

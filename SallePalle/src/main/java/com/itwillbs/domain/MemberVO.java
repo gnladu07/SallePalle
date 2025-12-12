@@ -15,7 +15,7 @@ import lombok.Data;
 //	    gender          CHAR(1) CHECK (gender IN ('M','F')),     -- 성별(M/F)
 //	    toplct_id       INT NOT NULL,                            -- 선택형 주소 (시/군/구 FK)
 //	    detail_address  VARCHAR(255) NOT NULL,                   -- 상세 주소 입력값
-//	    profile_img     VARCHAR(255) DEFAULT '/img/default_profile.png',  -- 기본 프로필 이미지
+//	    profile_img     VARCHAR(255) DEFAULT 'default_profile.png',  -- 기본 프로필 이미지
 //	    seller_status   CHAR(1) DEFAULT 'N' CHECK (seller_status IN ('N','W','Y')),  -- 판매 권한(N: 일반회원 / W: 승인 대기 / Y: 승인됨)
 //	    provider        VARCHAR(50) DEFAULT 'LOCAL',             -- 로그인 제공자(LOCAL/KAKAO/NAVER)
 
@@ -27,6 +27,11 @@ import lombok.Data;
 //	    regdate         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,     -- 가입일
 //	    updatedate      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,          -- 업데이트일
 //	    deleted_at      TIMESTAMP NULL DEFAULT NULL,             -- 탈퇴 시점 기록
+
+//		notify_flag CHAR(1) NOT NULL DEFAULT 'N', -- 관리자 승인/거절 시 사용자의 알림 상태를 저장
+//		-- Y = 새 알림 있음 (승인/거절 알림)
+//		-- N = 알림 없음
+
 //	    agree_terms_required     CHAR(1) DEFAULT 'N' CHECK (agree_terms_required IN ('Y','N')),            -- (필수) 회원약관 동의
 //	    agree_privacy_required   CHAR(1) DEFAULT 'N' CHECK (agree_privacy_required IN ('Y','N')),          -- (필수) 개인정보 수집/이용 동의
 //	    agree_location_optional  CHAR(1) DEFAULT 'N' CHECK (agree_location_optional IN ('Y','N')),         -- (선택) 위치기반서비스 약관 동의
@@ -70,6 +75,8 @@ public class MemberVO {
 	private String agree_location_optional; // (선택) 위치기반서비스 약관 동의
 	private String agree_marketing_email;	// (선택) 마케팅 이메일 수신 동의
 	private String agree_marketing_sms;		// (선택) 마케팅 SMS/MMS 동의
+	
+	private String notify_flag;             // 관리자 승인/거절 시 사용자의 알림 상태를 저장(Y: 알림 있음, N: 알림 없음)
 	
 	private List<MemberAuthVO> authList;
 

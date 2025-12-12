@@ -4,6 +4,8 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -38,7 +40,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 			throw new UsernameNotFoundException("없는 유저입니다.: " + userid);
 		}
 		
-		// MemberVO -> UserDetails(CustomUserDetails) 변환
+		// 1) 탈퇴 회원 차단
+	    if (vo.getDeleted_at() != null) {
+	        throw new DisabledException("탈퇴한 계정입니다.");
+	    }
+
+	    // 2) 정지 회원 차단
+	    if ("0".equals(vo.getEnable_flag())) {
+	        throw new LockedException("정지된 계정입니다.");
+	    }
+		
 		return new CustomUserDetails(vo);
 	}
 
