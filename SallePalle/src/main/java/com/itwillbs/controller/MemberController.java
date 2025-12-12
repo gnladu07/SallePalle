@@ -1,7 +1,9 @@
 package com.itwillbs.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -381,6 +383,32 @@ public class MemberController {
 	    
 	    // 자동 로그인 성공 응답
 		return "{\"success\": true}";
+	}
+	
+	@PostMapping("/member/readNotification")
+	@ResponseBody
+	public Map<String, Object> readNotification(HttpSession session) {
+	    Map<String, Object> result = new HashMap<>();
+	    try {
+	        // 세션에서 사용자 정보 가져오기
+	        MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo"); 
+	        if (loginInfo == null) {
+	            result.put("success", false);
+	            return result;
+	        }
+	        
+	        // notify_flag를 'N'으로 업데이트
+	        mService.updateNotifyFlag(loginInfo.getUserid(), "N");
+	        
+	        // 세션 정보도 업데이트
+	        loginInfo.setNotify_flag("N");
+	        session.setAttribute("loginInfo", loginInfo);
+	        
+	        result.put("success", true);
+	    } catch (Exception e) {
+	        result.put("success", false);
+	    }
+	    return result;
 	}
 
 	

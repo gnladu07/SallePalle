@@ -62,11 +62,14 @@ public class SellerServiceImpl implements SellerService {
 	public void approveRequest(int request_id, int member_id) {
 		log.info(" SellerServiceImpl: approveRequest() 실행!");
 		
-		// 1) seller_request 승인 처리
+		// seller_request 승인 처리
 		sellerDAO.approveRequest(request_id);
 
-        // 2) member 테이블 seller_status = 'Y'
+        // member 테이블 seller_status = 'Y'
         mService.updateSellerStatus(member_id, "Y");
+    
+        // 메일 발송 확인 
+        mService.setNotifyFlag(member_id, "Y");
         
         // 이메일 발송
         MemberVO member = mService.readByMemberId(member_id);
@@ -87,8 +90,11 @@ public class SellerServiceImpl implements SellerService {
 		
 		sellerDAO.rejectRequest(request_id);
 		
-        // 2) member 테이블 seller_status = 'N'
+        // member 테이블 seller_status = 'N'
         mService.updateSellerStatus(member_id, "N");
+     
+        // 메일 발송 확인
+        mService.setNotifyFlag(member_id, "Y");
 		
 		// 이메일 발송
         MemberVO member = mService.readByMemberId(member_id);

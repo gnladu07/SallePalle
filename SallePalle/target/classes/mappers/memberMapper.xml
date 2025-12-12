@@ -236,4 +236,47 @@
 	    from member
 	    where member_id = #{member_id}
 	</select>
+	
+	<!-- 메일 발송 정보 조회 -->
+	<update id="setNotifyFlag">
+	    update member
+	    set notify_flag = #{flag}
+	    where member_id = #{member_id}
+	</update>
+	
+	<!-- 알림 읽음 처리: notify_flag 변경 -->
+	<update id="updateNotifyFlag">
+	    update member
+	    set notify_flag = #{flag}
+	    where userid = #{userid}
+	</update>
+	
+	<!-- 전체 회원 조회 -->
+	<select id="getMemberList" resultType="MemberVO">
+	    select *
+	    from member
+	    order by regdate desc
+	</select>
+	
+	<!-- 회원 정지 -->
+	<update id="disableMember">
+	    update member
+	    set enable_flag = '0',
+	        updatedate = now()
+	    where member_id = #{member_id}
+	</update>
+	
+	<!-- 회원 정지 해제 -->
+	<update id="enableMember">
+	    update member
+	    set enable_flag = '1',
+	        updatedate = now()
+	    where member_id = #{member_id}
+	</update>
+	
+	<!-- 회원 삭제 -->
+	<delete id="deleteMember">
+	    delete from member
+	    where member_id = #{member_id}
+	</delete>
 </mapper>

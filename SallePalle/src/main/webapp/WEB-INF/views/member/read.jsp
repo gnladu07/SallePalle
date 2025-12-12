@@ -37,7 +37,7 @@
 		<hr>
 		<a href="/member/update"><button type="button">회원정보수정</button></a>
 		<button type="button" id="btnDeleteOpen">회원탈퇴</button>
-		<a href="/main/header"><button type="button">홈으로</button></a>
+		<a href="/main/home"><button type="button">홈으로</button></a>
 	</fieldset>
 	<!-- 탈퇴 모달 -->
 	<div id="deleteModal" style="

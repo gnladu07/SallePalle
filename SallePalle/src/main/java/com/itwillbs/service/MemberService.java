@@ -1,5 +1,7 @@
 package com.itwillbs.service;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.domain.MemberAuthVO;
@@ -58,7 +60,27 @@ public interface MemberService {
 	// 권한 추가
     public void insertAuth(MemberAuthVO vo);
 
+    // (어드민)멤버 정보 조회
 	public MemberVO readByMemberId(int member_id);
+
+	// 메일 발송 정보 조회
+	public void setNotifyFlag(int member_id, String flag);
+
+	// 알림 메일 발송 여부를 저장
+	public void updateNotifyFlag(String userid, String flag);
+
+	// 회원 리스트
+	public List<MemberVO> getMemberList();
+
+	// 회원 정지
+	public void disableMember(int member_id);
+
+	// 회원 정지 해제
+	public void enableMember(int member_id);
+
+	// 회원 삭제
+	public void deleteMember(int member_id);
+
 
 
 }

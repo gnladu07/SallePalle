@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.mapper.AdminMapper">
+
+	<select id="getSortedMembers" resultType="MemberVO">
+	    select *
+	    from member
+	    order by
+	        <choose>
+	
+	            <!-- 가입일 기준 최신순 -->
+	            <when test="sort == 'regdate'">
+	                regdate desc
+	            </when>
+	
+	            <!-- 정지 회원 우선 (enable_flag = 0 먼저) -->
+	            <when test="sort == 'disabled'">
+	                enable_flag asc,
+	                regdate desc
+	            </when>
+	
+	            <!-- 탈퇴 회원 우선 (deleted_at NOT NULL 먼저) -->
+	            <when test="sort == 'deleted'">
+	                case when deleted_at is null then 1 else 0 end asc,
+	                regdate desc
+	            </when>
+	
+	            <!-- default -->
+	            <otherwise>
+	                regdate desc
+	            </otherwise>
+	
+	        </choose>
+	</select>  
+</mapper>

@@ -1,6 +1,8 @@
 package com.itwillbs.service;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -362,8 +364,70 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
     public MemberVO readByMemberId(int member_id) {
+		logger.info(" MServiceImpl: readByMemberId() 실행! ");
         return memberDAO.readByMemberId(member_id);
     }
+
+	@Override
+	public void setNotifyFlag(int member_id, String flag) {
+		logger.info(" MServiceImpl: setNotifyFlag() 실행! ");
+		Map<String,Object> map = new HashMap<>();
+	    map.put("member_id", member_id);
+	    map.put("flag", flag);
+	    memberDAO.setNotifyFlag(map);
+	    logger.info(" MServiceImpl: setNotifyFlag() 끝! ");
+	}
+
+	@Override
+	public void updateNotifyFlag(String userid, String flag) {
+		logger.info(" MServiceImpl: updateNotifyFlag() 실행!");
+
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("userid", userid);
+	    map.put("flag", flag);
+
+	    memberDAO.updateNotifyFlag(map);
+
+	    logger.info(" MServiceImpl: updateNotifyFlag() 끝!");
+		
+	}
+
+	@Override
+	public List<MemberVO> getMemberList() {
+		logger.info(" MServiceImpl: getMemberList() 실행!");
+		
+		List<MemberVO> resultVO = memberDAO.getMemberList();
+		
+		logger.info(" MServiceImpl: getMemberList() 끝!");
+		return resultVO;
+	}
+
+	@Override
+	public void disableMember(int member_id) {
+		logger.info(" MServiceImpl: disableMember() 실행!");
+		
+		memberDAO.disableMember(member_id);
+		
+		logger.info(" MServiceImpl: disableMember() 끝!");
+	}
+
+	@Override
+	public void deleteMember(int member_id) {
+		logger.info(" MServiceImpl: deleteMember() 실행! ");
+		
+		memberDAO.deleteMember(member_id);
+		
+		logger.info(" MServiceImpl: deleteMember() 끝! ");
+	}
+
+	@Override
+	public void enableMember(int member_id) {
+		logger.info(" MServiceImpl: enableMember() 실행! ");
+		
+		memberDAO.enableMember(member_id);
+		
+		logger.info(" MServiceImpl: enableMember() 끝! ");
+	}
 
 
 
