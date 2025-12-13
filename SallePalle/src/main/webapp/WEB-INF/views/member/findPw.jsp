@@ -1,35 +1,44 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	<h2>비밀번호 재설정 링크 요청</h2>
+<%@ include file="../include/header.jsp"%>
+<div class="main-findId">
+	<div class="findId-container">
+		<h1 class="findId-title" >비밀번호 재설정 링크 요청</h1>
+		<p class="findId-subtitle">비밀번호를 재설정하는 메일을 요청합니다.</p>
 
-	<c:if test="${not empty msg}">
-	    <p style="color:red;">${msg}</p>
-	</c:if>
-	
-	<form action="/member/findPw" method="post">
-	
-	    <!-- CSRF 토큰 필수 -->
-	    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-	
-	    <label>아이디:</label>
-	    <input type="text" name="userid" required> <br>
-	
-	    <label>이메일:</label>
-	    <input type="email" name="email" required> <br>
-	
-	    <button type="submit">비밀번호 재설정 링크 발송</button>
-	</form>
-	
-	<hr>
-	
-	<button onclick="location.href='/member/login'">뒤로가기</button>
-</body>
-</html>
+		<c:if test="${!empty msg}">
+		    <p style="color:red;">${msg}</p>
+		</c:if>
+		
+		<form action="/member/findPw" method="post">
+		    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+			<div class="findId-field">
+				<label class="findId-label">아이디</label>
+				<input type="text" 
+				       class="findId-input" 
+				       name="userid" 
+				       placeholder="아이디를 입력하세요"
+				       required>
+			</div>
+			
+			<div class="findId-field">
+				<label class="findId-label">이메일</label>
+				<input type="email" 
+				       class="findId-input" 
+				       name="email" 
+				       placeholder="등록된 메일주소를 입력하세요"
+				       required>
+			</div>
+		
+		    <button type="submit" class="findId-submit-btn" >비밀번호 재설정 링크 발송</button>
+		</form>
+		
+		<div class="findId-divider">또는</div>
+		
+		<div class="findId-links">
+			<button class="findId-link-btn" onclick="location.href='/member/login'">뒤로가기</button>
+		</div>
+	</div>
+</div>
+
+<%@ include file="../include/footer.jsp"%>
