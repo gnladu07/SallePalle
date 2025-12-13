@@ -356,10 +356,21 @@ public class MemberController {
 	        return "{\"success\": false}";
 	    }
 	    
+	    // 탈퇴 회원 차단
+	    if (member.getDeleted_at() != null) {
+	        return "{\"success\": false, \"reason\":\"deleted\"}";
+	    }
+
+	    // 정지 회원 차단
+	    if ("0".equals(member.getEnable_flag())) {
+	        return "{\"success\": false, \"reason\":\"disabled\"}";
+	    }
+	    
 	    // 권한 보정
 	    if (member.getAuthList() == null || member.getAuthList().isEmpty()) {
 
 	        MemberAuthVO defaultAuth = new MemberAuthVO();
+	        defaultAuth.setUserid(member.getUserid());
 	        defaultAuth.setAuth("ROLE_MEMBER");
 
 	        List<MemberAuthVO> list = new ArrayList<>();

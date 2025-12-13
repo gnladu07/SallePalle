@@ -16,21 +16,35 @@
 <body>
 <h2>회원 관리</h2>
 
-<!-- 정렬 드롭다운 -->
-<div style="margin-bottom:15px;">
+<!-- 검색 + 정렬 박스 추가 -->
+<div style="margin-bottom:20px; display:flex; gap:20px; align-items:center;">
+
+    <!-- 검색 폼 -->
+    <form method="get" action="/admin/members" style="display:flex; gap:10px;">
+        <select name="type">
+            <option value="userid"   ${param.type == 'userid' ? 'selected' : ''}>아이디</option>
+            <option value="username" ${param.type == 'username' ? 'selected' : ''}>이름</option>
+            <option value="nickname" ${param.type == 'nickname' ? 'selected' : ''}>닉네임</option>
+        </select>
+
+        <input type="text" name="keyword" value="${param.keyword}" placeholder="검색어 입력">
+
+        <button type="submit">검색</button>
+    </form>
+
+    <!-- 정렬 드롭다운 -->
     <form id="sortForm" method="get" action="/admin/members">
+        <!-- 검색 유지 -->
+        <input type="hidden" name="type" value="${param.type}">
+        <input type="hidden" name="keyword" value="${param.keyword}">
+
         <select name="sort" onchange="document.getElementById('sortForm').submit()">
-            <option value="regdate" ${param.sort == 'regdate' || empty param.sort ? 'selected' : ''}>
-                가입일 기준 (최신순)
-            </option>
-            <option value="disabled" ${param.sort == 'disabled' ? 'selected' : ''}>
-                정지 회원 우선
-            </option>
-            <option value="deleted" ${param.sort == 'deleted' ? 'selected' : ''}>
-                탈퇴 회원 우선
-            </option>
+            <option value="regdate"  ${param.sort == 'regdate'  || empty param.sort ? 'selected' : ''}>가입일 최신순</option>
+            <option value="disabled" ${param.sort == 'disabled' ? 'selected' : ''}>정지 회원 우선</option>
+            <option value="deleted"  ${param.sort == 'deleted'  ? 'selected' : ''}>탈퇴 회원 우선</option>
         </select>
     </form>
+
 </div>
 
 <table class="table">
@@ -122,8 +136,36 @@
             </tr>
         </c:forEach>
     </tbody>
-
 </table>
+<!-- 페이징 영역 (리스트 아래로 이동) -->
+<div style="margin-top:30px;">
+    <ul class="pagination" style="display:flex; list-style:none; gap:10px;">
 
+        <c:if test="${pageMaker.prev}">
+            <li>
+                <a href="?page=${pageMaker.startPage - 1}&sort=${param.sort}&type=${param.type}&keyword=${param.keyword}">
+                    이전
+                </a>
+            </li>
+        </c:if>
+
+        <c:forEach var="p" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+            <li style="${p == pageMaker.cri.page ? 'font-weight:bold;' : ''}">
+                <a href="?page=${p}&sort=${param.sort}&type=${param.type}&keyword=${param.keyword}">
+                    ${p}
+                </a>
+            </li>
+        </c:forEach>
+
+        <c:if test="${pageMaker.next}">
+            <li>
+                <a href="?page=${pageMaker.endPage + 1}&sort=${param.sort}&type=${param.type}&keyword=${param.keyword}">
+                    다음
+                </a>
+            </li>
+        </c:if>
+
+    </ul>
+</div>
 </body>
 </html>
