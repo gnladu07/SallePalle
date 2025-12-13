@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.itwillbs.domain.Criteria;
 import com.itwillbs.domain.MemberVO;
 import com.itwillbs.persistence.AdminDAO;
 
@@ -18,15 +19,49 @@ public class AdminServiceImpl implements AdminService {
 		= LoggerFactory.getLogger(AdminServiceImpl.class);
 	
 	@Inject private AdminDAO aDAO;
+	
+//	@Override
+//	public List<MemberVO> getSortedMembers(String sort) {
+//		log.info(" AdminServiceImpl: getSortedMembers() 실행! ");
+//		
+//		List<MemberVO> resultVO = aDAO.getSortedMembers(sort);
+//		
+//		log.info(" AdminServiceImpl: getSortedMembers() 끝! ");
+//		return resultVO;
+//	}
 
 	@Override
-	public List<MemberVO> getSortedMembers(String sort) {
-		log.info(" AdminServiceImpl: getSortedMembers() 실행! ");
+	public List<MemberVO> getMemberListPaged(Criteria cri) {
+		log.info(" AdminServiceImpl: getMemberListPaged() 실행! ");
 		
-		List<MemberVO> resultVO = aDAO.getSortedMembers(sort);
+		List<MemberVO> resultVO = aDAO.getMemberListPaged(cri);
 		
-		log.info(" AdminServiceImpl: getSortedMembers() 끝! ");
+		log.info(" AdminServiceImpl: getMemberListPaged() 끝! ");
 		return resultVO;
 	}
+	
+//	@Override
+//	public int getTotalCount() {
+//		log.info(" AdminServiceImpl: getTotalCount() 실행! ");
+//		
+//		int resultVO = aDAO.getTotalCount();
+//		
+//		log.info(" AdminServiceImpl: getTotalCount() 끝! ");
+//		return resultVO;
+//	}
+
+	@Override
+	public int getTotalCountFiltered(Criteria cri) {
+		log.info(" AdminServiceImpl: getTotalCountFiltered() 실행! ");
+		
+		int resultVO = aDAO.getTotalCountFiltered(cri);
+		
+		log.info(" AdminServiceImpl: getTotalCountFiltered() 끝! ");
+		return resultVO;
+	}
+
+
+
+
 
 }

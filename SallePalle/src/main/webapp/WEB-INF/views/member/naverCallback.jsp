@@ -28,19 +28,33 @@
 	.then(resp => resp.json())
 	.then(json => {
 	
-	    // 이미 가입된 계정
-	    if (json.success === true) {
-	
-	    	const resultInput = opener.document.querySelector('input[name="result"]');
-            if (resultInput) {
-                resultInput.value = JSON.stringify(json);    // 수정됨
-            } else {
-                alert("오류: 부모창에 result input이 없습니다."); // 수정됨
-            }
-	
+		const resultInput = opener.document.querySelector('input[name="result"]');
+	    if (resultInput) {
+	        resultInput.value = JSON.stringify(json);
+	    }
+
+	    // 1) 정지 사용자 → 이동 금지
+	    if (json.reason === "disabled") {
 	        window.close();
 	        return;
 	    }
+
+	    // 2) 탈퇴 사용자 → 이동 금지
+	    if (json.reason === "deleted") {
+	        window.close();
+	        return;
+	    }
+
+	    // 3) 로그인 성공 → 부모창 자동 로그인
+	    if (json.success === true) {
+	        window.close();
+	        return;
+	    }
+
+	    // 4) success:false (신규회원)만 join 페이지 이동 허용
+	    opener.location.href = "/member/join";
+	    
+		window.close();
 	
 	    // 신규 가입 join.jsp 이동
 	    if (!isJoinPage) {

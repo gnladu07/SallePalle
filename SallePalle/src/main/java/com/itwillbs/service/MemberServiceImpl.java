@@ -25,8 +25,6 @@ import com.itwillbs.persistence.MemberDAO;
 @Service
 public class MemberServiceImpl implements MemberService {
 
-    private final BCryptPasswordEncoder passwordEncoder;
-
 	private static final Logger logger 
 		= LoggerFactory.getLogger(MemberServiceImpl.class);
 	
@@ -35,10 +33,6 @@ public class MemberServiceImpl implements MemberService {
 	@Inject private MailComponent mailComponent;
 	@Inject private FileComponent fileComponent;
 
-    MemberServiceImpl(BCryptPasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
-	
 	@Override
 	public MemberVO selectOne(String userid) {
 		logger.info(" MServiceImpl: selectOne() 실행! ");
@@ -65,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
 	    if (vo.getUserpw() == null || vo.getUserpw().trim().equals("")) {
 	        throw new IllegalArgumentException("비밀번호는 반드시 입력되어야 합니다.");
 	    }
-	    vo.setUserpw(passwordEncoder.encode(vo.getUserpw()));
+	    vo.setUserpw(pwEncoder.encode(vo.getUserpw()));
 
 	    // 3) 기타 값 보정
 	    if (vo.getMobile() != null && vo.getMobile().trim().equals("")) {
@@ -224,7 +218,7 @@ public class MemberServiceImpl implements MemberService {
 		MemberVO vo = memberDAO.selectOne(userid);
 		
 		logger.info(" MServiceImpl: checkPassword() 끝! ");
-		return passwordEncoder.matches(userpw, vo.getUserpw());
+		return pwEncoder.matches(userpw, vo.getUserpw());
 	}
 
 	@Override
@@ -321,7 +315,7 @@ public class MemberServiceImpl implements MemberService {
 
         MemberVO member = new MemberVO();
         member.setUserid(tokenVO.getUserid());
-        member.setUserpw(passwordEncoder.encode(newPw));
+        member.setUserpw(pwEncoder.encode(newPw));
 
         memberDAO.updatePassword(member);
 

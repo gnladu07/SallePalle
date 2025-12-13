@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwillbs.domain.Criteria;
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.domain.PageVO;
 import com.itwillbs.domain.SellerRequestVO;
 import com.itwillbs.service.AdminService;
 import com.itwillbs.service.MemberService;
@@ -125,17 +127,23 @@ public class AdminController {
     
     // 정렬 기준에 따라 회원 리스트 출력
     @GetMapping("/members")
-    public String memberList(@RequestParam(value = "sort", 
-                                           required = false, 
-                                           defaultValue = "regdate") 
-    						 String sort,
-                             Model model) {
+    public String memberList(Model model,
+                             Criteria cri) {
     	log.info(" memberList() 실행! ");
+    	
+    	// sort 없으면 기본값 regdate
+        if (cri.getSort() == null || cri.getSort().equals("")) {
+            cri.setSort("regdate");
+        }
 
-        List<MemberVO> memberList = aService.getSortedMembers(sort);
+        List<MemberVO> list = aService.getMemberListPaged(cri);
 
-        model.addAttribute("memberList", memberList);
-        model.addAttribute("sort", sort);
+//        int total = aService.getTotalCount();
+        int total = aService.getTotalCountFiltered(cri);  // 검색 조건 포함된 total
+        PageVO pageDTO = new PageVO(cri, total);
+
+        model.addAttribute("memberList", list);
+        model.addAttribute("pageMaker", pageDTO);
 
         log.info(" memberList() 끝! ");
         return "/admin/members";
