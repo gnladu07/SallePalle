@@ -985,6 +985,150 @@
     .join-login-link a:hover {
         text-decoration: underline;
     }
+    
+    /* findId */
+    .main-findId {
+        margin-top: 70px;
+        min-height: calc(100vh - 140px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .findId-container {
+        width: 100%;
+        max-width: 480px;
+        background: white;
+        border-radius: 16px;
+        padding: 50px 40px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+
+    .findId-title {
+        text-align: center;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #333;
+    }
+
+    .findId-subtitle {
+        text-align: center;
+        font-size: 15px;
+        color: #888;
+        margin-bottom: 40px;
+    }
+
+/*     .findId-msg {
+        padding: 12px 15px;
+        background: #fff5f4;
+        border: 1px solid #ffddda;
+        border-radius: 8px;
+        color: #FF6F61;
+        font-size: 14px;
+        margin-bottom: 20px;
+        text-align: center;
+    } */
+
+    .findId-field {
+        margin-bottom: 25px;
+    }
+
+    .findId-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .findId-input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 15px;
+        box-sizing: border-box;
+        transition: 0.3s;
+        background-color: #f8f9fa;
+    }
+
+    .findId-input:focus {
+        outline: none;
+        border-color: #FF6F61;
+        background-color: white;
+        box-shadow: 0 0 0 4px rgba(255, 111, 97, 0.1);
+    }
+
+    .findId-submit-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(45deg, #FF6F61, #9B59B6);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+        margin-bottom: 20px;
+    }
+
+    .findId-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3);
+    }
+
+    .findId-divider {
+        display: flex;
+        align-items: center;
+        margin: 30px 0;
+        color: #ccc;
+        font-size: 14px;
+    }
+
+    .findId-divider::before,
+    .findId-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #eee;
+    }
+
+    .findId-divider::before {
+        margin-right: 15px;
+    }
+
+    .findId-divider::after {
+        margin-left: 15px;
+    }
+
+    .findId-links {
+        display: flex;
+        gap: 10px;
+    }
+
+    .findId-link-btn {
+        flex: 1;
+        padding: 14px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        color: #666;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+        text-align: center;
+    }
+
+    .findId-link-btn:hover {
+        background: #f8f8f8;
+        border-color: #FF6F61;
+        color: #FF6F61;
+    }
+    
     /* footer.jsp */
     footer {
         padding: 30px 0;

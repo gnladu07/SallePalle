@@ -116,21 +116,9 @@
 	        const result = JSON.parse(json);
 	        console.log(result);
 	        
-	        // 1) 로그인 성공
+	        // 기존회원일 때 자동 로그인 추가됨
 	        if (result.success === true) {
-	            location.href = '/main/home';
-	            return;
-	        }
-
-	        // 2) 로그인 실패 - 정지 계정
-	        if (result.reason === "disabled") {
-	            alert("이용사항 위반으로 일시정지 상태입니다. 고객센터에 문의하세요.");
-	            return;
-	        }
-
-	        // 3) 로그인 실패 - 탈퇴 계정
-	        if (result.reason === "deleted") {
-	            alert("탈퇴한 계정입니다. 신규 회원가입 후 이용해주세요.");
+	            location.href = '/main/home';     // 로그인 성공 후 이동할 페이지
 	            return;
 	        }
 
