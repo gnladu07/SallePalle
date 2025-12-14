@@ -11,7 +11,8 @@ public interface AdminService {
 //	List<MemberVO> getSortedMembers(String sort);
 	public List<MemberVO> getMemberListPaged(Criteria cri);
 
-//	public int getTotalCount();
+	public int getTotalCount();
+	public int getSellerCount();
 
 	public int getTotalCountFiltered(Criteria cri);
 

@@ -40,16 +40,26 @@ public class AdminServiceImpl implements AdminService {
 		return resultVO;
 	}
 	
-//	@Override
-//	public int getTotalCount() {
-//		log.info(" AdminServiceImpl: getTotalCount() 실행! ");
-//		
-//		int resultVO = aDAO.getTotalCount();
-//		
-//		log.info(" AdminServiceImpl: getTotalCount() 끝! ");
-//		return resultVO;
-//	}
+	@Override
+	public int getTotalCount() {
+		log.info(" AdminServiceImpl: getTotalCount() 실행! ");
+		
+		int resultVO = aDAO.getTotalCount();
+		
+		log.info(" AdminServiceImpl: getTotalCount() 끝! ");
+		return resultVO;
+	}
 
+	@Override
+	public int getSellerCount() {
+		log.info(" AdminServiceImpl: getSellerCount() 실행! ");
+		
+		int resultVO = aDAO.getSellerCount();
+		
+		log.info(" AdminServiceImpl: getSellerCount() 끝! ");
+		return resultVO;
+	}
+	
 	@Override
 	public int getTotalCountFiltered(Criteria cri) {
 		log.info(" AdminServiceImpl: getTotalCountFiltered() 실행! ");
@@ -59,9 +69,5 @@ public class AdminServiceImpl implements AdminService {
 		log.info(" AdminServiceImpl: getTotalCountFiltered() 끝! ");
 		return resultVO;
 	}
-
-
-
-
 
 }

@@ -43,15 +43,25 @@ public class AdminDAOImpl implements AdminDAO {
 		return resultVO;
 	}
 
-//	@Override
-//	public int getTotalCount() {
-//		log.info(" AdminDAOImpl: getTotalCount() 실행! ");
-//		
-//		int resultVO = sqlSession.selectOne(NAMESPACE + "getTotalCount");
-//		
-//		log.info(" AdminDAOImpl: getTotalCount() 끝! ");
-//		return resultVO;
-//	}
+	@Override
+	public int getTotalCount() {
+		log.info(" AdminDAOImpl: getTotalCount() 실행! ");
+		
+		int resultVO = sqlSession.selectOne(NAMESPACE + "getTotalCount");
+		
+		log.info(" AdminDAOImpl: getTotalCount() 끝! ");
+		return resultVO;
+	}
+	
+	@Override
+	public int getSellerCount() {
+		log.info(" AdminDAOImpl: getSellerCount() 실행! ");
+		
+		int resultVO = sqlSession.selectOne(NAMESPACE + "getSellerCount");
+		
+		log.info(" AdminDAOImpl: getSellerCount() 끝! ");
+		return resultVO;
+	}
 	
 	@Override
 	public int getTotalCountFiltered(Criteria cri) {
@@ -62,8 +72,6 @@ public class AdminDAOImpl implements AdminDAO {
 		log.info(" AdminDAOImpl: getTotalCountFiltered() 끝! ");
 		return resultVO;
 	}
-
-
 
 
 }

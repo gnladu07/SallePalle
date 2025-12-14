@@ -70,6 +70,17 @@
 	        </choose>
 	</select> -->
 	
+	<select id="getTotalCount" resultType="int">
+		select count(*)
+	    from member 
+	</select>
+	
+	<select id="getSellerCount" resultType="int">
+		select count(*) 
+		from member 
+		where seller_status = 'W'
+	</select>
+	
 	<!-- 전체 회원 수 조회 -->
 	<select id="getTotalCountFiltered" resultType="int">
 		select count(*)

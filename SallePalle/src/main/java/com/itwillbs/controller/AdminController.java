@@ -40,8 +40,15 @@ public class AdminController {
 	}
 	
 	@GetMapping("/home")
-    public String dashboard() {
+    public String dashboard(Model model) {
 		log.info(" dashboard() 실행! ");
+		
+		int list = aService.getTotalCount();
+		model.addAttribute("listsize", list);
+		
+		int slist = aService.getSellerCount();
+		model.addAttribute("slistsize", slist);
+		
 		log.info(" dashboard() 끝! ");
         return "/admin/home";
     }
