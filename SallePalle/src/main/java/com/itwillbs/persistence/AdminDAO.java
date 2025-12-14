@@ -11,7 +11,8 @@ public interface AdminDAO {
 //	List<MemberVO> getSortedMembers(String sort);
 	List<MemberVO> getMemberListPaged(Criteria cri);
 
-//	int getTotalCount();
+	int getTotalCount();
+	int getSellerCount();
 
 	int getTotalCountFiltered(Criteria cri);
 

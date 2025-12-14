@@ -1,95 +1,159 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../include/header.jsp"%>
-</head>
-<body>
 <c:if test="${!empty msg}">
     <script>alert("${msg}");</script>
 </c:if>
 <c:if test="${!empty mailMsg}">
     <script>alert("${mailMsg}");</script>
 </c:if>
-	<form action="/member/update" method="post">
-	<input type="hidden" id="emailVerified" name="emailVerified" value="false">
-		<fieldset>
-			<legend>개인정보 수정</legend>
-			<!-- 아이디 -->
-		    <div>
-		    	<label>아이디</label>
-		        <input type="text" name="userid" id="userid" value="${loginInfo.userid }" disabled>
-		    </div>
-		    
-		    <!-- 실명 -->
-		    <div>
-		    	<label>실명</label>
-		        <input type="text" name="username" value="${loginInfo.username }" disabled>
-		    </div>
-		    
-		    <!-- 닉네임 -->
-			<div>			
-			   <label>닉네임</label>
-			   <input type="text" name="nickname" value="${loginInfo.nickname}">
-			</div>
-			
-			<!-- 이메일 + 인증번호 -->
-			<div>			
-			   <label>이메일</label>
-			   <input type="text" name="email" id="email" value="${loginInfo.email}">
-			   <button type="button" id="btnEmailAuth">인증번호 받기</button>	
-			   <div id="emailMsg"></div>
-			</div>
-			<div>
-				<label>인증번호</label>
-		        <input type="text" id="emailCode" placeholder="인증번호 입력">
-		        <button type="button" id="btnEmailCheck">확인</button>
-		        <div id="emailCodeMsg"></div>
-		    </div>
-		    
-		    <!-- 휴대폰 번호 -->
-		    <div>
-		        <label>휴대폰 번호</label>
-		        <input type="text" name="mobile" value="${loginInfo.mobile }" disabled>
-		    </div>
-		    
-		    <!-- 생년월일 -->
-		    <div>
-		    	<label>생년월일</label>
-		    	<input type="text" name="birth6" value="${loginInfo.birth6 }" disabled>
-		    </div>
-			
-			<!-- 성별 -->
-			<div>
-				<label>성별</label>
-				<input type="text" name="gender" value="${loginInfo.gender }" disabled>
-			</div>
-			
-			<!-- 지역 + 상세 주소 -->
-			<div>
-		    	<label>거주 지역</label>
-		        <select name="toplct_id" required>
-		            <option value="">-- 지역 선택 --</option>
-		            <c:forEach var="loc" items="${topList}">
-		                <option value="${loc.toplct_id}"
-		                	<c:if test="${loc.toplct_id == loginInfo.toplct_id}">
-		                		selected
-		                	</c:if>
-		                >
-		                    ${loc.toplct_name}
-		                </option>
-		            </c:forEach>
-		        </select>
-		    </div>	
-			<div>			
-			   <label>상세 주소</label>
-			   <input type="text" name="detail_address" id="detail_address" value="${loginInfo.detail_address}">
-			</div>
 
-			
-			<button type="submit">저장</button>
-			<button type="button" id="btnReset">수정 내용 초기화</button>
-			<a href="/member/read"><button type="button">뒤로가기</button></a>
-		</fieldset>
-	</form>
+<div class="main-update">
+    <div class="update-container">
+        <h1 class="update-title">개인정보 수정</h1>
+        <p class="update-subtitle">회원 정보를 수정하고 저장하세요</p>
+
+        <form action="/member/update" method="post">
+            <input type="hidden" id="emailVerified" name="emailVerified" value="false">
+
+            <!-- 아이디 (수정 불가) -->
+            <div class="update-field">
+                <label class="update-label">아이디</label>
+                <input type="text" 
+                       class="update-input update-input-disabled" 
+                       name="userid" 
+                       id="userid" 
+                       value="${loginInfo.userid}" 
+                       disabled>
+                <div class="update-field-notice">아이디는 변경할 수 없습니다</div>
+            </div>
+
+            <!-- 실명 (수정 불가) -->
+            <div class="update-field">
+                <label class="update-label">실명</label>
+                <input type="text" 
+                       class="update-input update-input-disabled" 
+                       name="username" 
+                       value="${loginInfo.username}" 
+                       disabled>
+                <div class="update-field-notice">실명은 변경할 수 없습니다</div>
+            </div>
+
+            <!-- 닉네임 (수정 가능) -->
+            <div class="update-field">
+                <label class="update-label">닉네임</label>
+                <input type="text" 
+                       class="update-input" 
+                       name="nickname" 
+                       value="${loginInfo.nickname}"
+                       required>
+            </div>
+
+            <!-- 이메일 + 인증 -->
+            <div class="update-field">
+                <label class="update-label">이메일</label>
+                <div class="update-input-row">
+                    <input type="email" 
+                           class="update-input" 
+                           name="email" 
+                           id="email" 
+                           value="${loginInfo.email}"
+                           required>
+                    <button type="button" class="update-btn-check" id="btnEmailAuth">인증번호 받기</button>
+                </div>
+                <div id="emailMsg"></div>
+            </div>
+
+            <div class="update-field">
+                <label class="update-label">인증번호</label>
+                <div class="update-input-row">
+                    <input type="text" 
+                           class="update-input" 
+                           id="emailCode" 
+                           placeholder="인증번호 입력">
+                    <button type="button" class="update-btn-check" id="btnEmailCheck">확인</button>
+                </div>
+                <div id="emailCodeMsg"></div>
+            </div>
+
+            <!-- 휴대폰 번호 (수정 불가) -->
+            <div class="update-field">
+                <label class="update-label">휴대폰 번호</label>
+                <input type="text" 
+                       class="update-input update-input-disabled" 
+                       name="mobile" 
+                       value="${loginInfo.mobile}" 
+                       disabled>
+                <div class="update-field-notice">휴대폰 번호는 변경할 수 없습니다</div>
+            </div>
+
+            <!-- 생년월일 (수정 불가) -->
+            <div class="update-field">
+                <label class="update-label">생년월일</label>
+                <input type="text" 
+                       class="update-input update-input-disabled" 
+                       name="birth6" 
+                       value="${loginInfo.birth6}" 
+                       disabled>
+                <div class="update-field-notice">생년월일은 변경할 수 없습니다</div>
+            </div>
+
+            <!-- 성별 (수정 불가) -->
+            <div class="update-field">
+                <label class="update-label">성별</label>
+                <input type="text" 
+                       class="update-input update-input-disabled" 
+                       name="gender" 
+                       value="${loginInfo.gender == 'M' ? '남자' : '여자'}" 
+                       disabled>
+                <div class="update-field-notice">성별은 변경할 수 없습니다</div>
+            </div>
+
+            <!-- 거주 지역 (수정 가능) -->
+            <div class="update-field">
+                <label class="update-label">거주 지역</label>
+                <select class="update-select" name="toplct_id" required>
+                    <option value="">-- 지역 선택 --</option>
+                    <c:forEach var="loc" items="${topList}">
+                        <option value="${loc.toplct_id}"
+                            <c:if test="${loc.toplct_id == loginInfo.toplct_id}">
+                                selected
+                            </c:if>
+                        >
+                            ${loc.toplct_name}
+                        </option>
+                    </c:forEach>
+                </select>
+            </div>
+
+            <!-- 상세 주소 (수정 가능) -->
+            <div class="update-field">
+                <label class="update-label">상세 주소</label>
+                <input type="text" 
+                       class="update-input" 
+                       name="detail_address" 
+                       id="detail_address" 
+                       value="${loginInfo.detail_address}"
+                       placeholder="주소 찾기 (클릭)"
+                       readonly
+                       required>
+            </div>
+
+            <!-- 버튼 그룹 -->
+            <div class="update-button-group">
+                <button type="submit" class="update-btn update-btn-primary">
+                    저장
+                </button>
+                <button type="button" class="update-btn update-btn-reset" id="btnReset">
+                    초기화
+                </button>
+                <a href="/member/read" class="update-btn update-btn-outline">
+                    뒤로가기
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 <script type="text/javascript">
 
 	let emailAuthCode = "";
