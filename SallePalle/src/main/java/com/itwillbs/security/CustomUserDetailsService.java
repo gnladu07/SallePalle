@@ -11,7 +11,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.domain.MileageWalletVO;
+import com.itwillbs.domain.PayWalletVO;
 import com.itwillbs.persistence.MemberDAO;
+import com.itwillbs.persistence.MileageWalletDAO;
+import com.itwillbs.persistence.PayWalletDAO;
 
 /**
  * 스프링 시큐리티가 로그인할 때 호출하는 서비스.
@@ -28,6 +32,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 		= LoggerFactory.getLogger(CustomUserDetailsService.class);
 	
 	@Inject private MemberDAO memberDAO;
+	@Inject private PayWalletDAO payWalletDAO;
+	@Inject private MileageWalletDAO mileageWalletDAO;
 
 	@Override
 	public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
@@ -49,7 +55,22 @@ public class CustomUserDetailsService implements UserDetailsService {
 	    if ("0".equals(vo.getEnable_flag())) {
 	        throw new LockedException("정지된 계정입니다.");
 	    }
+	    
+	    PayWalletVO payWallet = payWalletDAO.getWallet(vo.getMember_id());
+	    MileageWalletVO mileageWallet = mileageWalletDAO.getWallet(vo.getMember_id());
 		
+	    if (payWallet != null) {
+	    	vo.setWallet_balance(payWallet.getBalance());
+	    } else {
+	    	vo.setWallet_balance(0);
+	    }
+
+	    if (mileageWallet != null) {
+	    	vo.setWallet_mileage(mileageWallet.getMileage());
+	    } else {
+	    	vo.setWallet_mileage(0);
+	    }
+	    
 		return new CustomUserDetails(vo);
 	}
 

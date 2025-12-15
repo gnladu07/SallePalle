@@ -29,11 +29,11 @@ public class OpenBankingApiClient {
 	
 	// 외부에 노출되면 안되는 정보(KEY값)를 설정파일로 부터 주입받아서 사용
 	// => Github 사용시 반드시 설정파일은 이그노어 지정
-	@Value("${client_id}")
-	private String ClientID;
+//	@Value("${client_id}")
+	private final String ClientID = "b41453f5-4099-4020-a1b3-8200b48abf95";
 	
-	@Value("${client_secret}")
-	private String ClientSecret;
+//	@Value("${client_secret}")
+	private final String ClientSecret = "60c7ad2e-5722-49bb-a5da-08f43a2af68e";
 
 	private String redirect_uri = "http://localhost:8088/fintech/callback";
 	private String grant_type = "authorization_code";
