@@ -73,5 +73,8 @@ public interface MemberDAO {
 	// 회원 삭제
 	public void deleteMember(int member_id);
 
+	// 포인트 충전 후 최신 정보
+	public MemberVO getMemberById(int member_id);
+
 
 }

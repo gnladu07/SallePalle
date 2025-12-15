@@ -79,5 +79,8 @@ public class MemberVO {
 	private String notify_flag;             // 관리자 승인/거절 시 사용자의 알림 상태를 저장(Y: 알림 있음, N: 알림 없음)
 	
 	private List<MemberAuthVO> authList;
-
+	
+	private Integer wallet_balance;   // 현재 보유 포인트
+	private Integer wallet_mileage;   // 현재 보유 마일리지 
+	
 }

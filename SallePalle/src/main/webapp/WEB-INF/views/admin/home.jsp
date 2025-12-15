@@ -8,6 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <title>관리자 대시보드 - 살래팔래</title>
 
 <style>
@@ -375,7 +376,7 @@
                 </div>
                 <div class="home-stat-info">
                     <h3>전체 회원</h3>
-                    <p>${listsize }</p>
+                    <p id="memberPendingCountText">${listsize }</p>
                 </div>
             </div>
 
@@ -387,7 +388,7 @@
                 </div>
                 <div class="home-stat-info">
                     <h3>판매 권한 신청 인원</h3>
-                    <p>${slistsize }</p>
+                    <p id="pendingCountText" >${slistsize }</p>
                 </div>
             </div>
 
@@ -451,6 +452,58 @@
 
     </div>
 </div>
+<script type="text/javascript">
+	$(function() {
+	
+	    console.log("초기 판매 승인 대기 수:", "${slistsize}");
+	
+	    // ★ 5초마다 자동 갱신
+	    setInterval(function() {
+	        console.log("AJAX 요청: 판매 승인 대기 수 갱신 시도");
+	
+	        $.ajax({
+	            url: "/admin/sellerPendingCount",
+	            type: "get",
+	            dataType: "json",
+	            success: function(data){
+	                console.log("서버 응답:", data);
+	
+	                // 화면 업데이트
+	                $("#pendingCountText").text(data.count);
+	            },
+	            error: function(xhr){
+	                console.log("갱신 실패", xhr);
+	            }
+	        });
+	
+	    }, 5000); // 5초마다
+	});
+	$(function() {
+	
+	    console.log("초기 판매 승인 대기 수:", "${listsize}");
+	
+	    // ★ 5초마다 자동 갱신
+	    setInterval(function() {
+	        console.log("AJAX 요청: 판매 승인 대기 수 갱신 시도");
+	
+	        $.ajax({
+	            url: "/admin/memberPendingCount",
+	            type: "get",
+	            dataType: "json",
+	            success: function(data){
+	                console.log("서버 응답:", data);
+	
+	                // 화면 업데이트
+	                $("#memberPendingCountText").text(data.count);
+	            },
+	            error: function(xhr){
+	                console.log("갱신 실패", xhr);
+	            }
+	        });
+	
+	    }, 5000); // 5초마다
+	});
+</script>
 
 </body>
 </html>

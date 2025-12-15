@@ -279,4 +279,11 @@
 	    delete from member
 	    where member_id = #{member_id}
 	</delete>
+	
+	<!-- 포인트 충전 후 최신 정보 -->
+	<select id="getMemberById" resultType="MemberVO">
+		select * 
+		from member 
+		where member_id = ${member_id}
+	</select>
 </mapper>
