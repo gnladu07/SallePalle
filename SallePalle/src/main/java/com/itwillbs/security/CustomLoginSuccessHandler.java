@@ -45,9 +45,10 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		// 로그인 사용자 아이디 가져오기
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		int memberId = userDetails.getMember().getMember_id();
 		
 		// VO 객체 생성 후 DB에서 정보 가져오기
-		MemberVO loginInfo = userDetails.getMember();
+		MemberVO loginInfo = mService.getMemberById(memberId);
 		
 		// 세션 저장 -> 모든 JSP, 컨트롤러에서 사용 가능
 		request.getSession().setAttribute("loginInfo", loginInfo);

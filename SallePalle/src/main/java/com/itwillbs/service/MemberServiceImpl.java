@@ -433,6 +433,15 @@ public class MemberServiceImpl implements MemberService {
 		return resultVO;
 	}
 
+	@Override
+	public void updateOpenBankingToken(MemberVO vo) {
+		logger.info(" MServiceImpl: updateOpenBankingToken() 실행! ");
+
+		memberDAO.updateOpenBankingToken(vo);
+		
+		logger.info(" MServiceImpl: updateOpenBankingToken() 끝! ");
+	}
+
 
 
 }

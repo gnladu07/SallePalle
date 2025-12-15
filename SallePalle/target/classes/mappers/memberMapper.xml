@@ -282,8 +282,22 @@
 	
 	<!-- 포인트 충전 후 최신 정보 -->
 	<select id="getMemberById" resultType="MemberVO">
-		select * 
-		from member 
-		where member_id = ${member_id}
+		 SELECT 
+	        m.*,
+	        pw.balance AS wallet_balance,
+	        mw.mileage AS wallet_mileage
+	    FROM member m
+	    LEFT JOIN pay_wallet pw ON m.member_id = pw.member_id
+	    LEFT JOIN mileage_wallet mw ON m.member_id = mw.member_id
+	    WHERE m.member_id = #{member_id}
 	</select>
+	
+	<update id="updateOpenBankingToken">
+	    UPDATE member
+	    SET 
+	        ob_access_token = #{ob_access_token},
+	        ob_refresh_token = #{ob_refresh_token},
+	        ob_user_seq_no = #{ob_user_seq_no}
+	    WHERE member_id = #{member_id}
+	</update>
 </mapper>
