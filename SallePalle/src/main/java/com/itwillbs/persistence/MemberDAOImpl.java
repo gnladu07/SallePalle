@@ -267,6 +267,16 @@ public class MemberDAOImpl implements MemberDAO {
 		return resultVO;
 	}
 
+	@Override
+	public void updateOpenBankingToken(MemberVO vo) {
+		logger.info(" DAOImpl: updateOpenBankingToken() 실행! ");
+		
+		sqlSession.update(NAMESPACE + "updateOpenBankingToken", vo);
+		
+		logger.info(" DAOImpl: updateOpenBankingToken() 끝! ");
+		
+	}
+
 
 
 }

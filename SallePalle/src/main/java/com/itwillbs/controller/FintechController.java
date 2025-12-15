@@ -19,8 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.domain.MileageWalletVO;
+import com.itwillbs.domain.PayWalletVO;
 import com.itwillbs.domain.RequestTokenVO;
 import com.itwillbs.domain.ResponseTokenVO;
+import com.itwillbs.persistence.MileageWalletDAO;
+import com.itwillbs.persistence.PayWalletDAO;
 import com.itwillbs.service.FintechService;
 import com.itwillbs.service.MemberService;
 import com.itwillbs.service.OpenBankingService;
@@ -38,6 +42,9 @@ public class FintechController {
 //    @Value("${client_secret}")
 //    private String clientSecret;
 	
+	@Inject private PayWalletDAO payWalletDAO;
+	@Inject private MileageWalletDAO mileageWalletDAO;
+	
 	@Inject private OpenBankingService bankingService;
 	@Inject private FintechService fService; 
 	@Inject private MemberService mService;
@@ -51,12 +58,43 @@ public class FintechController {
     }
 
     @PostMapping("/chargeRequest")
-    public String chargeRequestPOST(
-            @RequestParam("amount") int amount,
-            HttpSession session) throws Exception {
-
+    public String chargeRequestPOST(@RequestParam("amount") int amount,
+                                    HttpSession session) throws Exception {
         log.info("충전 요청 금액: {}", amount);
+        
+        // 이미 인증된 사용자 확인 로직 
+        MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
 
+        if (loginInfo.getOb_access_token() != null &&
+            loginInfo.getOb_refresh_token() != null &&
+            loginInfo.getOb_user_seq_no() != null) {
+
+            log.info("이미 오픈뱅킹 인증된 회원 → 인증 절차 생략 후 충전 처리 진행");
+
+	        // 충전 금액 세션에 저장
+	        session.setAttribute("chargeAmount", amount);
+	        
+	        // 바로 충전 처리
+	        fService.processCharge(loginInfo.getMember_id(), amount);
+	
+	        // 세션 최신화
+	        MemberVO freshMember = mService.getMemberById(loginInfo.getMember_id());
+	        
+	        PayWalletVO pay = payWalletDAO.getWallet(loginInfo.getMember_id());
+	        MileageWalletVO mileage = mileageWalletDAO.getWallet(loginInfo.getMember_id());
+	        
+	        freshMember.setWallet_balance(pay.getBalance());
+	        freshMember.setWallet_mileage(mileage.getMileage());
+	        
+	        // 세션 갱신
+	        session.setAttribute("loginInfo", freshMember);
+	
+	        // 완료 페이지로 이동
+	        session.setAttribute("msg", "포인트 충전이 완료되었습니다.");
+	        return "/fintech/callback";
+	    }
+        
+        // 최초 인증 사용자
         session.setAttribute("chargeAmount", amount);
 
         String state = UUID.randomUUID().toString().replace("-", "");
@@ -78,12 +116,11 @@ public class FintechController {
     }
 
     @GetMapping("/callback")
-    public String callbackGET(
-            @RequestParam("code") String code,
-            @RequestParam("state") String state,
-            HttpSession session,
-            Model model) throws Exception {
-
+    public String callbackGET(@RequestParam("code") String code,
+            				  @RequestParam("state") String state,
+				              HttpSession session,
+				              Model model) throws Exception {
+    	
         log.info("오픈뱅킹 callback 도착 code={}, state={}", code, state);
 
         String savedState = (String) session.getAttribute("fintech_state");
@@ -102,12 +139,28 @@ public class FintechController {
         ResponseTokenVO tokenResponse = bankingService.requestToken(tokenVO);
         log.info("Access Token 발급 완료: {}", tokenResponse);
 
-        Integer amount = (Integer) session.getAttribute("chargeAmount");
+        // 로그인 회원 정보
         MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
-
+        tokenResponse.setMember_id(loginInfo.getMember_id());
+        
+        // 최초 인증 토큰
+        loginInfo.setOb_access_token(tokenResponse.getAccess_token());
+        loginInfo.setOb_refresh_token(tokenResponse.getRefresh_token());
+        loginInfo.setOb_user_seq_no(tokenResponse.getUser_seq_no());
+        
+        mService.updateOpenBankingToken(loginInfo);
+        
+        Integer amount = (Integer) session.getAttribute("chargeAmount");
         fService.processCharge(loginInfo.getMember_id(), amount);
-
+        
         MemberVO freshMember = mService.getMemberById(loginInfo.getMember_id());
+        
+        PayWalletVO pay = payWalletDAO.getWallet(loginInfo.getMember_id());
+        MileageWalletVO mileage = mileageWalletDAO.getWallet(loginInfo.getMember_id());
+
+        freshMember.setWallet_balance(pay.getBalance());
+        freshMember.setWallet_mileage(mileage.getMileage());
+        
         session.setAttribute("loginInfo", freshMember);
 
         session.removeAttribute("chargeAmount");

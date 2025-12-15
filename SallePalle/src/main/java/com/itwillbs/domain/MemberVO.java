@@ -83,4 +83,8 @@ public class MemberVO {
 	private Integer wallet_balance;   // 현재 보유 포인트
 	private Integer wallet_mileage;   // 현재 보유 마일리지 
 	
+	private String ob_access_token;
+	private String ob_refresh_token;
+	private String ob_user_seq_no;
+	
 }

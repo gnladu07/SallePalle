@@ -75,6 +75,8 @@ public interface MemberDAO {
 
 	// 포인트 충전 후 최신 정보
 	public MemberVO getMemberById(int member_id);
+	
+	public void updateOpenBankingToken(MemberVO vo);
 
 
 }
