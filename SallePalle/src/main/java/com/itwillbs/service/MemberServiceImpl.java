@@ -423,6 +423,16 @@ public class MemberServiceImpl implements MemberService {
 		logger.info(" MServiceImpl: enableMember() 끝! ");
 	}
 
+	@Override
+	public MemberVO getMemberById(int member_id) {
+		logger.info(" MServiceImpl: getMemberById() 실행! ");
+		
+		MemberVO resultVO = memberDAO.getMemberById(member_id);
+		
+		logger.info(" MServiceImpl: getMemberById() 끝! ");
+		return resultVO;
+	}
+
 
 
 }

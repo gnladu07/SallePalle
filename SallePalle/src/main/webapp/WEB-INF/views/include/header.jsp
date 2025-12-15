@@ -111,9 +111,9 @@
     .user-info-group {
         display: flex;
         align-items: center;
-        gap: 20px;
-        padding: 8px 15px;
-        background: #eee;
+        gap: 25px;
+        padding: 4px 15px;
+        background: #fbfbfc;
         border-radius: 25px;
         cursor: pointer;
     }
@@ -387,6 +387,7 @@
         align-items: center;
         justify-content: center;
         padding: 40px 20px;
+        background: #fbfbfc;
     }
 
     .login-container {
@@ -625,6 +626,7 @@
 	    display: flex;
 	    justify-content: center;
 	    padding: 40px 20px;
+	    background: #fbfbfc;
 	}
 	
 	.read-container {
@@ -896,6 +898,7 @@
 	    display: flex;
 	    justify-content: center;
 	    padding: 40px 20px;
+	    background: #fbfbfc;
 	}
 	
 	.profileEdit-container {
@@ -1085,6 +1088,7 @@
 	    display: flex;
 	    justify-content: center;
 	    padding: 40px 20px;
+	    background: #fbfbfc;
 	}
 	
 	.update-container {
@@ -1264,6 +1268,7 @@
         align-items: center;
         justify-content: center;
         padding: 40px 20px;
+        background: #fbfbfc;
     }
 
     .joinChoice-container {
@@ -1388,6 +1393,7 @@
         display: flex;
         justify-content: center;
         padding: 40px 20px;
+        background: #fbfbfc;
     }
 
     .join-container {
@@ -1616,12 +1622,14 @@
     
     /* findId */
     .main-findId {
-        margin-top: 70px;
+        margin-top: 10px;
+        margin-bottom: 0px;
         min-height: calc(100vh - 140px);
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 40px 20px;
+        padding: 30px 20px;
+        background: #fbfbfc;
     }
 
     .findId-container {
@@ -1757,6 +1765,59 @@
         color: #FF6F61;
     }
     
+    /* chargePoint.jsp */
+    .main-charge {
+        margin-top: 10px;
+        margin-bottom: 0px;
+        min-height: calc(100vh - 140px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 20px;
+        background: #fbfbfc;
+    }
+	.charge-container {
+ 		width: 100%;
+        max-width: 480px;
+        background: white;
+        border-radius: 16px;
+        padding: 50px 40px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    .charge-title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .charge-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #ececec;
+        padding: 15px;
+        margin-bottom: 12px;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+    .charge-item:hover {
+        background: #fafafa;
+    }
+    .charge-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .charge-left img {
+        width: 50px;
+        height: 50px;
+    }
+    .charge-right {
+        font-size: 18px;
+        font-weight: bold;
+        color: #ff7f00;
+    }
+    
     /* footer.jsp */
     footer {
         padding: 30px 0;
@@ -1766,6 +1827,7 @@
         background: white;
         border-top: 1px solid #eee;
     }
+    
 </style>
 </head>
 <body>
@@ -1831,12 +1893,12 @@
 
 		            <div class="dropdown-stats">
 		                <div class="stat-item">
-		                    <div class="stat-label">살래P</div>
-		                    <div class="stat-value">25,000</div>
+		                    <div class="stat-label"><a href="/fintech/chargePoint">살래P</a></div>
+		                    <div class="stat-value"><a href="/fintech/chargePoint">${loginInfo.wallet_balance }</a></div>
 		                </div>
 		                <div class="stat-item">
 		                    <div class="stat-label">팔래M</div>
-		                    <div class="stat-value">2,500</div>
+		                    <div class="stat-value">${loginInfo.wallet_mileage}</div>
 		                </div>
 		            </div>
 

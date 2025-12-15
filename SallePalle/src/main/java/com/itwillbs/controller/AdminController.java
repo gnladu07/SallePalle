@@ -1,6 +1,8 @@
 package com.itwillbs.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwillbs.domain.Criteria;
@@ -52,6 +55,24 @@ public class AdminController {
 		log.info(" dashboard() 끝! ");
         return "/admin/home";
     }
+	
+	@GetMapping("/sellerPendingCount")
+	@ResponseBody
+	public Map<String, Object> sellerPendingCount() {
+	    Map<String, Object> map = new HashMap<>();
+	    int cnt = aService.getSellerCount();
+	    map.put("count", cnt);
+	    return map;
+	}
+	
+	@GetMapping("/memberPendingCount")
+	@ResponseBody
+	public Map<String, Object> memberPendingCount() {
+		Map<String, Object> map = new HashMap<>();
+		int cnt = aService.getTotalCount();
+		map.put("count", cnt);
+		return map;
+	}
 	
 	// 판매 권한 신청 리스트
     @GetMapping("/sellerRequest")

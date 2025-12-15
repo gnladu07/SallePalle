@@ -257,6 +257,16 @@ public class MemberDAOImpl implements MemberDAO {
 		logger.info(" DAOImpl: enableMember() 끝! ");		
 	}
 
+	@Override
+	public MemberVO getMemberById(int member_id) {
+		logger.info(" DAOImpl: getMemberById() 실행! ");
+		
+		MemberVO resultVO = sqlSession.selectOne(NAMESPACE + "getMemberById", member_id); 
+		
+		logger.info(" DAOImpl: getMemberById() 끝! ");
+		return resultVO;
+	}
+
 
 
 }

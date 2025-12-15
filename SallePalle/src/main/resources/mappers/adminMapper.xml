@@ -78,7 +78,8 @@
 	<select id="getSellerCount" resultType="int">
 		select count(*) 
 		from member 
-		where seller_status = 'W'
+		where seller_status = 'W' 
+		and deleted_at is null
 	</select>
 	
 	<!-- 전체 회원 수 조회 -->
