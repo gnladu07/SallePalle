@@ -3,10 +3,13 @@ package com.itwillbs.persistence;
 import java.util.List;
 import java.util.Map;
 
+import com.itwillbs.domain.Criteria;
 import com.itwillbs.domain.MemberAuthVO;
 import com.itwillbs.domain.MemberHistoryVO;
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.domain.PageVO;
 import com.itwillbs.domain.PasswordResetTokenVO;
+import com.itwillbs.domain.PaymentHistoryVO;
 
 public interface MemberDAO {
 	
@@ -53,7 +56,7 @@ public interface MemberDAO {
 	public void updateSellerStatus(int member_id, String status);
 
 	// (어드민)멤버 정보 조회
-	public MemberVO readByMemberId(int member_id);
+//	public MemberVO readByMemberId(int member_id);
 
 	// 메일 발송 정보 조회
 	public void setNotifyFlag(Map<String, Object> map);
@@ -78,5 +81,7 @@ public interface MemberDAO {
 	
 	public void updateOpenBankingToken(MemberVO vo);
 
-
+	public List<PaymentHistoryVO> selectHistoryPaging(int member_id, Criteria cri);
+	
+	public int countHistory(int member_id);
 }

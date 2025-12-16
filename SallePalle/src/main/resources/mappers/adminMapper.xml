@@ -33,6 +33,9 @@
 	    <result property="agree_marketing_email" column="agree_marketing_email" />
 	    <result property="agree_marketing_sms" column="agree_marketing_sms" />
 	    
+	    <result property="wallet_balance" column="wallet_balance"/>
+		<result property="wallet_mileage" column="wallet_mileage"/>
+		
 	    <collection property="authList" ofType="MemberAuthVO">
 	    	<result property="userid" column="userid" />
 	    	<result property="auth" column="auth" />
@@ -106,9 +109,19 @@
 	<!-- 페이징 + 정렬된 회원 목록 조회 -->
 	<select id="getMemberListPaged" resultMap="memberMap">
 	
-	    select *
-	    from member 
-	    where 1=1 
+	    select 
+	        m.*,
+	
+	        ifnull(pw.balance, 0)  as wallet_balance,
+	        ifnull(mw.mileage, 0)  as wallet_mileage
+	
+	    from member m
+	    left join pay_wallet pw
+	        on m.member_id = pw.member_id
+	    left join mileage_wallet mw
+	        on m.member_id = mw.member_id
+	
+	    where 1=1
 	    
 	    <!-- 검색 조건 추가 -->
 	    <if test="keyword != null and keyword != ''">

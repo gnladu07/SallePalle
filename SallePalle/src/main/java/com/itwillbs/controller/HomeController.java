@@ -33,7 +33,7 @@ public class HomeController {
 
 	    if (loginInfo != null) {
 	        // DB 최신 값으로 갱신
-	        MemberVO fresh = memberService.readByMemberId(loginInfo.getMember_id());
+	        MemberVO fresh = memberService.getMemberById(loginInfo.getMember_id());
 	        session.setAttribute("loginInfo", fresh);
 	    }
 

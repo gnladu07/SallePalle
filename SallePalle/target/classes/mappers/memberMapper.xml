@@ -231,11 +231,12 @@
 	</update>
 	
 	<!-- member_id로 회원 조회 -->
+<!-- 	
 	<select id="readByMemberId" resultType="MemberVO">
 	    select *
 	    from member
 	    where member_id = #{member_id}
-	</select>
+	</select> -->
 	
 	<!-- 메일 발송 정보 조회 -->
 	<update id="setNotifyFlag">
@@ -282,14 +283,14 @@
 	
 	<!-- 포인트 충전 후 최신 정보 -->
 	<select id="getMemberById" resultType="MemberVO">
-		 SELECT 
-	        m.*,
-	        pw.balance AS wallet_balance,
-	        mw.mileage AS wallet_mileage
-	    FROM member m
-	    LEFT JOIN pay_wallet pw ON m.member_id = pw.member_id
-	    LEFT JOIN mileage_wallet mw ON m.member_id = mw.member_id
-	    WHERE m.member_id = #{member_id}
+		select 
+	        m.*, 
+	        pw.balance AS wallet_balance, 
+	        mw.mileage AS wallet_mileage 
+	    from member m 
+	    left join pay_wallet pw on m.member_id = pw.member_id 
+	    left join mileage_wallet mw on m.member_id = mw.member_id 
+	    where m.member_id = #{member_id}
 	</select>
 	
 	<update id="updateOpenBankingToken">
@@ -300,4 +301,45 @@
 	        ob_user_seq_no = #{ob_user_seq_no}
 	    WHERE member_id = #{member_id}
 	</update>
+	
+	<!-- 통합 결제/적립 내역 조회(페이징) -->
+	<select id="selectHistoryPaging" resultType="PaymentHistoryVO">
+	    SELECT
+	        'PAY' AS history_type,
+	        amount,
+	        type,
+	        memo,
+	        created_at
+	    FROM pay_history
+	    WHERE member_id = #{member_id}
+	
+	    UNION ALL
+	
+	    SELECT
+	        'MILEAGE' AS history_type,
+	        amount,
+	        type,
+	        memo,
+	        created_at
+	    FROM mileage_history
+	    WHERE member_id = #{member_id}
+	
+	    ORDER BY created_at DESC
+	    LIMIT #{cri.pageStart}, #{cri.amount}
+	</select>
+    
+  	<!-- 결제 + 마일리지 전체 개수 -->
+	<select id="countHistory" resultType="int">
+	    SELECT COUNT(*) FROM (
+	        SELECT created_at
+	        FROM pay_history
+	        WHERE member_id = #{member_id}
+	
+	        UNION ALL
+	
+	        SELECT created_at
+	        FROM mileage_history
+	        WHERE member_id = #{member_id}
+	    ) t
+	</select>
 </mapper>

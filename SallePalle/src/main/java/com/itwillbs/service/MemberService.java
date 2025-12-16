@@ -1,11 +1,14 @@
 package com.itwillbs.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.itwillbs.domain.Criteria;
 import com.itwillbs.domain.MemberAuthVO;
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.domain.PaymentHistoryVO;
 
 public interface MemberService {
 	
@@ -61,7 +64,7 @@ public interface MemberService {
     public void insertAuth(MemberAuthVO vo);
 
     // (어드민)멤버 정보 조회
-	public MemberVO readByMemberId(int member_id);
+//	public MemberVO readByMemberId(int member_id);
 
 	// 메일 발송 정보 조회
 	public void setNotifyFlag(int member_id, String flag);
@@ -85,5 +88,7 @@ public interface MemberService {
 	public MemberVO getMemberById(int member_id);
 
 	public void updateOpenBankingToken(MemberVO vo);
+	
+	public Map<String, Object> getPaymentHistory(int member_id, Criteria cri);
 
 }

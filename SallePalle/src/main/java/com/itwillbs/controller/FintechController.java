@@ -36,11 +36,11 @@ public class FintechController {
 	private static final Logger log 
 		= LoggerFactory.getLogger(FintechController.class);
 	
-//	@Value("${client_id}")
-//    private String clientId;
-//
-//    @Value("${client_secret}")
-//    private String clientSecret;
+	@Value("${client_id}")
+    private String clientId;
+
+    @Value("${client_secret}")
+    private String clientSecret;
 	
 	@Inject private PayWalletDAO payWalletDAO;
 	@Inject private MileageWalletDAO mileageWalletDAO;
@@ -49,8 +49,8 @@ public class FintechController {
 	@Inject private FintechService fService; 
 	@Inject private MemberService mService;
 	
-	private final String clientId = "b41453f5-4099-4020-a1b3-8200b48abf95";
-	private final String clientSecret = "60c7ad2e-5722-49bb-a5da-08f43a2af68e";
+//	private final String clientId = "b41453f5-4099-4020-a1b3-8200b48abf95";
+//	private final String clientSecret = "60c7ad2e-5722-49bb-a5da-08f43a2af68e";
     
     @GetMapping("/chargePoint")
     public String chargePointGET() {
@@ -61,6 +61,11 @@ public class FintechController {
     public String chargeRequestPOST(@RequestParam("amount") int amount,
                                     HttpSession session) throws Exception {
         log.info("충전 요청 금액: {}", amount);
+       
+    	log.info(" clientId: {}",clientId);
+
+        log.info(" clientSecret: {}", clientSecret);
+        
         
         // 이미 인증된 사용자 확인 로직 
         MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");

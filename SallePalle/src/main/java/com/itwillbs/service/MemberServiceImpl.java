@@ -16,10 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.component.FileComponent;
 import com.itwillbs.component.MailComponent;
+import com.itwillbs.domain.Criteria;
 import com.itwillbs.domain.MemberAuthVO;
 import com.itwillbs.domain.MemberHistoryVO;
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.domain.PageVO;
 import com.itwillbs.domain.PasswordResetTokenVO;
+import com.itwillbs.domain.PaymentHistoryVO;
 import com.itwillbs.persistence.MemberDAO;
 
 @Service
@@ -356,11 +359,12 @@ public class MemberServiceImpl implements MemberService {
 		logger.info(" MServiceImpl: insertAuth() 끝! ");
 	}
 
-	@Override
-    public MemberVO readByMemberId(int member_id) {
-		logger.info(" MServiceImpl: readByMemberId() 실행! ");
-        return memberDAO.readByMemberId(member_id);
-    }
+//	@Override
+//    public MemberVO readByMemberId(int member_id) {
+//		logger.info(" MServiceImpl: readByMemberId() 실행! ");
+//		logger.info(" MServiceImpl: readByMemberId() 끝! ");
+//        return memberDAO.readByMemberId(member_id);
+//    }
 
 	@Override
 	public void setNotifyFlag(int member_id, String flag) {
@@ -440,6 +444,25 @@ public class MemberServiceImpl implements MemberService {
 		memberDAO.updateOpenBankingToken(vo);
 		
 		logger.info(" MServiceImpl: updateOpenBankingToken() 끝! ");
+	}
+
+	@Override
+	public Map<String, Object> getPaymentHistory(int member_id, Criteria cri) {
+		logger.info(" MServiceImpl: getPaymentHistory() 실행! ");
+		
+	    int total = memberDAO.countHistory(member_id);
+
+	    List<PaymentHistoryVO> list =
+	            memberDAO.selectHistoryPaging(member_id, cri);
+
+	    PageVO pageVO = new PageVO(cri, total);
+
+	    Map<String, Object> resultVO = new HashMap<>();
+	    resultVO.put("list", list);
+	    resultVO.put("pageVO", pageVO);
+		
+		logger.info(" MServiceImpl: getPaymentHistory() 끝! ");
+		return resultVO;
 	}
 
 
