@@ -1828,6 +1828,198 @@
         border-top: 1px solid #eee;
     }
     
+    /* paymentHistory.jsp */
+	.main-paymentHistory {
+	    margin-top: 50px;
+	    min-height: calc(100vh - 140px);
+	    display: flex;
+	    justify-content: center;
+	    padding: 30px 20px;
+	    background: #fbfbfc;
+	}
+	
+	.paymentHistory-container {
+	    width: 100%;
+	    max-width: 1000px;
+	    background: white;
+	    border-radius: 16px;
+	    padding: 50px 40px;
+	    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+	    margin-bottom: 40px;
+	}
+	
+	.paymentHistory-title {
+	    text-align: center;
+	    font-size: 28px;
+	    font-weight: 700;
+	    margin-bottom: 12px;
+	    color: #333;
+	}
+	
+	.paymentHistory-subtitle {
+	    text-align: center;
+	    font-size: 15px;
+	    color: #888;
+	    margin-bottom: 40px;
+	}
+	
+	/* 필터 버튼 */
+	.paymentHistory-filter {
+	    display: flex;
+	    gap: 10px;
+	    justify-content: center;
+	    margin-bottom: 30px;
+	}
+	
+	.paymentHistory-filter-btn {
+	    padding: 10px 24px;
+	    border: 2px solid #e0e0e0;
+	    border-radius: 20px;
+	    background: white;
+	    color: #666;
+	    font-size: 14px;
+	    font-weight: 600;
+	    cursor: pointer;
+	    transition: 0.2s;
+	}
+	
+	.paymentHistory-filter-btn:hover {
+	    border-color: #FF6F61;
+	    color: #FF6F61;
+	}
+	
+	.paymentHistory-filter-btn.active {
+	    background: linear-gradient(135deg, #FF6F61, #9B59B6);
+	    border-color: transparent;
+	    color: white;
+	}
+	
+	/* 테이블 */
+	.paymentHistory-table-wrapper {
+	    overflow-x: auto;
+	    border-radius: 12px;
+	    border: 1px solid #e9ecef;
+	}
+	
+	.paymentHistory-table {
+	    width: 100%;
+	    border-collapse: collapse;
+	}
+	
+	.paymentHistory-table thead {
+	    background: #f8f9fa;
+	}
+	
+	.paymentHistory-table thead th {
+	    padding: 15px 20px;
+	    text-align: left;
+	    font-size: 14px;
+	    font-weight: 600;
+	    color: #333;
+	    border-bottom: 2px solid #e9ecef;
+	}
+	
+	.paymentHistory-table tbody td {
+	    padding: 18px 20px;
+	    font-size: 14px;
+	    color: #333;
+	    border-bottom: 1px solid #f0f0f0;
+	}
+	
+	.paymentHistory-row:hover {
+	    background: #f8f9fa;
+	}
+	
+	/* 배지 */
+	.paymentHistory-badge {
+	    display: inline-block;
+	    padding: 5px 12px;
+	    border-radius: 12px;
+	    font-size: 12px;
+	    font-weight: 600;
+	    white-space: nowrap;
+	}
+	
+	.paymentHistory-badge.charge {
+	    background: #d1ecf1;
+	    color: #0c5460;
+	}
+	
+	.paymentHistory-badge.use {
+	    background: #f8d7da;
+	    color: #721c24;
+	}
+	
+	.paymentHistory-badge.earn {
+	    background: #d4edda;
+	    color: #155724;
+	}
+	
+	.paymentHistory-badge.gray {
+	    background: #e2e3e5;
+	    color: #6c757d;
+	}
+	
+	/* 금액 */
+	.paymentHistory-amount {
+	    font-weight: 700;
+	    font-size: 15px;
+	}
+	
+	.paymentHistory-amount.plus {
+	    color: #28a745;
+	}
+	
+	.paymentHistory-amount.minus {
+	    color: #dc3545;
+	}
+	
+	.paymentHistory-memo {
+	    color: #666;
+	}
+	
+	/* 페이지네이션 */
+	.paymentHistory-pagination {
+	    display: flex;
+	    justify-content: center;
+	    gap: 8px;
+	    margin-top: 30px;
+	}
+	
+	.paymentHistory-page-btn {
+	    display: block;
+	    padding: 8px 14px;
+	    border: 1px solid #ddd;
+	    border-radius: 6px;
+	    color: #333;
+	    text-decoration: none;
+	    font-size: 14px;
+	    transition: 0.2s;
+	}
+	
+	.paymentHistory-page-btn:hover {
+	    background: #FF6F61;
+	    color: white;
+	    border-color: #FF6F61;
+	}
+	
+	.paymentHistory-page-btn.active {
+	    background: linear-gradient(135deg, #FF6F61, #9B59B6);
+	    color: white;
+	    border-color: transparent;
+	    font-weight: 700;
+	}
+	
+	/* 반응형 */
+	@media (max-width: 768px) {
+	    .paymentHistory-filter {
+	        flex-wrap: wrap;
+	    }
+	    
+	    .paymentHistory-table-wrapper {
+	        overflow-x: scroll;
+	    }
+	}
 </style>
 </head>
 <body>
@@ -1853,7 +2045,7 @@
     
     <div class="header-col center">
 	    <div class="menu-group">
-	        <button>중고 물품</button>
+	        <a href="/traBoard/saleTradeList"><button>중고 물품</button></a>
 	        <button>리뷰 피드</button>
 	        <button>나눔</button>
 	    </div>
@@ -1914,7 +2106,7 @@
 		                <span class="dropdown-item-icon">🕒</span>
 		                <span>최근본 글</span>
 		            </a>
-		            <a href="#" class="dropdown-item">
+		            <a href="/member/paymentHistory" class="dropdown-item">
 		                <span class="dropdown-item-icon">💰</span>
 		                <span>결제내역</span>
 		            </a>

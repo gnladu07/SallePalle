@@ -93,7 +93,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		                 "/member/login", "/member/join", "/member/joinChoice",
 		                 "/member/findPw", "/member/resetPw",
 		                 "/member/naverCallback", "/member/naverLogin",
-		                 "/resources/**").permitAll()
+		                 "/resources/**", 
+		                 "/traBoard/saleTradeList").permitAll()
 			
 			// ADMIN 권한			
 			.antMatchers("/admin/login").permitAll()

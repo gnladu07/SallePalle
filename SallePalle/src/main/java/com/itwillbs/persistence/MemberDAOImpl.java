@@ -11,10 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.itwillbs.domain.Criteria;
 import com.itwillbs.domain.MemberAuthVO;
 import com.itwillbs.domain.MemberHistoryVO;
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.domain.PageVO;
 import com.itwillbs.domain.PasswordResetTokenVO;
+import com.itwillbs.domain.PaymentHistoryVO;
 
 @Repository
 public class MemberDAOImpl implements MemberDAO {
@@ -199,12 +202,12 @@ public class MemberDAOImpl implements MemberDAO {
 		logger.info(" DAOImpl: updateSellerStatus() 끝! ");
 	}
 
-	@Override
-    public MemberVO readByMemberId(int member_id) {
-		logger.info(" DAOImpl: readByMemberId() 실행! ");
-		logger.info(" DAOImpl: readByMemberId() 끝! ");
-        return sqlSession.selectOne(NAMESPACE + "readByMemberId", member_id);
-    }
+//	@Override
+//    public MemberVO readByMemberId(int member_id) {
+//		logger.info(" DAOImpl: readByMemberId() 실행! ");
+//		logger.info(" DAOImpl: readByMemberId() 끝! ");
+//        return sqlSession.selectOne(NAMESPACE + "readByMemberId", member_id);
+//    }
 
 	@Override
 	public void setNotifyFlag(Map<String, Object> map) {
@@ -275,6 +278,25 @@ public class MemberDAOImpl implements MemberDAO {
 		
 		logger.info(" DAOImpl: updateOpenBankingToken() 끝! ");
 		
+	}
+
+	@Override
+	public List<PaymentHistoryVO> selectHistoryPaging(int member_id, Criteria cri) {
+		logger.info(" DAOImpl: selectHistoryPaging() 실행! ");
+		
+	    Map<String, Object> param = new HashMap<>();
+	    param.put("member_id", member_id);
+	    param.put("cri", cri);
+
+	    logger.info(" DAOImpl: selectHistoryPaging() 끝! ");
+	    return sqlSession.selectList(NAMESPACE + "selectHistoryPaging",param);
+	}
+	
+	@Override
+	public int countHistory(int member_id) {
+		logger.info(" DAOImpl: countHistory() 실행! ");
+		logger.info(" DAOImpl: countHistory() 끝! ");
+	    return sqlSession.selectOne(NAMESPACE + "countHistory", member_id);
 	}
 
 

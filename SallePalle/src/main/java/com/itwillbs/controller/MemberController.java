@@ -27,8 +27,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itwillbs.component.NaverLoginComponent;
+import com.itwillbs.domain.Criteria;
 import com.itwillbs.domain.MemberAuthVO;
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.domain.PaymentHistoryVO;
 import com.itwillbs.security.CustomUserDetails;
 import com.itwillbs.service.MemberService;
 import com.itwillbs.service.TopLocationService;
@@ -420,6 +422,26 @@ public class MemberController {
 	        result.put("success", false);
 	    }
 	    return result;
+	}
+	
+	@GetMapping("/paymentHistory")
+	public String paymentGET(HttpSession session, Model model,
+			                 Criteria cri) {
+		logger.info(" paymentGET() 실행! ");
+		
+		MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+
+	    if (loginInfo == null) {
+	        return "redirect:/member/login";
+	    }
+
+	    Map<String, Object> data = mService.getPaymentHistory(loginInfo.getMember_id(), cri);
+
+	    model.addAttribute("historyList", data.get("list"));
+	    model.addAttribute("pageVO", data.get("pageVO"));
+		
+		logger.info(" paymentGET() 실행! ");
+		return "/member/paymentHistory";
 	}
 
 	

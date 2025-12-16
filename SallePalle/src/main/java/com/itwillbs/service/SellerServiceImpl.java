@@ -72,7 +72,7 @@ public class SellerServiceImpl implements SellerService {
         mService.setNotifyFlag(member_id, "Y");
         
         // 이메일 발송
-        MemberVO member = mService.readByMemberId(member_id);
+        MemberVO member = mService.getMemberById(member_id);
 
         String subject = "[살래팔래] 판매 권한 승인 안내";
         String content = member.getUsername() + "님,<br><br>"
@@ -97,7 +97,7 @@ public class SellerServiceImpl implements SellerService {
         mService.setNotifyFlag(member_id, "Y");
 		
 		// 이메일 발송
-        MemberVO member = mService.readByMemberId(member_id);
+        MemberVO member = mService.getMemberById(member_id);
 
         String subject = "[살래팔래] 판매 권한 신청 결과 안내";
         String content = member.getUsername() + "님,<br><br>"
