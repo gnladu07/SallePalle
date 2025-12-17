@@ -20,13 +20,10 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 	@Inject private SaleTradeDAO saleTradeDAO;
 
 	@Override
-	public List<SaleTradeVO> getSaleTradeList() {
-		log.info(" SaleTradeServiceImpl: getSaleTradeList()실행! ");
-		
-		List<SaleTradeVO> resultVO = saleTradeDAO.selectSaleTradeList();
-		
-		log.info(" SaleTradeServiceImpl: getSaleTradeList()끝! ");
-		return resultVO;
+	public List<SaleTradeVO> getSaleTradeList(String type, String keyword) {
+	    log.info(" SaleTradeServiceImpl: getSaleTradeList() 실행!");
+	    log.info(" SaleTradeServiceImpl: getSaleTradeList() 끝!");
+	    return saleTradeDAO.selectSaleTradeList(type, keyword);
 	}
 
 }

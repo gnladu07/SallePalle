@@ -2020,6 +2020,211 @@
 	        overflow-x: scroll;
 	    }
 	}
+	
+	/* saleTradeList.jsp */
+	.main-saleTradeList {
+	    margin-top: 100px;
+	    width: 100%;
+	    display: flex;
+	    justify-content: center;
+	    padding: 0 20px 40px;
+	}
+	
+	.saleTradeList-container {
+	    width: 100%;
+	    max-width: 1200px;
+	}
+	
+	/* 검색창 */
+	.saleTradeList-search-box {
+	    position: relative;
+	    display: flex;
+	    justify-content: center;
+	    margin-bottom: 25px;
+	}
+	
+	.saleTradeList-search-box input {
+	    width: 80%;
+	    padding: 14px 50px 14px 20px;
+	    border-radius: 30px;
+	    border: 1px solid #ddd;
+	    font-size: 15px;
+	    transition: 0.2s;
+	}
+	
+	.saleTradeList-search-box input:focus {
+	    outline: none;
+	    border-color: #FF6F61;
+	    box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.1);
+	}
+	
+	.saleTradeList-search-icon {
+	    position: absolute;
+	    right: 12%;
+	    top: 50%;
+	    transform: translateY(-50%);
+	    width: 20px;
+	    height: 20px;
+	    pointer-events: none;
+	}
+	
+	/* 카테고리 탭 */
+	.saleTradeList-category {
+	    display: flex;
+	    gap: 12px;
+	    overflow-x: auto;
+	    padding-bottom: 5px;
+	    margin-bottom: 30px;
+	}
+	
+	.saleTradeList-category::-webkit-scrollbar {
+	    height: 4px;
+	}
+	
+	.saleTradeList-category::-webkit-scrollbar-thumb {
+	    background: #ddd;
+	    border-radius: 2px;
+	}
+	
+	.saleTradeList-category-btn {
+	    padding: 10px 20px;
+	    border-radius: 20px;
+	    border: 1px solid #ddd;
+	    background: white;
+	    cursor: pointer;
+	    font-size: 14px;
+	    white-space: nowrap;
+	    transition: 0.2s;
+	    font-weight: 500;
+	}
+	
+	.saleTradeList-category-btn:hover {
+	    border-color: #FF6F61;
+	    color: #FF6F61;
+	}
+	
+	.saleTradeList-category-btn.active {
+	    background: linear-gradient(135deg, #FF6F61, #9B59B6);
+	    border-color: transparent;
+	    color: white;
+	}
+	
+	/* 물품 그리드 */
+	.saleTradeList-grid {
+	    display: grid;
+	    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	    gap: 20px;
+	}
+	
+	.saleTradeList-card {
+	    background: white;
+	    border-radius: 12px;
+	    border: 1px solid #eee;
+	    overflow: hidden;
+	    transition: 0.2s;
+	    cursor: pointer;
+	    text-decoration: none;
+	    color: inherit;
+	}
+	
+	.saleTradeList-card:hover {
+	    transform: translateY(-5px);
+	    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+	}
+	
+	.saleTradeList-img {
+	    width: 100%;
+	    height: 200px;
+	    background: #f0f0f0;
+	    overflow: hidden;
+	}
+	
+	.saleTradeList-img img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	}
+	
+	.saleTradeList-content {
+	    padding: 15px;
+	}
+	
+	.saleTradeList-title {
+	    font-size: 15px;
+	    font-weight: 600;
+	    color: #333;
+	    margin-bottom: 8px;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	}
+	
+	.saleTradeList-price {
+	    font-size: 18px;
+	    font-weight: 700;
+	    color: #FF6F61;
+	    margin-bottom: 10px;
+	}
+	
+	.saleTradeList-info {
+	    display: flex;
+	    align-items: center;
+	    gap: 12px;
+	    margin-bottom: 10px;
+	    font-size: 13px;
+	    color: #666;
+	}
+	
+	.saleTradeList-location,
+	.saleTradeList-likes {
+	    display: flex;
+	    align-items: center;
+	    gap: 4px;
+	}
+	
+	.saleTradeList-location svg,
+	.saleTradeList-likes svg {
+	    width: 14px;
+	    height: 14px;
+	}
+	
+	.saleTradeList-meta {
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	    font-size: 12px;
+	    color: #999;
+	    padding-top: 10px;
+	    border-top: 1px solid #f0f0f0;
+	}
+	
+	.saleTradeList-seller {
+	    font-weight: 500;
+	}
+	
+	.saleTradeList-date {
+	    color: #bbb;
+	}
+	
+	/* 반응형 */
+	@media (max-width: 768px) {
+	    .saleTradeList-grid {
+	        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	        gap: 15px;
+	    }
+	    
+	    .saleTradeList-img {
+	        height: 160px;
+	    }
+	    
+	    .saleTradeList-search-box input {
+	        width: 100%;
+	    }
+	    
+	    .saleTradeList-search-icon {
+	        right: 20px;
+	    }
+	}
 </style>
 </head>
 <body>

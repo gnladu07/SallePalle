@@ -3,36 +3,41 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.itwillbs.mapper.SaleTradeMapper">
-	<select id="selectSaleTradeList" resultType="SaleTradeVO">
-        SELECT
-            s.trade_id,
-            s.seller_id,
-            s.title,
-            s.price_point,
-            s.max_mileage_use,
-            s.quantity,
-            s.thumb_img,
-            s.recommend_cnt,
-            s.status,
-            s.regdate,
-
-            s.allow_full_mileage,
-
-            m.nickname AS seller_nickname,
-            t.toplct_name
-
-        FROM saletrade_board s
-        JOIN member m
-            ON s.seller_id = m.member_id
-        JOIN top_location t
-            ON s.toplct_id = t.toplct_id
-
-        WHERE
-            s.is_deleted = 'N'
-            AND m.enable_flag = '1'
-            AND m.deleted_at IS NULL
-            AND m.seller_status = 'Y'
-
-        ORDER BY s.regdate DESC
-    </select>
+	<select id="selectSaleTradeList" parameterType="map" resultType="SaleTradeVO">
+	
+	    SELECT
+	        s.trade_id,
+	        s.title,
+	        s.price_point,
+	        s.thumb_img,
+	        s.recommend_cnt,
+	        s.regdate,
+	        m.nickname AS seller_nickname,
+	        t.toplct_name,
+	        c.item_ctg_name
+	    FROM saletrade_board s
+	    JOIN member m ON s.seller_id = m.member_id
+	    JOIN top_location t ON s.toplct_id = t.toplct_id
+	    JOIN saletrade_item_category c ON s.item_ctg_id = c.item_ctg_id
+	    WHERE s.is_deleted = 'N'
+	
+	    <if test="keyword != null and keyword != ''">
+	        <choose>
+	            <when test="type == 'title'">
+	                AND s.title LIKE CONCAT('%', #{keyword}, '%')
+	            </when>
+	            <when test="type == 'content'">
+	                AND s.content LIKE CONCAT('%', #{keyword}, '%')
+	            </when>
+	            <when test="type == 'seller'">
+	                AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
+	            </when>
+	            <when test="type == 'item'">
+	                AND c.item_ctg_name LIKE CONCAT('%', #{keyword}, '%')
+	            </when>
+	        </choose>
+	    </if>
+	
+	    ORDER BY s.trade_id DESC
+	</select>
 </mapper>
