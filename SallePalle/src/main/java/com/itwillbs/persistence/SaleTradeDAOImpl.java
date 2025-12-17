@@ -1,6 +1,8 @@
 package com.itwillbs.persistence;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -23,13 +25,18 @@ public class SaleTradeDAOImpl implements SaleTradeDAO {
 	@Inject private SqlSession sqlSession;
 
 	@Override
-	public List<SaleTradeVO> selectSaleTradeList() {
-		log.info(" SaleTradeDAOImpl: selectSaleTradeList() 실행! ");
-		
-		List<SaleTradeVO> resultVO = sqlSession.selectList(NAMESPACE + "selectSaleTradeList");
-		
-		log.info(" SaleTradeDAOImpl: selectSaleTradeList() 끝! ");
-		return resultVO;
+	public List<SaleTradeVO> selectSaleTradeList(
+	        String type, String keyword) {
+
+	    log.info(" SaleTradeDAOImpl: selectSaleTradeList() 실행!");
+
+	    Map<String, Object> paramMap = new HashMap<>();
+	    paramMap.put("type", type);
+	    paramMap.put("keyword", keyword);
+
+	    log.info(" SaleTradeDAOImpl: selectSaleTradeList() 끝!");
+	    return sqlSession.selectList(
+	            NAMESPACE + "selectSaleTradeList", paramMap);
 	}
 
 }
