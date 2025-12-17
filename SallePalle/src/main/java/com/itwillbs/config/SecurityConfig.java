@@ -94,7 +94,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		                 "/member/findPw", "/member/resetPw",
 		                 "/member/naverCallback", "/member/naverLogin",
 		                 "/resources/**", 
-		                 "/traBoard/saleTradeList").permitAll()
+		                 "/traBoard/saleTradeList",
+		                 "/traBoard/detail").permitAll()
+			.antMatchers("/traBoard/recommend").hasRole("MEMBER")
 			
 			// ADMIN 권한			
 			.antMatchers("/admin/login").permitAll()
@@ -126,8 +128,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			// 403 제어
 			.exceptionHandling()
 			.accessDeniedHandler(accessDeniedHandler());
+
 	}
 	
+
 	// AuthenticationManager Bean 객체 등록
 	@Bean
 	@Override

@@ -11,7 +11,6 @@
 		        <option value="title">제목</option>
 		        <option value="content">내용</option>
 		        <option value="seller">판매자</option>
-		        <option value="item">물품종류</option>
 		    </select>
 		
 		    <!-- 검색어 -->
@@ -22,26 +21,66 @@
 		</form>
 
         <!-- 카테고리 탭 -->
-        <div class="saleTradeList-category">
-            <button class="saleTradeList-category-btn active">전체</button>
-            <button class="saleTradeList-category-btn">도서</button>
-            <button class="saleTradeList-category-btn">생활/가전</button>
-            <button class="saleTradeList-category-btn">가구/인테리어</button>
-            <button class="saleTradeList-category-btn">의류</button>
-            <button class="saleTradeList-category-btn">가구</button>
-            <button class="saleTradeList-category-btn">게임</button>
-            <button class="saleTradeList-category-btn">스포츠</button>
-            <button class="saleTradeList-category-btn">식료품</button>
-            <button class="saleTradeList-category-btn">해외직구</button>
-            <button class="saleTradeList-category-btn">PC용품</button>
-            <button class="saleTradeList-category-btn">레저</button>
-            <button class="saleTradeList-category-btn">기타</button>
-        </div>
+		<div class="saleTradeList-category">
+		
+		    <button class="saleTradeList-category-btn
+		        ${empty item_ctg_id ? 'active' : ''}"
+		        data-item-id="">전체</button>
+	
+		    <button class="saleTradeList-category-btn
+		        ${item_ctg_id == 2 ? 'active' : ''}"
+		        data-item-id="2">도서</button>
+		
+		    <button class="saleTradeList-category-btn
+		        ${item_ctg_id == 3 ? 'active' : ''}"
+		        data-item-id="3">생활/가전</button>
+		
+		    <button class="saleTradeList-category-btn
+		        ${item_ctg_id == 4 ? 'active' : ''}"
+		        data-item-id="4">가구/인테리어</button>
+		
+		    <button class="saleTradeList-category-btn
+		        ${item_ctg_id == 5 ? 'active' : ''}"
+		        data-item-id="5">의류</button>
+		
+		    <button class="saleTradeList-category-btn
+		        ${item_ctg_id == 6 ? 'active' : ''}"
+		        data-item-id="6">가구</button>
+		
+		    <button class="saleTradeList-category-btn
+		        ${item_ctg_id == 7 ? 'active' : ''}"
+		        data-item-id="7">게임</button>
+		
+		    <button class="saleTradeList-category-btn
+		        ${item_ctg_id == 8 ? 'active' : ''}"
+		        data-item-id="8">스포츠</button>
+		
+		    <button class="saleTradeList-category-btn
+		        ${item_ctg_id == 9 ? 'active' : ''}"
+		        data-item-id="9">식료품</button>
+		
+		    <button class="saleTradeList-category-btn
+		        ${item_ctg_id == 10 ? 'active' : ''}"
+		        data-item-id="10">해외직구</button>
+		
+		    <button class="saleTradeList-category-btn
+		        ${item_ctg_id == 11 ? 'active' : ''}"
+		        data-item-id="11">PC용품</button>
+		
+		    <button class="saleTradeList-category-btn
+		        ${item_ctg_id == 12 ? 'active' : ''}"
+		        data-item-id="12">레저</button>
+		
+		    <button class="saleTradeList-category-btn
+		        ${item_ctg_id == 13 ? 'active' : ''}"
+		        data-item-id="13">기타</button>
+		
+		</div>
 
         <!-- 물품 그리드 -->
         <div class="saleTradeList-grid">
             <c:forEach var="s" items="${saleTradeList}">
-                <a href="/sale/detail" class="saleTradeList-card">
+                <a href="/traBoard/detail?trade_id=${s.trade_id}" class="saleTradeList-card">
                     <div class="saleTradeList-img">
                         <c:if test="${!empty s.thumb_img}">
                             <img src="/upload/${s.thumb_img}" alt="${s.title}">
@@ -82,6 +121,23 @@
 $(function(){
     console.log("saleTradeList.jsp 로딩 완료");
     console.log("리스트 개수:", "${fn:length(saleTradeList)}");
+    console.log("카테고리 필터 스크립트 로딩");
+
+    $(".saleTradeList-category-btn").on("click", function () {
+        var itemCtgId = $(this).data("item-id");
+        console.log("선택한 item_ctg_id:", itemCtgId);
+
+        var query = "";
+
+        if(itemCtgId !== "" && itemCtgId !== undefined) {
+            query = "?item_ctg_id=" + itemCtgId;
+        }
+
+        console.log("이동 URL:", "/traBoard/saleTradeList" + query);
+
+        location.href = "/traBoard/saleTradeList" + query;
+    });
+
 });
 </script>
 
