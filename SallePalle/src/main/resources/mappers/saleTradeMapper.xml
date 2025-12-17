@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.itwillbs.mapper.SaleTradeMapper">
-	<select id="selectSaleTradeList" parameterType="map" resultType="SaleTradeVO">
+	<select id="selectSaleTradeList" resultType="SaleTradeVO">
 	
 	    SELECT
 	        s.trade_id,
@@ -21,6 +21,12 @@
 	    JOIN saletrade_item_category c ON s.item_ctg_id = c.item_ctg_id
 	    WHERE s.is_deleted = 'N'
 	
+	    <!-- 카테고리 필터 -->
+	    <if test="itemCtgId != null">
+	        AND s.item_ctg_id = #{itemCtgId}
+	    </if>
+	
+	    <!-- 검색 필터 -->
 	    <if test="keyword != null and keyword != ''">
 	        <choose>
 	            <when test="type == 'title'">
@@ -32,12 +38,73 @@
 	            <when test="type == 'seller'">
 	                AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
 	            </when>
-	            <when test="type == 'item'">
-	                AND c.item_ctg_name LIKE CONCAT('%', #{keyword}, '%')
-	            </when>
+            
+	            <!-- 추가된 코드 -->
+		        <otherwise>
+		            AND s.title LIKE CONCAT('%', #{keyword}, '%')
+		        </otherwise>
 	        </choose>
 	    </if>
 	
 	    ORDER BY s.trade_id DESC
 	</select>
+	
+	<select id="selectSaleTradeDetail" resultType="SaleTradeVO">
+	    SELECT
+	        s.*,
+	        m.nickname AS seller_nickname,
+	        m.email,
+	        m.profile_img
+	    FROM saletrade_board s
+	    JOIN member m ON s.seller_id = m.member_id
+	    WHERE s.trade_id = #{tradeId}
+	      AND s.is_deleted = 'N'
+	</select>
+	
+	<select id="selectOtherSaleTradeBySeller" resultType="SaleTradeVO">
+	    SELECT
+	        trade_id,
+	        title,
+	        thumb_img,
+	        price_point
+	    FROM saletrade_board
+	    WHERE seller_id = #{sellerId}
+	      AND trade_id != #{tradeId}
+	      AND is_deleted = 'N'
+	    ORDER BY trade_id DESC
+	    LIMIT 4
+	</select>
+	
+	<!-- 1. 추천 중복 체크 -->
+	<select id="existsRecommend" resultType="int">
+	    SELECT COUNT(*)
+	    FROM recommend r
+	    JOIN member m ON r.member_id = m.member_id
+	    WHERE r.board_type = 'SALE'
+	      AND r.board_id = #{tradeId}
+	      AND m.userid = #{userid}
+	</select>
+	
+	<!-- 2. 추천 등록 -->
+	<insert id="insertRecommend">
+	    INSERT INTO recommend (member_id, board_type, board_id)
+	    SELECT member_id, 'SALE', #{tradeId}
+	    FROM member
+	    WHERE userid = #{userid}
+	</insert>
+	
+	<!-- 3. 추천 수 증가 -->
+	<update id="increaseRecommendCnt">
+	    UPDATE saletrade_board
+	    SET recommend_cnt = recommend_cnt + 1
+	    WHERE trade_id = #{tradeId}
+	</update>
+	
+	<!-- 4. 추천 수 조회 -->
+	<select id="selectRecommendCnt" resultType="int">
+	    SELECT recommend_cnt
+	    FROM saletrade_board
+	    WHERE trade_id = #{tradeId}
+	</select>
+	
 </mapper>
