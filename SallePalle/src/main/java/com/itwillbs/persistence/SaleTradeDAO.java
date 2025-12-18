@@ -27,6 +27,25 @@ public interface SaleTradeDAO {
 	// 4. 최신 추천 수 조회
 	public int selectRecommendCnt(int tradeId);
 
+	// userid -> member_id 변환
+	public int selectMemberIdByUserid(String userid);
 
+	// 구매자 포인트 차감
+	public void usePoint(int buyerId, int usedPoint);
+
+	// 판매자 포인트 적립
+	public void earnPoint(int sellerId, int earnPoint);
+
+	// 구매자 마일리지 차감
+	public void useMileage(int buyerId, int usedMileage);
+
+	// 판매자 마일리지 적립
+	public void earnMileage(int sellerId, int usedMileage);
+
+	// 거래 내역 저장
+	public void insertTradeHistory(int tradeId, int buyerId, int sellerId, int usedPoint, int earnPoint, int usedMileage);
+
+	// 판매 상태 완료 처리
+	public void updateTradeStatusComplete(int tradeId);
 
 }

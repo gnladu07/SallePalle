@@ -107,4 +107,68 @@
 	    WHERE trade_id = #{tradeId}
 	</select>
 	
+	<!-- userid -> member_id 변환 -->
+	<select id="selectMemberIdByUserid"
+	        parameterType="string"
+	        resultType="int">
+	    SELECT member_id
+	    FROM member
+	    WHERE userid = #{userid}
+	</select>
+	
+	<!-- 포인트 차감 -->
+    <update id="usePoint" parameterType="PayWalletVO">
+        UPDATE pay_wallet
+        SET balance = balance + #{balance}
+        WHERE member_id = #{member_id}
+    </update>
+
+    <!-- 포인트 적립 -->
+    <update id="earnPoint" parameterType="PayWalletVO">
+        UPDATE pay_wallet
+        SET balance = balance + #{balance}
+        WHERE member_id = #{member_id}
+    </update>
+
+    <!-- 마일리지 차감 -->
+    <update id="useMileage" parameterType="MileageWalletVO">
+        UPDATE mileage_wallet
+        SET mileage = mileage + #{mileage}
+        WHERE member_id = #{member_id}
+    </update>
+
+    <!-- 마일리지 적립 -->
+    <update id="earnMileage" parameterType="MileageWalletVO">
+        UPDATE mileage_wallet
+        SET mileage = mileage + #{mileage}
+        WHERE member_id = #{member_id}
+    </update>
+
+    <!-- 거래 이력 저장 -->
+    <insert id="insertTradeHistory" >
+
+        INSERT INTO trade_history (
+            trade_id,
+            buyer_id,
+            seller_id,
+            used_point,
+            earn_point,
+            used_mileage
+        ) VALUES (
+            #{trade_id},
+            #{buyer_id},
+            #{seller_id},
+            #{used_point},
+            #{earn_point},
+            #{used_mileage}
+        )
+    </insert>
+
+    <!-- 판매 상태 완료 -->
+    <update id="updateTradeStatusComplete" parameterType="int">
+        UPDATE saletrade_board
+        SET status = 'C'
+        WHERE trade_id = #{tradeId}
+    </update>
+	
 </mapper>

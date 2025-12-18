@@ -95,8 +95,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		                 "/member/naverCallback", "/member/naverLogin",
 		                 "/resources/**", 
 		                 "/traBoard/saleTradeList",
-		                 "/traBoard/detail").permitAll()
-			.antMatchers("/traBoard/recommend").hasRole("MEMBER")
+		                 "/traBoard/detail",
+		                 "/traBoard/recommend").permitAll()
 			
 			// ADMIN 권한			
 			.antMatchers("/admin/login").permitAll()
