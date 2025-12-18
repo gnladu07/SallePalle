@@ -71,6 +71,7 @@ public class SaleTradeController {
 	@ResponseBody
 	public int recommend(@RequestParam("trade_id") int tradeId,
 	                     Principal principal) {
+		log.info(" recommend()실행! ");
 
 	    if (principal == null) {
 	        return -1; // NOT_LOGIN
@@ -82,7 +83,30 @@ public class SaleTradeController {
 	    int result = stService.recommendTrade(tradeId, userid);
 
 	    log.info("추천 결과 반환값={}", result);
+	    log.info(" recommend()끝! ");
 	    return result;
+	}
+	
+	@PostMapping("/buy")
+	@ResponseBody
+	public String buyTrade(@RequestParam int trade_id,
+	                       @RequestParam boolean payPoint,
+	                       @RequestParam boolean payMileage,
+	                       @RequestParam(required=false) String mileageType,
+	                       @RequestParam(required=false) Integer useMileage,
+	                       Principal principal) {
+		log.info(" buyTrade()실행! ");
+	    log.info("trade_id={}", trade_id);
+
+	    if(principal == null){
+	        return "LOGIN_REQUIRED";
+	    }
+
+	    stService.buyTrade(trade_id, principal.getName(),
+	                       payPoint, payMileage, mileageType, useMileage);
+
+	    log.info(" buyTrade()끝! ");
+	    return "SUCCESS";
 	}
 
 }

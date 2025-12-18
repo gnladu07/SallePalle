@@ -44,8 +44,8 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 	@Transactional
 	@Override
 	public int recommendTrade(int tradeId, String userid) {
-
-	    log.info("recommendTrade Service 실행 tradeId={}, userid={}", tradeId, userid);
+		log.info(" SaleTradeServiceImpl: recommendTrade() 실행!");
+	    log.info("tradeId={}, userid={}", tradeId, userid);
 
 	    // 1. 중복 추천 체크
 	    int exists = saleTradeDAO.existsRecommend(tradeId, userid);
@@ -59,10 +59,57 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 	    // 3. 추천 수 증가
 	    saleTradeDAO.increaseRecommendCnt(tradeId);
 
+	    log.info(" SaleTradeServiceImpl: recommendTrade() 끝!");
 	    // 4. 최신 추천 수 조회
 	    return saleTradeDAO.selectRecommendCnt(tradeId);
 	}
 
-	
+	@Transactional
+	@Override
+	public void buyTrade(int tradeId, String userid,
+	                     boolean payPoint, boolean payMileage,
+	                     String mileageType, Integer useMileage) {
+		log.info(" SaleTradeServiceImpl: buyTrade() 실행!");
+	    SaleTradeVO trade = saleTradeDAO.selectSaleTradeDetail(tradeId);
+
+	    int buyerId  = saleTradeDAO.selectMemberIdByUserid(userid);
+	    int sellerId = trade.getSeller_id();
+	    int price    = trade.getPrice_point();
+
+	    int usedPoint = 0;
+	    int usedMileage = 0;
+	    int earnPoint = 0;
+
+	    if(payPoint){
+	        usedPoint = price;
+	        earnPoint = price;
+	        saleTradeDAO.usePoint(buyerId, usedPoint);
+	        saleTradeDAO.earnPoint(sellerId, earnPoint);
+	    }
+
+	    if(payMileage){
+	        if("FULL".equals(mileageType)){
+	            usedMileage = price;
+	            saleTradeDAO.useMileage(buyerId, usedMileage);
+	            saleTradeDAO.earnMileage(sellerId, usedMileage);
+	        } else {
+	            usedMileage = useMileage;
+	            usedPoint = price - useMileage;
+	            earnPoint = usedPoint;
+
+	            saleTradeDAO.useMileage(buyerId, usedMileage);
+	            saleTradeDAO.usePoint(buyerId, usedPoint);
+	            saleTradeDAO.earnPoint(sellerId, earnPoint);
+	        }
+	    }
+
+	    saleTradeDAO.insertTradeHistory(
+	        tradeId, buyerId, sellerId,
+	        usedPoint, earnPoint, usedMileage
+	    );
+
+	    saleTradeDAO.updateTradeStatusComplete(tradeId);
+	    log.info(" SaleTradeServiceImpl: buyTrade() 끝!");
+	}
 
 }

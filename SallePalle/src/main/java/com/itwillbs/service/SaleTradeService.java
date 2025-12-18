@@ -18,8 +18,8 @@ public interface SaleTradeService {
 	// 중고 판매글 추천 처리 - ajax
 	public int recommendTrade(int tradeId, String userid);
 
-	
-	
+	// 중고 제품 구매 처리
+	public void buyTrade(int trade_id, String name, boolean payPoint, boolean payMileage, String mileageType, Integer useMileage);
 
 
 }
