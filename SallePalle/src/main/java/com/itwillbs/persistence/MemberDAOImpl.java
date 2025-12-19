@@ -18,6 +18,7 @@ import com.itwillbs.domain.MemberVO;
 import com.itwillbs.domain.PageVO;
 import com.itwillbs.domain.PasswordResetTokenVO;
 import com.itwillbs.domain.PaymentHistoryVO;
+import com.itwillbs.domain.TradeHistoryViewVO;
 
 @Repository
 public class MemberDAOImpl implements MemberDAO {
@@ -281,24 +282,35 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 	@Override
-	public List<PaymentHistoryVO> selectHistoryPaging(int member_id, Criteria cri) {
-		logger.info(" DAOImpl: selectHistoryPaging() 실행! ");
-		
-	    Map<String, Object> param = new HashMap<>();
-	    param.put("member_id", member_id);
-	    param.put("cri", cri);
-
-	    logger.info(" DAOImpl: selectHistoryPaging() 끝! ");
-	    return sqlSession.selectList(NAMESPACE + "selectHistoryPaging",param);
+	public List<PaymentHistoryVO> selectHistoryLimit50(int member_id) {
+		logger.info(" DAOImpl: selectHistoryLimit50() 실행! ");
+	    logger.info(" DAOImpl: selectHistoryLimit50() 끝! ");
+	    return sqlSession.selectList(NAMESPACE + "selectHistoryLimit50", member_id);
 	}
 	
+//	@Override
+//	public int countHistory(int member_id) {
+//		logger.info(" DAOImpl: countHistory() 실행! ");
+//		logger.info(" DAOImpl: countHistory() 끝! ");
+//	    return sqlSession.selectOne(NAMESPACE + "countHistory", member_id);
+//	}
+
+//	@Override
+//	public List<TradeHistoryViewVO> selectBuyHistory(int member_id) {
+//	    logger.info(" DAOImpl: selectBuyHistory() 실행! ");
+//	    logger.info(" DAOImpl: selectBuyHistory() 끝! ");
+//	    return sqlSession.selectList(
+//	        NAMESPACE + "selectBuyHistory", member_id
+//	    );
+//	}
+
 	@Override
-	public int countHistory(int member_id) {
-		logger.info(" DAOImpl: countHistory() 실행! ");
-		logger.info(" DAOImpl: countHistory() 끝! ");
-	    return sqlSession.selectOne(NAMESPACE + "countHistory", member_id);
+	public List<TradeHistoryViewVO> selectSellHistory(int member_id) {
+	    logger.info(" DAOImpl: selectSellHistory() 실행! ");
+	    logger.info(" DAOImpl: selectSellHistory() 끝! ");
+	    return sqlSession.selectList(
+	        NAMESPACE + "selectSellHistory", member_id
+	    );
 	}
-
-
 
 }

@@ -10,6 +10,7 @@ import com.itwillbs.domain.MemberVO;
 import com.itwillbs.domain.PageVO;
 import com.itwillbs.domain.PasswordResetTokenVO;
 import com.itwillbs.domain.PaymentHistoryVO;
+import com.itwillbs.domain.TradeHistoryViewVO;
 
 public interface MemberDAO {
 	
@@ -81,7 +82,14 @@ public interface MemberDAO {
 	
 	public void updateOpenBankingToken(MemberVO vo);
 
-	public List<PaymentHistoryVO> selectHistoryPaging(int member_id, Criteria cri);
+	public List<PaymentHistoryVO> selectHistoryLimit50(int member_id);
 	
-	public int countHistory(int member_id);
+	// 추가: 구매 내역
+//	public List<TradeHistoryViewVO> selectBuyHistory(int member_id);
+
+    // 추가: 판매 수익 내역
+	public List<TradeHistoryViewVO> selectSellHistory(int member_id);
+	
+//	public int countHistory(int member_id);
+
 }

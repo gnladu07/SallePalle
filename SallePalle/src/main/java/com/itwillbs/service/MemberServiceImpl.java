@@ -23,6 +23,7 @@ import com.itwillbs.domain.MemberVO;
 import com.itwillbs.domain.PageVO;
 import com.itwillbs.domain.PasswordResetTokenVO;
 import com.itwillbs.domain.PaymentHistoryVO;
+import com.itwillbs.domain.TradeHistoryViewVO;
 import com.itwillbs.persistence.MemberDAO;
 
 @Service
@@ -447,24 +448,21 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public Map<String, Object> getPaymentHistory(int member_id, Criteria cri) {
+	public Map<String, Object> getPaymentHistory(int member_id, boolean isSeller) {
 		logger.info(" MServiceImpl: getPaymentHistory() 실행! ");
-		
-	    int total = memberDAO.countHistory(member_id);
+	    List<PaymentHistoryVO> walletList =
+	            memberDAO.selectHistoryLimit50(member_id);
 
-	    List<PaymentHistoryVO> list =
-	            memberDAO.selectHistoryPaging(member_id, cri);
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("walletList", walletList);
 
-	    PageVO pageVO = new PageVO(cri, total);
-
-	    Map<String, Object> resultVO = new HashMap<>();
-	    resultVO.put("list", list);
-	    resultVO.put("pageVO", pageVO);
-		
-		logger.info(" MServiceImpl: getPaymentHistory() 끝! ");
-		return resultVO;
+	    if (isSeller) {
+	        result.put("sellList",
+	                memberDAO.selectSellHistory(member_id));
+	    }
+	    logger.info(" MServiceImpl: getPaymentHistory() 끝! ");
+	    return result;
 	}
-
 
 
 }

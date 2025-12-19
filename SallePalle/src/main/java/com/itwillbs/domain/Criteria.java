@@ -10,6 +10,8 @@ public class Criteria {
 
     private String sort;   // 정렬 기준 추가 (regdate / disabled / deleted)
     
+    private String filter; // 추가: ALL / CHARGE / EARN / BUY / SELL
+    
     public Criteria() {
         this.page = 1;  
         this.amount = 10; 

@@ -425,23 +425,23 @@ public class MemberController {
 	}
 	
 	@GetMapping("/paymentHistory")
-	public String paymentGET(HttpSession session, Model model,
-			                 Criteria cri) {
-		logger.info(" paymentGET() 실행! ");
-		
-		MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+	public String paymentGET(HttpSession session, Model model) {
 
+	    MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
 	    if (loginInfo == null) {
 	        return "redirect:/member/login";
 	    }
 
-	    Map<String, Object> data = mService.getPaymentHistory(loginInfo.getMember_id(), cri);
+	    boolean isSeller = "Y".equals(loginInfo.getSeller_status());
 
-	    model.addAttribute("historyList", data.get("list"));
-	    model.addAttribute("pageVO", data.get("pageVO"));
-		
-		logger.info(" paymentGET() 실행! ");
-		return "/member/paymentHistory";
+	    Map<String, Object> listData =
+	            mService.getPaymentHistory(loginInfo.getMember_id(), isSeller);
+
+
+	    model.addAttribute("walletList", listData.get("walletList"));
+	    model.addAttribute("sellList", listData.get("sellList"));
+
+	    return "/member/paymentHistory";
 	}
 
 	
