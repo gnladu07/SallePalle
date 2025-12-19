@@ -89,6 +89,7 @@ public interface MemberService {
 
 	public void updateOpenBankingToken(MemberVO vo);
 	
-	public Map<String, Object> getPaymentHistory(int member_id, Criteria cri);
+	// 통합 결제/적립 내역 조회
+	public Map<String, Object> getPaymentHistory(int member_id, boolean isSeller);
 
 }

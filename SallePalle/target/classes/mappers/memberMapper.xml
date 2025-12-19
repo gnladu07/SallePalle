@@ -303,43 +303,96 @@
 	</update>
 	
 	<!-- 통합 결제/적립 내역 조회(페이징) -->
-	<select id="selectHistoryPaging" resultType="PaymentHistoryVO">
-	    SELECT
-	        'PAY' AS history_type,
-	        amount,
-	        type,
-	        memo,
-	        created_at
-	    FROM pay_history
-	    WHERE member_id = #{member_id}
-	
-	    UNION ALL
-	
-	    SELECT
-	        'MILEAGE' AS history_type,
-	        amount,
-	        type,
-	        memo,
-	        created_at
-	    FROM mileage_history
-	    WHERE member_id = #{member_id}
-	
-	    ORDER BY created_at DESC
-	    LIMIT #{cri.pageStart}, #{cri.amount}
-	</select>
-    
-  	<!-- 결제 + 마일리지 전체 개수 -->
-	<select id="countHistory" resultType="int">
-	    SELECT COUNT(*) FROM (
-	        SELECT created_at
+	<select id="selectHistoryLimit50" parameterType="int" resultType="PaymentHistoryVO">
+	    SELECT *
+	    FROM (
+	        SELECT
+	            'PAY' AS history_type,
+	            type,
+	            amount,
+	            memo,
+	            created_at
 	        FROM pay_history
 	        WHERE member_id = #{member_id}
 	
 	        UNION ALL
 	
-	        SELECT created_at
+	        SELECT
+	            'MILEAGE',
+	            type,
+	            amount,
+	            memo,
+	            created_at
 	        FROM mileage_history
 	        WHERE member_id = #{member_id}
+	
+	        UNION ALL
+	
+	        SELECT
+	            'BUY',
+	            'BUY',
+	            -(used_point + used_mileage),
+	            CONCAT(
+	                '중고 물품 구매 ',
+	                trade_id,
+	                ' (포인트 ',
+	                used_point,
+	                ', 마일리지 ',
+	                used_mileage,
+	                ')'
+	            ),
+	            regdate
+	        FROM trade_history
+	        WHERE buyer_id = #{member_id}
+	
+	        UNION ALL
+	
+	        SELECT
+	            'SELL',
+	            'SELL',
+	            earn_point,
+	            CONCAT('중고 물품 판매 ', trade_id),
+	            regdate
+	        FROM trade_history
+	        WHERE seller_id = #{member_id}
 	    ) t
+	    ORDER BY created_at DESC
+	    LIMIT 50
 	</select>
+	
+    <!-- 구매 내역 -->
+<!-- 	<select id="selectBuyHistory" resultType="TradeHistoryViewVO">
+	    SELECT
+	        'BUY' AS history_type,
+	        th.trade_id,
+	        sb.title,
+	        th.used_point,
+	        th.used_mileage,
+	        0 AS earn_point,
+	        th.regdate
+	    FROM trade_history th
+	    JOIN saletrade_board sb
+	      ON th.trade_id = sb.trade_id
+	    WHERE th.buyer_id = #{member_id}
+	    ORDER BY th.regdate DESC
+	</select> -->
+	
+	<!-- 판매 수익 내역 -->
+	<select id="selectSellHistory" resultType="TradeHistoryViewVO">
+	    SELECT
+	        'SELL' AS history_type,
+	        th.trade_id,
+	        sb.title,
+	        0 AS used_point,
+	        0 AS used_mileage,
+	        th.earn_point,
+	        th.regdate
+	    FROM trade_history th
+	    JOIN saletrade_board sb
+	      ON th.trade_id = sb.trade_id
+	    WHERE th.seller_id = #{member_id}
+	    ORDER BY th.regdate DESC
+	</select>
+	
+    
 </mapper>
