@@ -34,38 +34,66 @@
 	    </c:forEach>
 	</div>
 	
-	<div id="buyModal" style="display:none;">
-	    <p>
-	        <strong>${detail.title}</strong> 상품 구매를 진행합니다.
-	    </p>
+	<div id="buyModalOverlay" class="modal-overlay" style="display:none;">
+	    <div id="buyModal" class="modal-box">
 	
-	    <label>
-	        <input type="checkbox" id="payPoint">
-	        살래 포인트로 구매
-	    </label><br>
+	        <!-- 닫기 버튼 -->
+	        <button class="modal-close" id="closeBuyModal">×</button>
 	
-	    <label>
-	        <input type="checkbox" id="payMileage">
-	        팔래 마일리지로 구매
-	    </label>
+	        <h3>구매 진행</h3>
 	
-	    <div id="mileageOption" style="display:none; margin-left:20px;">
+	        <p>
+	            <strong>${detail.title}</strong> 상품 구매를 진행합니다.
+	        </p>
+	
+	        <!-- 결제 수단 선택 -->
 	        <label>
-	            <input type="radio" name="mileageType" value="FULL">
-	            전액 마일리지로 구매
+	            <input type="checkbox" id="payPoint">
+	            살래 포인트로 구매
 	        </label><br>
 	
 	        <label>
-	            <input type="radio" name="mileageType" value="DISCOUNT">
-	            마일리지 할인 적용
-	        </label><br>
+	            <input type="checkbox" id="payMileage">
+	            팔래 마일리지로 구매
+	        </label>
 	
-	        <!-- 할인 선택 시 노출 -->
-	        <input type="number" id="useMileage" placeholder="사용 마일리지">
-	        <p>최종 포인트 결제: <span id="finalPoint">${detail.price_point}</span> P</p>
+	        <!-- 마일리지 옵션 -->
+	        <div id="mileageOption" style="display:none; margin-left:20px; margin-top:10px;">
+	            <label>
+	                <input type="radio" name="mileageType" value="FULL">
+	                전액 마일리지로 구매
+	            </label><br>
+	
+	            <label>
+	                <input type="radio" name="mileageType" value="DISCOUNT">
+	                마일리지 할인 적용
+	            </label><br>
+	
+	            <input type="number" id="useMileage" placeholder="사용 마일리지">
+	
+	            <p>
+	                최종 포인트 결제:
+	                <strong><span id="finalPoint">${detail.price_point}</span> P</strong>
+	            </p>
+	        </div>
+	
+	        <!-- 보유 자산 표시 -->
+	        <div class="wallet-info">
+	            보유 살래P:
+	            <strong>
+	                <fmt:formatNumber value="${loginInfo.wallet_balance}" /> P
+	            </strong><br>
+	
+	            보유 마일리지:
+	            <strong>
+	                <fmt:formatNumber value="${loginInfo.wallet_mileage}" /> M
+	            </strong>
+	        </div>
+	
+	        <!-- 구매 확정 -->
+	        <button id="confirmBuy" disabled>구매 확정</button>
+	
 	    </div>
-	
-	    <button id="confirmBuy" disabled>구매 확정</button>
 	</div>
 <script>
 $(function(){
@@ -103,16 +131,58 @@ $(function(){
     
     console.log("구매 스크립트 로딩");
     
+ 	// [추가] 닫기 버튼
     $("#btnBuy").on("click", function(){
+        if("${detail.status}" !== "S"){
+            alert("판매가 완료된 물품입니다.");
+            return;
+        }
+
         console.log("구매 버튼 클릭");
-        $("#buyModal").show();
+        $("#buyModalOverlay").fadeIn(200);
+    });
+ 	
+ 	// [추가] 배경 클릭 시 닫기
+    $("#buyModalOverlay").on("click", function(e){
+        if(e.target.id === "buyModalOverlay"){
+            closeBuyModal();
+        }
     });
 
+    // [추가] ESC 키로 닫기
+	$(document).on("click", "#closeBuyModal", function(e){
+	    e.stopPropagation();
+	    closeBuyModal();
+	});
+
+    // [추가] 모달 닫기 공통 함수
+    function closeBuyModal(){
+        $("#buyModalOverlay").fadeOut(200);
+        
+        // 상태 초기화
+        $("#payPoint, #payMileage").prop("checked", false);
+        $("#mileageOption").hide();
+        $("#confirmBuy").prop("disabled", true);
+        $("#useMileage").val("");
+        $("#finalPoint").text(${detail.price_point});
+        $("#walletInfo strong").css({
+            "opacity": "1",
+            "font-weight": "normal"
+        });
+    }
+
+    // 결제 수단 선택
     $("#payPoint").on("change", function(){
         console.log("포인트 구매 선택");
         $("#payMileage").prop("checked", false);
         $("#mileageOption").hide();
         $("#confirmBuy").prop("disabled", false);
+        
+        $("#walletInfo strong").css("opacity", "0.4");
+        $("#walletInfo strong").first().css({
+            "opacity": "1",
+            "font-weight": "bold"
+        });
     });
 
     $("#payMileage").on("change", function(){
@@ -120,6 +190,12 @@ $(function(){
         $("#payPoint").prop("checked", false);
         $("#mileageOption").show();
         $("#confirmBuy").prop("disabled", true);
+        
+        $("#walletInfo strong").css("opacity", "0.4");
+        $("#walletInfo strong").last().css({
+            "opacity": "1",
+            "font-weight": "bold"
+        });
     });
 
     $("input[name=mileageType]").on("change", function(){
@@ -131,6 +207,7 @@ $(function(){
         var price = ${detail.price_point};
         var use = Number($(this).val());
         var finalPrice = price - use;
+        
         console.log("마일리지 할인:", use, "최종 포인트:", finalPrice);
         $("#finalPoint").text(finalPrice);
     });
@@ -150,6 +227,18 @@ $(function(){
             },
             success: function(res){
                 console.log("구매 결과:", res);
+                
+                if(res === "NOT_ENOUGH_POINT"){
+                    alert("포인트가 부족합니다. 충전 후 이용해 주세요.");
+                    location.href = "/fintech/chargePoint";
+                    return;
+                }
+                
+                if(res === "NOT_ENOUGH_MILEAGE"){
+                    alert("마일리지가 부족합니다. 충전 후 이용해 주세요.");
+                    location.href = "/fintech/chargePoint";
+                    return;
+                }
 				
                 if(res === "SUCCESS"){
                     console.log("구매 성공 → 세션 갱신 요청");

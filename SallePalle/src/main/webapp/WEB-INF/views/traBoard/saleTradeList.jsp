@@ -76,6 +76,12 @@
 		        data-item-id="13">기타</button>
 		
 		</div>
+		
+		<c:if test="${loginInfo.seller_status eq 'Y'}">
+		    <a href="/traBoard/write" class="btn btn-primary">
+		        상품 등록
+		    </a>
+		</c:if>
 
         <!-- 물품 그리드 -->
         <div class="saleTradeList-grid">

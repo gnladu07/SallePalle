@@ -43,18 +43,18 @@ public class SaleTradeVO {
 
     private Integer price_point;
     private Integer max_mileage_use;
-    private Integer quantity;
+    private Integer quantity = 1;
 
     private String thumb_img;
     private String detail_img;
-    private Integer item_ctg_id;
-
+    
     private Integer recommend_cnt;
     private String status;
 
     private Timestamp regdate;
     private Timestamp updatedate;
 
+    private Integer item_ctg_id;
     private Integer toplct_id;
     private String detail_address;
 

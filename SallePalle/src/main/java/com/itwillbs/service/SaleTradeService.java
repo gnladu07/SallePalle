@@ -21,5 +21,8 @@ public interface SaleTradeService {
 	// 중고 제품 구매 처리
 	public void buyTrade(int trade_id, String name, boolean payPoint, boolean payMileage, String mileageType, Integer useMileage);
 
+	// 중고 상품 등록(글작성)
+	public void writeSaleTrade(SaleTradeVO vo);
+
 
 }
