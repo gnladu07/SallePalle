@@ -69,7 +69,9 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 	public void buyTrade(int tradeId, String userid,
 	                     boolean payPoint, boolean payMileage,
 	                     String mileageType, Integer useMileage) {
-		log.info(" SaleTradeServiceImpl: buyTrade() 실행!");
+
+	    log.info(" SaleTradeServiceImpl: buyTrade() 실행!");
+
 	    SaleTradeVO trade = saleTradeDAO.selectSaleTradeDetail(tradeId);
 
 	    int buyerId  = saleTradeDAO.selectMemberIdByUserid(userid);
@@ -78,38 +80,64 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 
 	    int usedPoint = 0;
 	    int usedMileage = 0;
-	    int earnPoint = 0;
+	    
+	    // 0. 구매 전 포인트 잔액 검증
+	    int myBalance = saleTradeDAO.selectPayBalance(buyerId);
 
-	    if(payPoint){
-	        usedPoint = price;
-	        earnPoint = price;
-	        saleTradeDAO.usePoint(buyerId, usedPoint);
-	        saleTradeDAO.earnPoint(sellerId, earnPoint);
+	    if (myBalance < price) {
+	        throw new IllegalStateException("NOT_ENOUGH_POINT");
 	    }
 
-	    if(payMileage){
-	        if("FULL".equals(mileageType)){
+	    // 1. 구매자 결제 처리
+	    if (payPoint) {
+	        usedPoint = price;
+	        saleTradeDAO.usePoint(buyerId, usedPoint);
+	    }
+
+	    if (payMileage) {
+	        if ("FULL".equals(mileageType)) {
 	            usedMileage = price;
 	            saleTradeDAO.useMileage(buyerId, usedMileage);
-	            saleTradeDAO.earnMileage(sellerId, usedMileage);
 	        } else {
 	            usedMileage = useMileage;
 	            usedPoint = price - useMileage;
-	            earnPoint = usedPoint;
 
 	            saleTradeDAO.useMileage(buyerId, usedMileage);
 	            saleTradeDAO.usePoint(buyerId, usedPoint);
-	            saleTradeDAO.earnPoint(sellerId, earnPoint);
 	        }
 	    }
+	    // 2. 판매자 지갑 보장
+	    if (saleTradeDAO.existsPayWallet(sellerId) == 0) {
+	        saleTradeDAO.insertPayWallet(sellerId);
+	    }
 
+	    // 3. 판매자 수익 처리
+	    saleTradeDAO.earnPoint(sellerId, price);
+
+	    // 4. 거래 이력 저장
 	    saleTradeDAO.insertTradeHistory(
-	        tradeId, buyerId, sellerId,
-	        usedPoint, earnPoint, usedMileage
+	        tradeId,
+	        buyerId,
+	        sellerId,
+	        usedPoint,
+	        price,        // earn_point는 항상 price
+	        usedMileage
 	    );
 
+
+	     // 5. 판매 완료 처리
 	    saleTradeDAO.updateTradeStatusComplete(tradeId);
+
 	    log.info(" SaleTradeServiceImpl: buyTrade() 끝!");
+	}
+
+	@Override
+	public void writeSaleTrade(SaleTradeVO vo) {
+		log.info(" SaleTradeServiceImpl: writeSaleTrade() 실행!");
+		
+		saleTradeDAO.insertSaleTrade(vo);
+		
+	    log.info(" SaleTradeServiceImpl: writeSaleTrade() 끝!");
 	}
 
 }

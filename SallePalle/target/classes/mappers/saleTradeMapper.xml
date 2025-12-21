@@ -3,141 +3,126 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.itwillbs.mapper.SaleTradeMapper">
-	<select id="selectSaleTradeList" resultType="SaleTradeVO">
-	
-	    SELECT
-	        s.trade_id,
-	        s.title,
-	        s.price_point,
-	        s.thumb_img,
-	        s.recommend_cnt,
-	        s.regdate,
-	        m.nickname AS seller_nickname,
-	        t.toplct_name,
-	        c.item_ctg_name
-	    FROM saletrade_board s
-	    JOIN member m ON s.seller_id = m.member_id
-	    JOIN top_location t ON s.toplct_id = t.toplct_id
-	    JOIN saletrade_item_category c ON s.item_ctg_id = c.item_ctg_id
-	    WHERE s.is_deleted = 'N'
-	
-	    <!-- 카테고리 필터 -->
-	    <if test="itemCtgId != null">
-	        AND s.item_ctg_id = #{itemCtgId}
-	    </if>
-	
-	    <!-- 검색 필터 -->
-	    <if test="keyword != null and keyword != ''">
-	        <choose>
-	            <when test="type == 'title'">
-	                AND s.title LIKE CONCAT('%', #{keyword}, '%')
-	            </when>
-	            <when test="type == 'content'">
-	                AND s.content LIKE CONCAT('%', #{keyword}, '%')
-	            </when>
-	            <when test="type == 'seller'">
-	                AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
-	            </when>
-            
-	            <!-- 추가된 코드 -->
-		        <otherwise>
-		            AND s.title LIKE CONCAT('%', #{keyword}, '%')
-		        </otherwise>
-	        </choose>
-	    </if>
-	
-	    ORDER BY s.trade_id DESC
+    <!-- 판매글 목록 -->
+    <select id="selectSaleTradeList" resultType="SaleTradeVO">
+        SELECT
+            s.trade_id,
+            s.title,
+            s.price_point,
+            s.thumb_img,
+            s.recommend_cnt,
+            s.regdate,
+            m.nickname AS seller_nickname,
+            t.toplct_name,
+            c.item_ctg_name
+        FROM saletrade_board s
+        JOIN member m ON s.seller_id = m.member_id
+        JOIN top_location t ON s.toplct_id = t.toplct_id
+        JOIN saletrade_item_category c ON s.item_ctg_id = c.item_ctg_id
+        WHERE s.is_deleted = 'N'
+
+        <if test="itemCtgId != null">
+            AND s.item_ctg_id = #{itemCtgId}
+        </if>
+
+        <if test="keyword != null and keyword != ''">
+            <choose>
+                <when test="type == 'title'">
+                    AND s.title LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="type == 'content'">
+                    AND s.content LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="type == 'seller'">
+                    AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <otherwise>
+                    AND s.title LIKE CONCAT('%', #{keyword}, '%')
+                </otherwise>
+            </choose>
+        </if>
+
+        ORDER BY s.trade_id DESC
+    </select>
+
+    <!-- 판매글 상세 -->
+    <select id="selectSaleTradeDetail" resultType="SaleTradeVO">
+        SELECT
+            s.*,
+            m.nickname AS seller_nickname,
+            m.email,
+            m.profile_img
+        FROM saletrade_board s
+        JOIN member m ON s.seller_id = m.member_id
+        WHERE s.trade_id = #{tradeId}
+          AND s.is_deleted = 'N'
+    </select>
+
+    <!-- 판매자의 다른 상품 -->
+    <select id="selectOtherSaleTradeBySeller" resultType="SaleTradeVO">
+        SELECT
+            trade_id,
+            title,
+            thumb_img,
+            price_point
+        FROM saletrade_board
+        WHERE seller_id = #{sellerId}
+          AND trade_id != #{tradeId}
+          AND is_deleted = 'N'
+        ORDER BY trade_id DESC
+        LIMIT 4
+    </select>
+
+    <!-- userid → member_id -->
+    <select id="selectMemberIdByUserid"
+            parameterType="string"
+            resultType="int">
+        SELECT member_id
+        FROM member
+        WHERE userid = #{userid}
+    </select>
+    
+    <!-- 구매 전 포인트 잔액 검증 -->
+    <select id="selectPayBalance" resultType="int">
+	    SELECT IFNULL(balance, 0)
+	    FROM pay_wallet
+	    WHERE member_id = #{memberId}
 	</select>
-	
-	<select id="selectSaleTradeDetail" resultType="SaleTradeVO">
-	    SELECT
-	        s.*,
-	        m.nickname AS seller_nickname,
-	        m.email,
-	        m.profile_img
-	    FROM saletrade_board s
-	    JOIN member m ON s.seller_id = m.member_id
-	    WHERE s.trade_id = #{tradeId}
-	      AND s.is_deleted = 'N'
-	</select>
-	
-	<select id="selectOtherSaleTradeBySeller" resultType="SaleTradeVO">
-	    SELECT
-	        trade_id,
-	        title,
-	        thumb_img,
-	        price_point
-	    FROM saletrade_board
-	    WHERE seller_id = #{sellerId}
-	      AND trade_id != #{tradeId}
-	      AND is_deleted = 'N'
-	    ORDER BY trade_id DESC
-	    LIMIT 4
-	</select>
-	
-	<!-- 1. 추천 중복 체크 -->
-	<select id="existsRecommend" resultType="int">
-	    SELECT COUNT(*)
-	    FROM recommend r
-	    JOIN member m ON r.member_id = m.member_id
-	    WHERE r.board_type = 'SALE'
-	      AND r.board_id = #{tradeId}
-	      AND m.userid = #{userid}
-	</select>
-	
-	<!-- 2. 추천 등록 -->
-	<insert id="insertRecommend">
-	    INSERT INTO recommend (member_id, board_type, board_id)
-	    SELECT member_id, 'SALE', #{tradeId}
-	    FROM member
-	    WHERE userid = #{userid}
-	</insert>
-	
-	<!-- 3. 추천 수 증가 -->
-	<update id="increaseRecommendCnt">
-	    UPDATE saletrade_board
-	    SET recommend_cnt = recommend_cnt + 1
-	    WHERE trade_id = #{tradeId}
-	</update>
-	
-	<!-- 4. 추천 수 조회 -->
-	<select id="selectRecommendCnt" resultType="int">
-	    SELECT recommend_cnt
-	    FROM saletrade_board
-	    WHERE trade_id = #{tradeId}
-	</select>
-	
-	<!-- userid -> member_id 변환 -->
-	<select id="selectMemberIdByUserid"
-	        parameterType="string"
-	        resultType="int">
-	    SELECT member_id
-	    FROM member
-	    WHERE userid = #{userid}
-	</select>
-	
-	<!-- 포인트 차감 -->
+
+    <!-- 구매자 포인트 차감 -->
     <update id="usePoint" parameterType="PayWalletVO">
         UPDATE pay_wallet
         SET balance = balance + #{balance}
         WHERE member_id = #{member_id}
     </update>
+    
+    <select id="existsPayWallet" resultType="int">
+	    SELECT COUNT(*)
+	    FROM pay_wallet
+	    WHERE member_id = #{member_id}
+	</select>
+	
+	<insert id="insertPayWallet" parameterType="int">
+	    INSERT INTO pay_wallet (member_id, balance)
+	    VALUES (#{member_id}, 0)
+	</insert>
 
-    <!-- 포인트 적립 -->
+    <!-- 판매자 포인트 적립
+         - 항상 판매가(price) 기준
+         - 결제 수단과 무관 -->
     <update id="earnPoint" parameterType="PayWalletVO">
         UPDATE pay_wallet
         SET balance = balance + #{balance}
         WHERE member_id = #{member_id}
     </update>
 
-    <!-- 마일리지 차감 -->
+    <!-- 구매자 마일리지 차감 -->
     <update id="useMileage" parameterType="MileageWalletVO">
         UPDATE mileage_wallet
         SET mileage = mileage + #{mileage}
         WHERE member_id = #{member_id}
     </update>
 
-    <!-- 마일리지 적립 -->
     <update id="earnMileage" parameterType="MileageWalletVO">
         UPDATE mileage_wallet
         SET mileage = mileage + #{mileage}
@@ -145,8 +130,7 @@
     </update>
 
     <!-- 거래 이력 저장 -->
-    <insert id="insertTradeHistory" >
-
+    <insert id="insertTradeHistory">
         INSERT INTO trade_history (
             trade_id,
             buyer_id,
@@ -164,11 +148,43 @@
         )
     </insert>
 
-    <!-- 판매 상태 완료 -->
+    <!-- 판매 완료 처리 -->
     <update id="updateTradeStatusComplete" parameterType="int">
         UPDATE saletrade_board
         SET status = 'C'
         WHERE trade_id = #{tradeId}
     </update>
+    
+    <insert id="insertSaleTrade" parameterType="SaleTradeVO">
+	    INSERT INTO saletrade_board (
+	        seller_id,
+	        title,
+	        content,
+	        price_point,
+	        max_mileage_use,
+	        quantity,
+	        thumb_img,
+	        item_ctg_id,
+	        toplct_id,
+	        detail_address,
+	        allow_full_mileage,
+	        status,
+	        is_deleted
+	    ) VALUES (
+	        #{seller_id},
+	        #{title},
+	        #{content},
+	        #{price_point},
+	        #{max_mileage_use},
+	        #{quantity},
+	        #{thumb_img},
+	        #{item_ctg_id},
+	        #{toplct_id},
+	        #{detail_address},
+	        #{allow_full_mileage},
+	        'S',
+	        'N'
+	    )
+	</insert>
 	
 </mapper>

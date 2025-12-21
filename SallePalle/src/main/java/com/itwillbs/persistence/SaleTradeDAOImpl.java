@@ -123,6 +123,13 @@ public class SaleTradeDAOImpl implements SaleTradeDAO {
     	log.info(" SaleTradeDAOImpl: selectMemberIdByUserid() 끝!");
         return sqlSession.selectOne(NAMESPACE + "selectMemberIdByUserid", userid);
     }
+    
+    @Override
+    public int selectPayBalance(int memberId) {
+    	log.info(" SaleTradeDAOImpl: selectPayBalance() 실행!");
+    	log.info(" SaleTradeDAOImpl: selectPayBalance() 끝!");
+        return sqlSession.selectOne(NAMESPACE + "selectPayBalance",memberId);
+    }
 
     @Override
     public void usePoint(int buyerId, int usedPoint) {
@@ -195,6 +202,34 @@ public class SaleTradeDAOImpl implements SaleTradeDAO {
         sqlSession.update(NAMESPACE + "updateTradeStatusComplete", tradeId);
         log.info(" SaleTradeDAOImpl: updateTradeStatusComplete() 끝!");    	
     }
+
+	@Override
+	public int existsPayWallet(int sellerId) {
+		log.info(" SaleTradeDAOImpl: existsPayWallet() 실행!");
+		
+		int result = sqlSession.selectOne(NAMESPACE + "existsPayWallet", sellerId);
+		
+		log.info(" SaleTradeDAOImpl: existsPayWallet() 끝!");
+		return result;
+	}
+
+	@Override
+	public void insertPayWallet(int sellerId) {
+		log.info(" SaleTradeDAOImpl: insertPayWallet() 실행!");
+		
+		sqlSession.insert(NAMESPACE + "insertPayWallet", sellerId);
+		
+		log.info(" SaleTradeDAOImpl: insertPayWallet() 끝!");
+	}
+
+	@Override
+	public void insertSaleTrade(SaleTradeVO vo) {
+		log.info(" SaleTradeDAOImpl: insertSaleTrade() 실행!");
+		
+		sqlSession.insert(NAMESPACE + "insertSaleTrade", vo);
+		
+		log.info(" SaleTradeDAOImpl: insertSaleTrade() 끝!");
+	}
 
  
 

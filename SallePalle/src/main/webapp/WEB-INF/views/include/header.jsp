@@ -2225,6 +2225,47 @@
 	        right: 20px;
 	    }
 	}
+	
+	/* detail.jsp */
+	.modal-overlay {
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    width: 100%;
+	    height: 100%;
+	    background: rgba(0,0,0,0.6);
+	    z-index: 999;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	}
+	
+	/* modal */
+	.modal-box {
+	    background: #fff;
+	    width: 420px;
+	    padding: 25px;
+	    border-radius: 8px;
+	    position: relative;
+	}
+	
+	/* 닫기 버튼 */
+	.modal-close {
+	    position: absolute;
+	    top: 10px;
+	    right: 12px;
+	    border: none;
+	    background: none;
+	    font-size: 22px;
+	    cursor: pointer;
+	}
+	
+	/* 보유 자산 */
+	.wallet-info {
+	    margin-top: 15px;
+	    font-size: 14px;
+	    color: #555;
+	}
 </style>
 </head>
 <body>
@@ -2291,11 +2332,11 @@
 		            <div class="dropdown-stats">
 		                <div class="stat-item">
 		                    <div class="stat-label"><a href="/fintech/chargePoint">살래P</a></div>
-		                    <div class="stat-value"><a href="/fintech/chargePoint">${loginInfo.wallet_balance }</a></div>
+		                    <div class="stat-value"><a href="/fintech/chargePoint"><fmt:formatNumber value="${loginInfo.wallet_balance }" /></a></div>
 		                </div>
 		                <div class="stat-item">
 		                    <div class="stat-label">팔래M</div>
-		                    <div class="stat-value">${loginInfo.wallet_mileage}</div>
+		                    <div class="stat-value"><fmt:formatNumber value="${loginInfo.wallet_mileage}" /></div>
 		                </div>
 		            </div>
 

@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.itwillbs.component.FileComponent;
+import com.itwillbs.domain.MemberVO;
 import com.itwillbs.domain.SaleTradeVO;
+import com.itwillbs.service.ItemCategoryService;
 import com.itwillbs.service.SaleTradeService;
+import com.itwillbs.service.TopLocationService;
 
 @Controller
 @RequestMapping("/traBoard/*")
@@ -26,6 +32,9 @@ public class SaleTradeController {
 		= LoggerFactory.getLogger(SaleTradeController.class);
 
 	@Inject private SaleTradeService stService; 
+	@Inject private TopLocationService tlService;
+	@Inject private ItemCategoryService icService;
+	@Inject private FileComponent fComponent;
 	
 	@GetMapping("/saleTradeList")
 	public String saleTradeListGET(@RequestParam(value = "type", required = false) String type,
@@ -98,15 +107,76 @@ public class SaleTradeController {
 		log.info(" buyTrade()실행! ");
 	    log.info("trade_id={}", trade_id);
 
-	    if(principal == null){
+	    if (principal == null) {
 	        return "LOGIN_REQUIRED";
 	    }
 
-	    stService.buyTrade(trade_id, principal.getName(),
-	                       payPoint, payMileage, mileageType, useMileage);
+	    try {
+	        stService.buyTrade(
+	            trade_id,
+	            principal.getName(),
+	            payPoint,
+	            payMileage,
+	            mileageType,
+	            useMileage
+	        );
+	        log.info(" buyTrade()끝! ");
+	        return "SUCCESS";
 
-	    log.info(" buyTrade()끝! ");
-	    return "SUCCESS";
+	    } catch (IllegalStateException e) {
+	        if ("NOT_ENOUGH_POINT".equals(e.getMessage())) {
+	            return "NOT_ENOUGH_POINT";
+	        }
+	        throw e;
+	    }
 	}
+	
+	@GetMapping("/write")
+	public String writeGET(HttpSession session, Model model) {
 
+	    MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+
+	    if (loginInfo == null || !"Y".equals(loginInfo.getSeller_status())) {
+	        return "redirect:/traBoard/saleTradeList";
+	    }
+
+	    model.addAttribute("topLocationList", tlService.getTopLocationList());
+	    model.addAttribute("itemCategoryList", icService.getItemCategoryList());
+
+	    return "/traBoard/write";
+	}
+	
+	@PostMapping("/write")
+	public String writePOST(SaleTradeVO vo,
+					        MultipartFile thumbFile,
+					        HttpSession session) {
+
+	    MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+
+	    if (loginInfo == null || !"Y".equals(loginInfo.getSeller_status())) {
+	        return "redirect:/traBoard/saleTradeList";
+	    }
+
+	    vo.setSeller_id(loginInfo.getMember_id());
+
+	    // 수량 기본값 보정
+	    if (vo.getQuantity() <= 0) {
+	        vo.setQuantity(1);
+	    }
+
+	    // 마일리지 전액 허용 기본값
+	    if (vo.getAllow_full_mileage() == null) {
+	        vo.setAllow_full_mileage("N");
+	    }
+
+	    // 썸네일 업로드
+	    if (thumbFile != null && !thumbFile.isEmpty()) {
+	        String savedName = fComponent.upload(thumbFile);
+	        vo.setThumb_img(savedName);
+	    }
+
+	    stService.writeSaleTrade(vo);
+
+	    return "redirect:/traBoard/saleTradeList";
+	}
 }

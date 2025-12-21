@@ -29,6 +29,9 @@ public interface SaleTradeDAO {
 
 	// userid -> member_id 변환
 	public int selectMemberIdByUserid(String userid);
+	
+	// 구매 전 포인트 잔액 검증
+	public int selectPayBalance(int buyerId);
 
 	// 구매자 포인트 차감
 	public void usePoint(int buyerId, int usedPoint);
@@ -47,5 +50,14 @@ public interface SaleTradeDAO {
 
 	// 판매 상태 완료 처리
 	public void updateTradeStatusComplete(int tradeId);
+
+	// 지갑 존재 여부
+	public int existsPayWallet(int sellerId);
+	
+	// 지갑 생성
+	public void insertPayWallet(int sellerId);
+
+	// 중고 상품 등록(글작성)
+	public void insertSaleTrade(SaleTradeVO vo);
 
 }

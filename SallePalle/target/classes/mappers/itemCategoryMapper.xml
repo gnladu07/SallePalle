@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itwillbs.mapper.ItemCategoryMapper">
+
+    <select id="selectItemCategoryList" resultType="ItemCategoryVO">
+        SELECT
+            item_ctg_id,
+            item_ctg_name,
+            is_active,
+            regdate
+        FROM saletrade_item_category
+        WHERE is_active = 'Y'
+        ORDER BY item_ctg_name ASC
+    </select>
+
+</mapper>
