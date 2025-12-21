@@ -67,6 +67,7 @@ public class SaleTradeVO {
     private String seller_nickname;   // member.nickname
     private String toplct_name;        // top_location.toplct_name
     private String email;
+    private String profile_img;
   
 
 }

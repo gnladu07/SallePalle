@@ -96,7 +96,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		                 "/resources/**", 
 		                 "/traBoard/saleTradeList",
 		                 "/traBoard/detail",
-		                 "/traBoard/recommend").permitAll()
+		                 "/traBoard/recommend",
+		                 "/upload/**").permitAll()
 			
 			// ADMIN 권한			
 			.antMatchers("/admin/login").permitAll()
