@@ -37,6 +37,7 @@ public class SaleTradeVO {
 	
     private Integer trade_id;
     private Integer seller_id;
+    private String seller_userid; // JOIN으로 가져올 판매자 아이디
 
     private String title;
     private String content;
@@ -68,6 +69,7 @@ public class SaleTradeVO {
     private String toplct_name;        // top_location.toplct_name
     private String email;
     private String profile_img;
+    
   
 
 }

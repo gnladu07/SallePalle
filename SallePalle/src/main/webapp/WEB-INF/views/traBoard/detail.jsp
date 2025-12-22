@@ -1,9 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../include/header.jsp" %>
-</head>
-<body>
-
 <div class="main-detail">
     <div class="detail-container">
         
@@ -58,20 +55,46 @@
 
             <!-- 액션 버튼 -->
             <div class="detail-actions">
-                <button class="detail-btn-recommend" id="btnRecommend">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                    <span id="recCnt">${detail.recommend_cnt}</span>
-                </button>
-
-                <c:if test="${not empty loginUserid && detail.status eq 'S'}">
-                    <button class="detail-btn-buy" id="btnBuy">구매하기</button>
-                </c:if>
-
-                <c:if test="${detail.status eq 'C'}">
-                    <button class="detail-btn-sold" disabled>판매완료</button>
-                </c:if>
+                <!-- 추천 버튼 -->
+			    <button class="detail-btn-recommend" id="btnRecommend">
+			        <svg viewBox="0 0 24 24" fill="currentColor">
+			            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
+			                     2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 
+			                     4.5 2.09C13.09 3.81 14.76 3 16.5 3 
+			                     19.58 3 22 5.42 22 8.5c0 3.78-3.4 
+			                     6.86-8.55 11.54L12 21.35z"/>
+			        </svg>
+			        <span id="recCnt">${detail.recommend_cnt}</span>
+			    </button>
+				<c:choose>
+				    <c:when test="${detail.status eq 'C'}">
+				        <button class="detail-btn-sold" disabled>판매완료</button>
+				    </c:when>
+				
+				    <c:when test="${not empty loginUserid
+				                   && loginUserid eq detail.seller_userid}">
+				        <button class="detail-btn-edit"
+				                onclick="location.href='/traBoard/update?trade_id=${detail.trade_id}'">
+				            수정
+				        </button>
+				        <button type="button"
+						        id="btnDeleteTrade"
+						        class="detail-btn-delete"
+						        data-trade-id="${detail.trade_id}">
+						    삭제
+						</button>
+				    </c:when>
+				
+				    <c:when test="${empty loginUserid && detail.status eq 'S'}">
+				        <button class="detail-btn-login" onclick="goLogin()">
+				            로그인시 구매 가능합니다.
+				        </button>
+				    </c:when>
+				
+				    <c:otherwise>
+				        <button class="detail-btn-buy" id="btnBuy">구매하기</button>
+				    </c:otherwise>
+				</c:choose>
             </div>
         </div>
 
@@ -153,7 +176,17 @@
         <button class="detail-modal-btn" id="confirmBuy" disabled>구매 확정</button>
     </div>
 </div>
+<form id="deleteTradeForm"
+      action="/traBoard/delete"
+      method="post">
 
+    <input type="hidden" name="trade_id">
+
+    <!-- CSRF 토큰 (현재 disable 되어 있어도 구조상 유지) -->
+    <input type="hidden"
+           name="${_csrf.parameterName}"
+           value="${_csrf.token}">
+</form>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f741118517088ca2272cc9689f78f15e&libraries=services"></script>
 <script>
 $(function(){
@@ -293,6 +326,22 @@ $(function(){
             }
         });
     }
+});
+$(function(){
+    console.log("detail.jsp 삭제 스크립트 로드");
+
+    $("#btnDeleteTrade").on("click", function(){
+        let tradeId = $(this).data("trade-id");
+        console.log("삭제 클릭 trade_id =", tradeId);
+
+        if(!confirm("정말 삭제하시겠습니까?")){
+            console.log("삭제 취소");
+            return;
+        }
+
+        $("#deleteTradeForm input[name='trade_id']").val(tradeId);
+        $("#deleteTradeForm").submit();
+    });
 });
 </script>
 

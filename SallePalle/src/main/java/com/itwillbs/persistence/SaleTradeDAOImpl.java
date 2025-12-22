@@ -41,7 +41,7 @@ public class SaleTradeDAOImpl implements SaleTradeDAO {
 	}
 
 	@Override
-	public SaleTradeVO selectSaleTradeDetail(int tradeId) {
+	public SaleTradeVO selectSaleTradeDetail(Integer tradeId) {
 		log.info(" SaleTradeDAOImpl: selectSaleTradeDetail() 실행!");
 		log.info(" SaleTradeDAOImpl: selectSaleTradeDetail() 끝!");
 		return sqlSession.selectOne(NAMESPACE + "selectSaleTradeDetail", tradeId);
@@ -229,6 +229,25 @@ public class SaleTradeDAOImpl implements SaleTradeDAO {
 		sqlSession.insert(NAMESPACE + "insertSaleTrade", vo);
 		
 		log.info(" SaleTradeDAOImpl: insertSaleTrade() 끝!");
+	}
+
+	@Override
+	public void updateSaleTrade(SaleTradeVO vo) {
+		log.info(" SaleTradeDAOImpl: updateSaleTrade() 실행!");
+		
+		sqlSession.update(NAMESPACE + "updateSaleTrade", vo);
+		
+		log.info(" SaleTradeDAOImpl: updateSaleTrade() 끝!");
+		
+	}
+
+	@Override
+	public void deleteSaleTrade(SaleTradeVO origin) {
+		log.info(" SaleTradeDAOImpl: deleteSaleTrade() 실행!");
+		
+		sqlSession.update(NAMESPACE + "deleteSaleTrade", origin.getTrade_id());
+		
+		log.info(" SaleTradeDAOImpl: deleteSaleTrade() 끝!");
 	}
 
  

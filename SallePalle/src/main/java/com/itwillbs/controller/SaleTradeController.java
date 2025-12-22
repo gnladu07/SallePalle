@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,7 +54,7 @@ public class SaleTradeController {
 	}
 	
 	@GetMapping("/detail")
-	public String saleTradeDetailGET(@RequestParam("trade_id") int tradeId,
+	public String saleTradeDetailGET(@RequestParam("trade_id") Integer tradeId,
 							         Model model,
 							         Principal principal) {
 	    log.info(" saleTradeDetailGET() 실행! trade_id={}", tradeId);
@@ -71,7 +72,7 @@ public class SaleTradeController {
 	    if (principal != null) {
 	        model.addAttribute("loginUserid", principal.getName());
 	    }
-
+	    
 	    log.info(" saleTradeDetailGET() 끝!");
 	    return "/traBoard/detail";
 	}
@@ -133,7 +134,7 @@ public class SaleTradeController {
 	
 	@GetMapping("/write")
 	public String writeGET(HttpSession session, Model model) {
-
+		log.info(" writeGET() 실행!");
 	    MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
 
 	    if (loginInfo == null || !"Y".equals(loginInfo.getSeller_status())) {
@@ -143,6 +144,7 @@ public class SaleTradeController {
 	    model.addAttribute("topLocationList", tlService.getTopLocationList());
 	    model.addAttribute("itemCategoryList", icService.getItemCategoryList());
 
+	    log.info(" writeGET() 끝!");
 	    return "/traBoard/write";
 	}
 	
@@ -150,7 +152,7 @@ public class SaleTradeController {
 	public String writePOST(SaleTradeVO vo,
 					        MultipartFile thumbFile,
 					        HttpSession session) {
-
+		log.info(" writePOST() 실행!");
 	    MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
 
 	    if (loginInfo == null || !"Y".equals(loginInfo.getSeller_status())) {
@@ -177,6 +179,66 @@ public class SaleTradeController {
 
 	    stService.writeSaleTrade(vo);
 
+	    log.info(" writePOST() 끝!");
+	    return "redirect:/traBoard/saleTradeList";
+	}
+	
+	@GetMapping("/update")
+	public String updateSaleTradeGET(@RequestParam("trade_id") Integer tradeId,
+	                                 Model model,
+	                                 Principal principal) {
+		log.info(" updateSaleTradeGET() 실행!");
+	    SaleTradeVO detail = stService.getSaleTradeDetail(tradeId);
+
+	    /* ===== 판매자 본인 검증 (중요) ===== */
+	    if (principal == null || 
+	        !principal.getName().equals(detail.getSeller_userid())) {
+	        throw new AccessDeniedException("수정 권한 없음");
+	    }
+
+	    model.addAttribute("detail", detail);
+	    model.addAttribute("topLocationList", tlService.getTopLocationList());
+	    log.info(" updateSaleTradeGET() 끝!");
+	    return "/traBoard/update";
+	}
+	
+	@PostMapping("/update")
+	public String updateSaleTradePOST(SaleTradeVO vo,
+	                                  @RequestParam(required = false) MultipartFile thumbFile,
+	                                  Principal principal) {
+		log.info(" updateSaleTradePOST() 실행!");
+	    SaleTradeVO origin = stService.getSaleTradeDetail(vo.getTrade_id());
+
+	    /* ===== 판매자 본인 검증 (중요) ===== */
+	    if (principal == null ||
+	        !principal.getName().equals(origin.getSeller_userid())) {
+	        throw new AccessDeniedException("수정 권한 없음");
+	    }
+
+	    stService.updateSaleTrade(vo, thumbFile, origin);
+
+	    log.info(" updateSaleTradePOST() 끝!");
+	    return "redirect:/traBoard/detail?trade_id=" + vo.getTrade_id();
+	}
+	
+	@PostMapping("/delete")
+	public String deleteSaleTradePOST(@RequestParam("trade_id") Integer tradeId,
+	                                  Principal principal) {
+		log.info(" deleteSaleTradePOST() 실행!");
+	    if(principal == null){
+	        throw new AccessDeniedException("로그인 필요");
+	    }
+
+	    SaleTradeVO origin = stService.getSaleTradeDetail(tradeId);
+
+	    /* 판매자 본인 검증 */
+	    if(!principal.getName().equals(origin.getSeller_userid())){
+	        throw new AccessDeniedException("삭제 권한 없음");
+	    }
+
+	    stService.deleteSaleTrade(origin);
+
+	    log.info(" deleteSaleTradePOST() 끝!");
 	    return "redirect:/traBoard/saleTradeList";
 	}
 }
