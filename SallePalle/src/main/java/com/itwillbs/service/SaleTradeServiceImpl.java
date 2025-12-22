@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.itwillbs.component.FileComponent;
 import com.itwillbs.domain.SaleTradeVO;
 import com.itwillbs.persistence.SaleTradeDAO;
 
@@ -19,6 +21,7 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 		= LoggerFactory.getLogger(SaleTradeServiceImpl.class);
 
 	@Inject private SaleTradeDAO saleTradeDAO;
+	@Inject private FileComponent fileComponent;
 
 	@Override
 	public List<SaleTradeVO> getSaleTradeList(String type, String keyword, Integer itemCtgId) {
@@ -28,7 +31,7 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 	}
 
 	@Override
-	public SaleTradeVO getSaleTradeDetail(int tradeId) {
+	public SaleTradeVO getSaleTradeDetail(Integer tradeId) {
 		log.info(" SaleTradeServiceImpl: getSaleTradeDetail() 실행!");
 	    log.info(" SaleTradeServiceImpl: getSaleTradeDetail() 끝!");
 		return saleTradeDAO.selectSaleTradeDetail(tradeId);
@@ -138,6 +141,54 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 		saleTradeDAO.insertSaleTrade(vo);
 		
 	    log.info(" SaleTradeServiceImpl: writeSaleTrade() 끝!");
+	}
+
+	@Override
+	public Integer getMemberIdByUserid(String userid) {
+		log.info("SaleTradeServiceImpl: getMemberIdByUserid() 실행");
+		log.info("SaleTradeServiceImpl: getMemberIdByUserid() 끝");
+	    return saleTradeDAO.selectMemberIdByUserid(userid);
+	}
+
+	@Override
+	public void updateSaleTrade(SaleTradeVO vo, 
+			                    MultipartFile thumbFile,
+			                    SaleTradeVO origin) {
+		log.info(" SaleTradeServiceImpl: getSaleTradeList() 실행!");
+		
+		if (thumbFile != null && !thumbFile.isEmpty()) {
+
+	        // 1. 기존 썸네일 삭제 (추가된 로직)
+	        if (origin.getThumb_img() != null && !origin.getThumb_img().isEmpty()) {
+	            boolean deleted = fileComponent.deleteFile(origin.getThumb_img());
+	            log.info("기존 썸네일 삭제 결과 : {}", deleted);
+	        }
+
+	        // 2. 새 썸네일 업로드
+	        String newThumb = fileComponent.upload(thumbFile);
+	        vo.setThumb_img(newThumb);
+	    }
+
+	    // 3. DB 업데이트
+	    saleTradeDAO.updateSaleTrade(vo);
+		
+	    log.info(" SaleTradeServiceImpl: getSaleTradeList() 끝!");
+		
+	}
+
+	@Override
+	public void deleteSaleTrade(SaleTradeVO origin) {
+		log.info(" SaleTradeServiceImpl: getSaleTradeList() 실행!");
+		
+	    /* 기존 썸네일 파일 삭제 */
+	    if(origin.getThumb_img() != null){
+	        boolean result = fileComponent.deleteFile(origin.getThumb_img());
+	        log.info("기존 썸네일 삭제 결과 : {}", result);
+	    }
+		
+		saleTradeDAO.deleteSaleTrade(origin);
+		
+	    log.info(" SaleTradeServiceImpl: getSaleTradeList() 끝!");
 	}
 
 }

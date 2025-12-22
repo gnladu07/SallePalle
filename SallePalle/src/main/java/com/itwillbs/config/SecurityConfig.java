@@ -98,6 +98,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		                 "/traBoard/detail",
 		                 "/traBoard/recommend",
 		                 "/upload/**").permitAll()
+			.antMatchers("/traBoard/update/**",
+					     "/traBoard/delete").authenticated()
 			
 			// ADMIN 권한			
 			.antMatchers("/admin/login").permitAll()

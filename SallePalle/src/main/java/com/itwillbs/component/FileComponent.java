@@ -35,6 +35,10 @@ public class FileComponent {
 	
 	public boolean deleteFile(String storedFileName) {
 		File f = new File(saveDirectory ,storedFileName);
+		
+		System.out.println("썸네일 삭제 시도 경로: " + f.getAbsolutePath());
+	    System.out.println("파일 존재 여부: " + f.exists());
+		
 		if(f.exists()) {
 			return f.delete();
 		}

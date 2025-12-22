@@ -49,6 +49,7 @@
     <select id="selectSaleTradeDetail" resultType="SaleTradeVO">
         SELECT
             s.*,
+            m.userid AS seller_userid, 
             m.nickname AS seller_nickname,
             m.email,
             m.profile_img
@@ -72,6 +73,46 @@
         ORDER BY trade_id DESC
         LIMIT 4
     </select>
+    
+    <!-- 추천 여부 확인 -->
+	<select id="existsRecommend" resultType="int">
+        SELECT COUNT(*)
+        FROM recommend r
+        JOIN member m
+          ON r.member_id = m.member_id
+        WHERE r.board_type = 'SALE'
+          AND r.board_id = #{tradeId}
+          AND m.userid = #{userid}
+    </select>
+    
+    <!-- 추천 등록 -->
+    <insert id="insertRecommend">
+        INSERT INTO recommend (
+            member_id,
+            board_type,
+            board_id
+        )
+        SELECT
+            m.member_id,
+            'SALE',
+            #{tradeId}
+        FROM member m
+        WHERE m.userid = #{userid}
+    </insert>
+    
+    <!-- 판매글 추천 수 증가 -->
+    <update id="increaseRecommendCnt">
+        UPDATE saletrade_board
+        SET recommend_cnt = recommend_cnt + 1
+        WHERE trade_id = #{tradeId}
+    </update>
+    
+    <!-- 판매글 추천 수 조회 -->
+    <select id="selectRecommendCnt" resultType="int">
+        SELECT recommend_cnt
+        FROM saletrade_board
+        WHERE trade_id = #{tradeId}
+    </select>
 
     <!-- userid → member_id -->
     <select id="selectMemberIdByUserid"
@@ -79,7 +120,7 @@
             resultType="int">
         SELECT member_id
         FROM member
-        WHERE userid = #{userid}
+        WHERE userid = #{userid} 
     </select>
     
     <!-- 구매 전 포인트 잔액 검증 -->
@@ -186,5 +227,30 @@
 	        'N'
 	    )
 	</insert>
+	
+	<update id="updateSaleTrade" parameterType="SaleTradeVO">
+	    UPDATE saletrade_board
+	    SET
+	        content = #{content},
+	        price_point = #{price_point},
+	        max_mileage_use = #{max_mileage_use},
+	        toplct_id = #{toplct_id},
+	        detail_address = #{detail_address}
+	        <if test="thumb_img != null">
+	            , thumb_img = #{thumb_img}
+	        </if>
+	    WHERE trade_id = #{trade_id}
+	      AND is_deleted = 'N'
+	
+	</update>
+	
+	<update id="deleteSaleTrade" parameterType="int">
+	    UPDATE saletrade_board
+	    SET
+	        is_deleted = 'Y',
+	        deleted_at = NOW()
+	    WHERE trade_id = #{trade_id}
+	      AND is_deleted = 'N'
+	</update>
 	
 </mapper>

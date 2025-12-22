@@ -10,7 +10,7 @@ public interface SaleTradeDAO {
 	public List<SaleTradeVO> selectSaleTradeList(String type, String keyword, Integer itemCtgId);
 
 	// 판매글 상세 조회
-	public SaleTradeVO selectSaleTradeDetail(int tradeId);
+	public SaleTradeVO selectSaleTradeDetail(Integer tradeId);
 
 	// 판매자의 다른 상품
 	public List<SaleTradeVO> selectOtherSaleTradeBySeller(Integer seller_id, int tradeId);
@@ -59,5 +59,11 @@ public interface SaleTradeDAO {
 
 	// 중고 상품 등록(글작성)
 	public void insertSaleTrade(SaleTradeVO vo);
+
+	// 중고 물품 거래글 수정
+	public void updateSaleTrade(SaleTradeVO vo);
+
+	// 중고 물품 거래글 삭제
+	public void deleteSaleTrade(SaleTradeVO origin);
 
 }
