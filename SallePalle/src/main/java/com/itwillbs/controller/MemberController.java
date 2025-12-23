@@ -31,8 +31,10 @@ import com.itwillbs.domain.Criteria;
 import com.itwillbs.domain.MemberAuthVO;
 import com.itwillbs.domain.MemberVO;
 import com.itwillbs.domain.PaymentHistoryVO;
+import com.itwillbs.domain.SaleTradeVO;
 import com.itwillbs.security.CustomUserDetails;
 import com.itwillbs.service.MemberService;
+import com.itwillbs.service.SaleTradeService;
 import com.itwillbs.service.TopLocationService;
 
 @Controller
@@ -44,6 +46,7 @@ public class MemberController {
 	
 	@Inject private MemberService mService;
 	@Inject private TopLocationService tLService;
+	@Inject private SaleTradeService stService;
 	@Inject private NaverLoginComponent nLComponent;
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
@@ -443,6 +446,42 @@ public class MemberController {
 
 	    return "/member/paymentHistory";
 	}
+	
+	@GetMapping("/traList")
+    public String myTradeList(HttpSession session, Model model) {
+		logger.info(" myTradeList()실행! ");
+        MemberVO loginInfo =
+            (MemberVO) session.getAttribute("loginInfo");
+
+        if (loginInfo == null) {
+            return "redirect:/member/login";
+        }
+
+        List<SaleTradeVO> list =
+            stService.getSaleTradeBySeller(loginInfo.getMember_id());
+
+        model.addAttribute("myTradeList", list);
+
+        logger.info(" myTradeList()끝! ");
+        return "/member/traList";
+    }
+
+    @PostMapping("/deleteTrade")
+    @ResponseBody
+    public String deleteTrade(@RequestParam int trade_id,
+                              HttpSession session) {
+    	logger.info(" myTradeList()실행! ");
+        MemberVO loginInfo =
+            (MemberVO) session.getAttribute("loginInfo");
+
+        if (loginInfo == null) {
+            return "NO_LOGIN";
+        }
+
+        stService.deleteSaleTrade(trade_id, loginInfo.getMember_id());
+        logger.info(" myTradeList()끝! ");
+        return "OK";
+    }
 
 	
 }

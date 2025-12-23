@@ -106,7 +106,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/admin/**", "/security/**").hasRole("ADMIN")
 			
 			// MEMBER 권한
-			.antMatchers("/member/**").hasRole("MEMBER")
+			.antMatchers("/member/**","/traBoard/**").hasRole("MEMBER")
 			.anyRequest().authenticated()
 			.and()
 			

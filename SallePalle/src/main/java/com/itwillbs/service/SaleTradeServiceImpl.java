@@ -191,4 +191,36 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 	    log.info(" SaleTradeServiceImpl: getSaleTradeList() 끝!");
 	}
 
+	@Override
+	public List<SaleTradeVO> getSaleTradeBySeller(int sellerId) {
+		log.info(" SaleTradeServiceImpl: getSaleTradeBySeller() 실행!");
+		log.info(" SaleTradeServiceImpl: getSaleTradeBySeller() 끝!");
+		return saleTradeDAO.selectBySeller(sellerId);
+	}
+
+	@Override
+	public void deleteSaleTrade(int tradeId, int sellerId) {
+		log.info(" SaleTradeServiceImpl: deleteSaleTrade() 실행!");
+		
+		saleTradeDAO.softDeleteTrade(tradeId, sellerId);
+		
+		log.info(" SaleTradeServiceImpl: deleteSaleTrade() 끝!");
+	}
+
+	@Override
+	public SaleTradeVO getSaleTradeForRelist(int tradeId, int sellerId) {
+		log.info(" SaleTradeServiceImpl: getSaleTradeForRelist() 실행!");
+	    log.info(" SaleTradeServiceImpl: getSaleTradeForRelist() 끝!");
+		return saleTradeDAO.selectSaleTradeForRelist(tradeId, sellerId);
+	}
+
+	@Override
+	public void relistSaleTrade(SaleTradeVO vo) {
+		log.info(" SaleTradeServiceImpl: relistSaleTrade() 실행!");
+		
+		saleTradeDAO.updateRelistSaleTrade(vo);
+		
+	    log.info(" SaleTradeServiceImpl: relistSaleTrade() 끝!");
+	}
+
 }

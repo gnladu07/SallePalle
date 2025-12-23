@@ -48,7 +48,7 @@
         display: flex;
         align-items: center;
         /* justify-content: space-between; */
-        padding: 0 20px;
+        padding: 0 655px;
         box-sizing: border-box;
         z-index: 99;
     }
@@ -228,10 +228,15 @@
 	
 	.header-col.center {
 	    justify-content: center;
+	    padding-right: 47px;
 	}
 	
 	.header-col.right {
 	    justify-content: flex-end;
+	}
+	
+	.header-col.left {
+	    padding-left: 29px;
 	}
 	
 	/* header.jps - 알림 아이콘 + 뱃지 */
@@ -1088,7 +1093,6 @@
 	    display: flex;
 	    justify-content: center;
 	    padding: 40px 20px;
-	    background: #fbfbfc;
 	}
 	
 	.update-container {
@@ -1129,6 +1133,66 @@
 	    margin-bottom: 8px;
 	}
 	
+	/* 현재 이미지 */
+	.update-image-current {
+	    width: 100%;
+	    height: 300px;
+	    border-radius: 12px;
+	    overflow: hidden;
+	    margin-bottom: 15px;
+	    border: 2px solid #f0f0f0;
+	}
+	
+	.update-image-current img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	}
+	
+	/* 이미지 변경 버튼 */
+	.update-image-upload {
+	    margin-bottom: 15px;
+	}
+	
+	.update-image-label {
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    gap: 8px;
+	    padding: 12px;
+	    border: 1px solid #FF6F61;
+	    border-radius: 8px;
+	    background: white;
+	    color: #FF6F61;
+	    cursor: pointer;
+	    transition: 0.2s;
+	}
+	
+	.update-image-label:hover {
+	    background: #fff5f4;
+	}
+	
+	.update-image-label svg {
+	    width: 20px;
+	    height: 20px;
+	}
+	
+	/* 새 이미지 미리보기 */
+	.update-image-preview {
+	    width: 100%;
+	    height: 300px;
+	    border-radius: 12px;
+	    overflow: hidden;
+	    border: 2px solid #FF6F61;
+	}
+	
+	.update-image-preview img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	}
+	
+	/* 입력 필드 */
 	.update-input {
 	    width: 100%;
 	    padding: 12px 15px;
@@ -1150,6 +1214,23 @@
 	    cursor: not-allowed;
 	}
 	
+	.update-textarea {
+	    width: 100%;
+	    padding: 12px 15px;
+	    border: 1px solid #ddd;
+	    border-radius: 8px;
+	    font-size: 14px;
+	    box-sizing: border-box;
+	    transition: 0.2s;
+	    resize: vertical;
+	    font-family: inherit;
+	}
+	
+	.update-textarea:focus {
+	    outline: none;
+	    border-color: #FF6F61;
+	}
+	
 	.update-select {
 	    width: 100%;
 	    padding: 12px 15px;
@@ -1165,6 +1246,36 @@
 	    border-color: #FF6F61;
 	}
 	
+	/* 단위 표시 */
+	.update-input-with-unit {
+	    position: relative;
+	}
+	
+	.update-input-with-unit input {
+	    padding-right: 40px;
+	}
+	
+	.update-input-unit {
+	    position: absolute;
+	    right: 15px;
+	    top: 50%;
+	    transform: translateY(-50%);
+	    font-size: 14px;
+	    font-weight: 600;
+	    color: #FF6F61;
+	}
+	
+	.update-input-unitM {
+	    position: absolute;
+	    right: 15px;
+	    top: 50%;
+	    transform: translateY(-50%);
+	    font-size: 14px;
+	    font-weight: 600;
+	    color: #9B59B6;
+	}
+	
+	/* 주소 검색 */
 	.update-input-row {
 	    display: flex;
 	    gap: 10px;
@@ -1174,7 +1285,7 @@
 	    flex: 1;
 	}
 	
-	.update-btn-check {
+	.update-btn-search {
 	    padding: 12px 20px;
 	    background: white;
 	    border: 1px solid #ddd;
@@ -1186,7 +1297,7 @@
 	    transition: 0.2s;
 	}
 	
-	.update-btn-check:hover {
+	.update-btn-search:hover {
 	    background: #f8f8f8;
 	    border-color: #FF6F61;
 	    color: #FF6F61;
@@ -1221,24 +1332,13 @@
 	}
 	
 	.update-btn-primary {
-	    background: linear-gradient(45deg, #FF6F61, #9B59B6);
+	    background: linear-gradient(135deg, #FF6F61, #9B59B6);
 	    color: white;
 	}
 	
 	.update-btn-primary:hover {
 	    transform: translateY(-2px);
 	    box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3);
-	}
-	
-	.update-btn-reset {
-	    background: white;
-	    color: #ffc107;
-	    border: 1px solid #ffc107;
-	}
-	
-	.update-btn-reset:hover {
-	    background: #ffc107;
-	    color: white;
 	}
 	
 	.update-btn-outline {
@@ -1257,6 +1357,11 @@
 	@media (max-width: 768px) {
 	    .update-button-group {
 	        flex-direction: column;
+	    }
+	    
+	    .update-image-current,
+	    .update-image-preview {
+	        height: 200px;
 	    }
 	}
     
@@ -2245,7 +2350,7 @@
 	    /* position: sticky; */
 	    top: 100px;
 	    height: fit-content;
-	    margin-top: 120px;
+	    margin-top: 25px;
 	}
 	
 	.detail-main-image {
@@ -2325,12 +2430,17 @@
 	    content: "";
 	}
 	
-	.detail-price {
+	.detail-pricezon {
 	    font-size: 32px;
 	    font-weight: 700;
-	    color: #FF6F61;
 	    margin-bottom: 20px;
 	    order: 3;
+	}
+	
+	.detail-pricezon > div {
+	    display: flex;
+	    align-items: baseline;
+	    gap: 10px;
 	}
 	
 	.detail-status-badge {
@@ -2685,6 +2795,319 @@
 	        position: static;
 	    }
 	}
+	/* write.jsp */
+	.main-write {
+	    margin-top: 70px;
+	    min-height: calc(100vh - 140px);
+	    display: flex;
+	    justify-content: center;
+	    padding: 40px 20px;
+	}
+	
+	.write-container {
+	    width: 100%;
+	    max-width: 700px;
+	    background: white;
+	    border-radius: 16px;
+	    padding: 50px 40px;
+	    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+	    margin-bottom: 40px;
+	}
+	
+	.write-title {
+	    text-align: center;
+	    font-size: 28px;
+	    font-weight: 700;
+	    margin-bottom: 12px;
+	    color: #333;
+	}
+	
+	.write-subtitle {
+	    text-align: center;
+	    font-size: 15px;
+	    color: #888;
+	    margin-bottom: 40px;
+	}
+	
+	/* 이미지 업로드 */
+	.write-field {
+	    margin-bottom: 25px;
+	}
+	
+	.write-label {
+	    display: block;
+	    font-size: 14px;
+	    font-weight: 600;
+	    color: #333;
+	    margin-bottom: 8px;
+	}
+	
+	.write-image-upload {
+	    margin-bottom: 30px;
+	}
+	
+	.write-image-label {
+	    display: block;
+	    cursor: pointer;
+	}
+	
+	.write-image-preview {
+	    width: 100%;
+	    height: 300px;
+	    border: 2px dashed #ddd;
+	    border-radius: 12px;
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    justify-content: center;
+	    background: #f8f9fa;
+	    transition: 0.2s;
+	    overflow: hidden;
+	}
+	
+	.write-image-preview:hover {
+	    border-color: #FF6F61;
+	    background: #fff5f4;
+	}
+	
+	.write-image-preview svg {
+	    width: 60px;
+	    height: 60px;
+	    margin-bottom: 10px;
+	}
+	
+	.write-image-preview p {
+	    font-size: 14px;
+	    color: #999;
+	}
+	
+	.write-image-preview img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	}
+	
+	/* 입력 필드 */
+	.write-input {
+	    width: 100%;
+	    padding: 12px 15px;
+	    border: 1px solid #ddd;
+	    border-radius: 8px;
+	    font-size: 14px;
+	    box-sizing: border-box;
+	    transition: 0.2s;
+	}
+	
+	.write-input:focus {
+	    outline: none;
+	    border-color: #FF6F61;
+	}
+	
+	.write-textarea {
+	    width: 100%;
+	    padding: 12px 15px;
+	    border: 1px solid #ddd;
+	    border-radius: 8px;
+	    font-size: 14px;
+	    box-sizing: border-box;
+	    transition: 0.2s;
+	    resize: vertical;
+	    font-family: inherit;
+	}
+	
+	.write-textarea:focus {
+	    outline: none;
+	    border-color: #FF6F61;
+	}
+	
+	.write-select {
+	    width: 100%;
+	    padding: 12px 15px;
+	    border: 1px solid #ddd;
+	    border-radius: 8px;
+	    font-size: 14px;
+	    box-sizing: border-box;
+	    transition: 0.2s;
+	}
+	
+	.write-select:focus {
+	    outline: none;
+	    border-color: #FF6F61;
+	}
+	/* 수정/삭제 버튼 */
+	.detail-btn-edit {
+	    flex: 1;
+	    padding: 14px;
+	    border: 1px solid #FF6F61;
+	    border-radius: 8px;
+	    background: white;
+	    color: #FF6F61;
+	    font-size: 16px;
+	    font-weight: 700;
+	    cursor: pointer;
+	    transition: 0.2s;
+	}
+	
+	.detail-btn-edit:hover {
+	    background: #FF6F61;
+	    color: white;
+	    transform: translateY(-2px);
+	}
+	
+	.detail-btn-delete {
+	    flex: 1;
+	    padding: 14px;
+	    border: 1px solid #dc3545;
+	    border-radius: 8px;
+	    background: white;
+	    color: #dc3545;
+	    font-size: 16px;
+	    font-weight: 700;
+	    cursor: pointer;
+	    transition: 0.2s;
+	}
+	
+	.detail-btn-delete:hover {
+	    background: #dc3545;
+	    color: white;
+	    transform: translateY(-2px);
+	}
+	
+	.detail-btn-login {
+	    flex: 1;
+	    padding: 14px;
+	    border: 1px solid #ddd;
+	    border-radius: 8px;
+	    background: white;
+	    color: #666;
+	    font-size: 16px;
+	    font-weight: 700;
+	    cursor: pointer;
+	    transition: 0.2s;
+	}
+	
+	.detail-btn-login:hover {
+	    background: #f8f9fa;
+	    border-color: #FF6F61;
+	    color: #FF6F61;
+	}
+	
+	/* 가로 배치 */
+	.write-field-row {
+	    display: grid;
+	    grid-template-columns: 2fr 1fr;
+	    gap: 15px;
+	    margin-bottom: 25px;
+	}
+	
+	/* 단위 표시 */
+	.write-input-with-unit {
+	    position: relative;
+	}
+	
+	.write-input-with-unit input {
+	    padding-right: 40px;
+	}
+	
+	.write-input-unit {
+	    position: absolute;
+	    right: 15px;
+	    top: 50%;
+	    transform: translateY(-50%);
+	    font-size: 14px;
+	    font-weight: 600;
+	    color: #FF6F61;
+	}
+	
+	.write-input-unitM {
+	    position: absolute;
+	    right: 15px;
+	    top: 50%;
+	    transform: translateY(-50%);
+	    font-size: 14px;
+	    font-weight: 600;
+	    color: #9B59B6;
+	}
+	
+	/* 체크박스 */
+	.write-checkbox {
+	    display: flex;
+	    align-items: center;
+	    gap: 8px;
+	    margin-top: 10px;
+	    cursor: pointer;
+	}
+	
+	.write-checkbox input[type="checkbox"] {
+	    width: 18px;
+	    height: 18px;
+	    cursor: pointer;
+	}
+	
+	.write-checkbox span {
+	    font-size: 14px;
+	    color: #666;
+	}
+	
+	/* 주소 검색 */
+	.write-input-row {
+	    display: flex;
+	    gap: 10px;
+	}
+	
+	.write-input-row input {
+	    flex: 1;
+	}
+	
+	.write-btn-search {
+	    padding: 12px 20px;
+	    background: white;
+	    border: 1px solid #ddd;
+	    border-radius: 8px;
+	    cursor: pointer;
+	    font-size: 14px;
+	    font-weight: 600;
+	    white-space: nowrap;
+	    transition: 0.2s;
+	}
+	
+	.write-btn-search:hover {
+	    background: #f8f8f8;
+	    border-color: #FF6F61;
+	    color: #FF6F61;
+	}
+	
+	/* 제출 버튼 */
+	.write-submit-btn {
+	    width: 100%;
+	    padding: 16px;
+	    background: linear-gradient(135deg, #FF6F61, #9B59B6);
+	    border: none;
+	    border-radius: 10px;
+	    color: white;
+	    font-size: 16px;
+	    font-weight: 700;
+	    cursor: pointer;
+	    transition: 0.2s;
+	    margin-top: 30px;
+	}
+	
+	.write-submit-btn:hover {
+	    transform: translateY(-2px);
+	    box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3);
+	}
+	
+	/* 반응형 */
+	@media (max-width: 768px) {
+	    .write-field-row {
+	        grid-template-columns: 1fr;
+	    }
+	    
+	    .write-image-preview {
+	        height: 200px;
+	    }
+	}
+
 </style>
 </head>
 <body>
@@ -2763,9 +3186,9 @@
 		                <span class="dropdown-item-icon">👤</span>
 		                <span>MY홈</span>
 		            </a>
-		            <a href="#" class="dropdown-item">
+		            <a href="/member/traList" class="dropdown-item">
 		                <span class="dropdown-item-icon">📋</span>
-		                <span>스크랩</span>
+		                <span>등록 물품</span>
 		            </a>
 		            <a href="#" class="dropdown-item">
 		                <span class="dropdown-item-icon">🕒</span>

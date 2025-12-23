@@ -66,4 +66,16 @@ public interface SaleTradeDAO {
 	// 중고 물품 거래글 삭제
 	public void deleteSaleTrade(SaleTradeVO origin);
 
+	// 등록한 중고 물품 리스트
+	public List<SaleTradeVO> selectBySeller(int sellerId);
+
+	// 판매완료된 중고 물품 삭제
+	public void softDeleteTrade(int tradeId, int sellerId);
+
+	// 재등록용 게시글 조회(본인 판매 글만)
+	public SaleTradeVO selectSaleTradeForRelist(int tradeId, int sellerId);
+
+	// 재등록 처리
+	public int updateRelistSaleTrade(SaleTradeVO vo);
+
 }

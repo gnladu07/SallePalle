@@ -198,6 +198,7 @@ public class SaleTradeController {
 
 	    model.addAttribute("detail", detail);
 	    model.addAttribute("topLocationList", tlService.getTopLocationList());
+	    model.addAttribute("itemCategoryList", icService.getItemCategoryList());
 	    log.info(" updateSaleTradeGET() 끝!");
 	    return "/traBoard/update";
 	}
@@ -240,5 +241,55 @@ public class SaleTradeController {
 
 	    log.info(" deleteSaleTradePOST() 끝!");
 	    return "redirect:/traBoard/saleTradeList";
+	}
+	
+	@GetMapping("/reupdate")
+	public String reupdateForm(@RequestParam int trade_id,
+	                           HttpSession session,
+	                           Model model) {
+		log.info(" reupdateForm() 실행! ");
+	    MemberVO loginInfo =
+	        (MemberVO) session.getAttribute("loginInfo");
+
+	    if (loginInfo == null) {
+	        return "redirect:/member/login";
+	    }
+
+	    SaleTradeVO trade =
+	        stService.getSaleTradeForRelist(trade_id, loginInfo.getMember_id());
+
+	    if (trade == null) {
+	        return "redirect:/member/traList";
+	    }
+	   
+	    model.addAttribute("trade", trade);
+	    model.addAttribute("itemCategoryList", icService.getItemCategoryList());
+	    log.info(" reupdateForm() 끝! ");
+	    return "/traBoard/reupdate";
+	}
+	
+	@PostMapping("/reupdate")
+	public String reupdateSubmit(SaleTradeVO vo,
+								 MultipartFile thumbFile,
+	                             HttpSession session) {
+		log.info(" reupdateSubmit() 실행! ");
+	    MemberVO loginInfo =
+	        (MemberVO) session.getAttribute("loginInfo");
+
+	    if (loginInfo == null) {
+	        return "redirect:/member/login";
+	    }
+
+	    vo.setSeller_id(loginInfo.getMember_id());
+
+	    if (thumbFile != null && !thumbFile.isEmpty()) {
+	        String savedFileName = fComponent.upload(thumbFile);
+	        vo.setThumb_img(savedFileName);
+	    }
+	    
+	    stService.relistSaleTrade(vo);
+
+	    log.info(" reupdateSubmit() 끝! ");
+	    return "redirect:/member/traList";
 	}
 }
