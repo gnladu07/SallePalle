@@ -6,13 +6,19 @@
         
         <!-- 상품 이미지 섹션 -->
         <div class="detail-image-section">
+        	<!-- 제목 & 정보 -->
+            <h1 class="detail-title">${detail.title}</h1>
+            <div class="detail-meta">
+                <span>
+                    <fmt:formatDate value="${detail.regdate}" pattern="yyyy-MM-dd HH:mm"/>
+                </span>
+                <span class="detail-category">
+			        ${detail.item_ctg_name}
+			    </span>
+            </div>
             <div class="detail-main-image">
                 <img src="/upload/${detail.thumb_img}" alt="${detail.title}">
             </div>
-        </div>
-
-        <!-- 상품 정보 섹션 -->
-        <div class="detail-info-section">
             <!-- 판매자 정보 -->
             <div class="detail-seller">
                 <img src="/upload/${detail.profile_img}" 
@@ -22,18 +28,22 @@
                     <div class="detail-seller-location">${detail.toplct_name}</div>
                 </div>
             </div>
+        </div>
 
-            <!-- 제목 & 정보 -->
-            <h1 class="detail-title">${detail.title}</h1>
-            
-            <div class="detail-meta">
-                <span>
-                    <fmt:formatDate value="${detail.regdate}" pattern="yyyy-MM-dd HH:mm"/>
-                </span>
-            </div>
+        <!-- 상품 정보 섹션 -->
+        <div class="detail-info-section">
 
             <!-- 가격 -->
-            <div class="detail-price">${detail.price_point} P</div>
+            <div class="detail-pricezon">            
+	            <div class="detail-price" style="color: #FF6F61;">
+	            	<p style="font-size: 20px; color: black;">희망 판매가:</p>
+	            		${detail.price_point} P
+	            </div>
+	            <div class="detail-mileage" style="color: #9B59B6;">
+	            	<p style="font-size: 20px; color: black;">할인 가능 마일리지:</p>
+	            	${detail.max_mileage_use} M
+	            </div>
+            </div>
 
             <!-- 상태 배지 -->
             <c:if test="${detail.status eq 'C'}">

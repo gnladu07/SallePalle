@@ -48,15 +48,26 @@
     <!-- 판매글 상세 -->
     <select id="selectSaleTradeDetail" resultType="SaleTradeVO">
         SELECT
-            s.*,
-            m.userid AS seller_userid, 
-            m.nickname AS seller_nickname,
-            m.email,
-            m.profile_img
-        FROM saletrade_board s
-        JOIN member m ON s.seller_id = m.member_id
-        WHERE s.trade_id = #{tradeId}
-          AND s.is_deleted = 'N'
+	        s.*,
+	
+	        -- 판매자 정보
+	        m.userid AS seller_userid,
+	        m.nickname AS seller_nickname,
+	        m.email,
+	        m.profile_img,
+	
+	        -- 카테고리명
+	        c.item_ctg_name
+	
+	    FROM saletrade_board s
+	    JOIN member m
+	      ON s.seller_id = m.member_id
+	
+	    JOIN saletrade_item_category c
+	      ON s.item_ctg_id = c.item_ctg_id
+	
+	    WHERE s.trade_id = #{tradeId}
+	      AND s.is_deleted = 'N'
     </select>
 
     <!-- 판매자의 다른 상품 -->
@@ -71,7 +82,7 @@
           AND trade_id != #{tradeId}
           AND is_deleted = 'N'
         ORDER BY trade_id DESC
-        LIMIT 4
+        LIMIT 5
     </select>
     
     <!-- 추천 여부 확인 -->
@@ -231,11 +242,12 @@
 	<update id="updateSaleTrade" parameterType="SaleTradeVO">
 	    UPDATE saletrade_board
 	    SET
-	        content = #{content},
-	        price_point = #{price_point},
+	        content         = #{content},
+	        price_point     = #{price_point},
 	        max_mileage_use = #{max_mileage_use},
-	        toplct_id = #{toplct_id},
-	        detail_address = #{detail_address}
+	        toplct_id       = #{toplct_id},
+	        item_ctg_id     = #{item_ctg_id},
+	        detail_address  = #{detail_address}
 	        <if test="thumb_img != null">
 	            , thumb_img = #{thumb_img}
 	        </if>
@@ -251,6 +263,68 @@
 	        deleted_at = NOW()
 	    WHERE trade_id = #{trade_id}
 	      AND is_deleted = 'N'
+	</update>
+	
+	<select id="selectBySeller" resultType="SaleTradeVO">
+	    SELECT *
+	    FROM saletrade_board
+	    WHERE seller_id = #{sellerId}
+	      AND is_deleted = 'N'
+	    ORDER BY regdate DESC
+	</select>
+	
+	<update id="softDeleteTrade">
+	    UPDATE saletrade_board
+	    SET
+	        is_deleted = 'Y',
+	        deleted_at = NOW()
+	    WHERE trade_id = #{trade_id}
+	      AND seller_id = #{seller_id}
+	      AND status = 'C'
+	</update>
+	
+	<select id="selectSaleTradeForRelist" resultType="SaleTradeVO">
+	   SELECT
+	        trade_id,
+	        seller_id,
+	        title,
+	        content,
+	        price_point,
+	        max_mileage_use,
+	        quantity,
+	        thumb_img,
+	        detail_img,
+	        item_ctg_id,
+	        recommend_cnt,
+	        status,
+	        regdate,
+	        updatedate,
+	        toplct_id,
+	        detail_address,
+	        allow_full_mileage
+	    FROM saletrade_board
+	    WHERE trade_id = #{tradeId}
+	      AND seller_id = #{sellerId}
+	      AND is_deleted = 'N'
+	</select>
+	
+	<update id="updateRelistSaleTrade">
+		 UPDATE saletrade_board
+		    SET
+		        title           = #{title},
+		        content         = #{content},
+		        price_point     = #{price_point},
+		        max_mileage_use = #{max_mileage_use},
+		        quantity        = #{quantity},
+		        thumb_img       = #{thumb_img}, 
+		        item_ctg_id     = #{item_ctg_id}, 
+		        allow_full_mileage = #{allow_full_mileage},
+		
+		        status = 'S' 
+		
+		    WHERE trade_id  = #{trade_id}
+		      AND seller_id = #{seller_id}
+		      AND is_deleted = 'N'
 	</update>
 	
 </mapper>

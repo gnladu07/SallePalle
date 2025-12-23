@@ -250,6 +250,44 @@ public class SaleTradeDAOImpl implements SaleTradeDAO {
 		log.info(" SaleTradeDAOImpl: deleteSaleTrade() 끝!");
 	}
 
+	@Override
+	public List<SaleTradeVO> selectBySeller(int sellerId) {
+		log.info(" SaleTradeDAOImpl: selectBySeller() 실행!");
+    	log.info(" SaleTradeDAOImpl: selectBySeller() 끝!");
+		return sqlSession.selectList(NAMESPACE + "selectBySeller", sellerId);
+	}
+
+	@Override
+	public void softDeleteTrade(int tradeId, int sellerId) {
+		log.info(" SaleTradeDAOImpl: softDeleteTrade() 실행!");
+		
+		Map<String, Object> param = new HashMap<>();
+        param.put("trade_id", tradeId);
+        param.put("seller_id", sellerId);
+
+        sqlSession.update(NAMESPACE + "softDeleteTrade", param);
+    	log.info(" SaleTradeDAOImpl: softDeleteTrade() 끝!");
+	}
+
+	@Override
+	public SaleTradeVO selectSaleTradeForRelist(int tradeId, int sellerId) {
+		log.info(" SaleTradeDAOImpl: selectSaleTradeForRelist() 실행!");
+		
+		Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("tradeId", tradeId);
+        paramMap.put("sellerId", sellerId);
+        
+		log.info(" SaleTradeDAOImpl: selectSaleTradeForRelist() 끝!");
+		return sqlSession.selectOne(NAMESPACE + "selectSaleTradeForRelist", paramMap);
+	}
+
+	@Override
+	public int updateRelistSaleTrade(SaleTradeVO vo) {
+		log.info(" SaleTradeDAOImpl: updateRelistSaleTrade() 실행!");
+		log.info(" SaleTradeDAOImpl: updateRelistSaleTrade() 끝!");
+		return sqlSession.update(NAMESPACE + "updateRelistSaleTrade",vo);
+	}
+
  
 
 }

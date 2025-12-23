@@ -67,6 +67,7 @@ public class SaleTradeVO {
     // 리스트 화면 표시용 (JOIN 결과)
     private String seller_nickname;   // member.nickname
     private String toplct_name;        // top_location.toplct_name
+    private String item_ctg_name;
     private String email;
     private String profile_img;
     
