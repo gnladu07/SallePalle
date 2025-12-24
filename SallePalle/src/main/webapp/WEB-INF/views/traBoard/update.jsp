@@ -59,8 +59,7 @@
 			    <textarea id="gptRawInput"
 			              rows="6"
 			              class="update-textarea"
-			              placeholder="예: 나 5년 정도 사용한 지포스5090GT 램16기가짜리 데스크탑 60만원에 팔고싶어"
-			              required></textarea>
+			              placeholder="예: 나 5년 정도 사용한 지포스5090GT 램16기가짜리 데스크탑 60만원에 팔고싶어"></textarea>
 			
 			    <button type="button" id="btnGptGenerate" class="btn-gpt">
 			        ✨ GPT로 문장 만들어보기

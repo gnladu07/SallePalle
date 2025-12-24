@@ -24,7 +24,7 @@ public class NaverLoginComponent {
 
 	private String clientId = "bSCdMpZcof9QoefeNJGk";
 	private String clientSecret = "dMWiCkpOXN";
-	private String callbackURL = "http://localhost:8088/member/naverCallback";
+	private String callbackURL = "http://c6d2507t3p2.itwillbs.com/member/naverCallback";
 	private SecureRandom random = new SecureRandom();
 	
 	// 1) 네이버 로그인 주소를 불러오기 위한 함수

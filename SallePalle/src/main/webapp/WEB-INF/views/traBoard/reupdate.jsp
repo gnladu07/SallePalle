@@ -66,8 +66,7 @@
                 <textarea name="content"
                           class="write-textarea"
                           rows="6"
-                          placeholder="상품에 대해 자세히 설명해주세요"
-                          required>${trade.content}</textarea>
+                          placeholder="상품에 대해 자세히 설명해주세요">${trade.content}</textarea>
             </div>
             <div class="update-field">
 			    <label class="update-label">GPT로 판매글 다듬기</label>
