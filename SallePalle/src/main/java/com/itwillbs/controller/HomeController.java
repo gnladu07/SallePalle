@@ -6,11 +6,15 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.service.ItemCategoryService;
 import com.itwillbs.service.MemberService;
+import com.itwillbs.service.SaleTradeService;
+import com.itwillbs.service.TopLocationService;
 
 /**
  * Handles requests for the application home page.
@@ -25,9 +29,13 @@ public class HomeController {
 	 */
 	
 	@Inject private MemberService memberService; 
+	@Inject private SaleTradeService stService; 
+	@Inject private TopLocationService tlService;
+	@Inject private ItemCategoryService icService;
 	
 	@RequestMapping("/main/home")
-	public String homeGET(HttpSession session) {
+	public String homeGET(HttpSession session, 
+			              Model model) {
 
 	    MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
 
@@ -37,6 +45,18 @@ public class HomeController {
 	        session.setAttribute("loginInfo", fresh);
 	    }
 
+	    // 1. 카테고리 리스트
+	    model.addAttribute("topLocationList", tlService.getTopLocationList());
+	    
+	    // 2. 지역 리스트
+	    model.addAttribute("itemCategoryList", icService.getItemCategoryList());
+	    
+	    // 3. 최신 중고 거래 5개
+	    model.addAttribute("latestTradeList", stService.getLatestSaleTradeList(5));
+	    
+	    // 4. 추천순 중고 거래 5개
+	    model.addAttribute("recommendTradeList", stService.getRecommendSaleTradeList(5));
+	    
 	    return "/main/home";
 	}
 	@GetMapping("/include/header")

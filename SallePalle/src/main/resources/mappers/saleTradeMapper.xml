@@ -13,6 +13,7 @@
             s.recommend_cnt,
             s.regdate,
             m.nickname AS seller_nickname,
+            t.toplct_id,
             t.toplct_name,
             c.item_ctg_name
         FROM saletrade_board s
@@ -27,6 +28,15 @@
 
         <if test="keyword != null and keyword != ''">
             <choose>
+		        <when test="type == 'all'">
+		            AND (
+		                s.title LIKE CONCAT('%', #{keyword}, '%')
+		                OR s.content LIKE CONCAT('%', #{keyword}, '%')
+		                OR m.nickname LIKE CONCAT('%', #{keyword}, '%')
+		                OR c.item_ctg_name LIKE CONCAT('%', #{keyword}, '%')
+        				OR t.toplct_name LIKE CONCAT('%', #{keyword}, '%')
+		            )
+		        </when>
                 <when test="type == 'title'">
                     AND s.title LIKE CONCAT('%', #{keyword}, '%')
                 </when>
@@ -326,5 +336,47 @@
 		      AND seller_id = #{seller_id}
 		      AND is_deleted = 'N'
 	</update>
+	
+	<!-- 최신 거래 5개 -->
+    <select id="selectLatestSaleTradeList"
+            parameterType="int"
+            resultType="SaleTradeVO">
+
+        SELECT
+            s.trade_id,
+            s.title,
+            s.price_point,
+            s.thumb_img,
+            s.regdate,
+            s.thumb_img,
+            m.nickname AS seller_nickname
+        FROM saletrade_board s
+        JOIN member m ON s.seller_id = m.member_id
+        WHERE s.is_deleted = 'N'
+        ORDER BY s.regdate DESC
+        LIMIT #{limit}
+
+    </select>
+
+    <!-- 추천순 거래 5개 -->
+    <select id="selectRecommendSaleTradeList"
+            parameterType="int"
+            resultType="SaleTradeVO">
+
+        SELECT
+            s.trade_id,
+            s.title,
+            s.price_point,
+            s.thumb_img,
+            s.recommend_cnt,
+            s.thumb_img,
+            m.nickname AS seller_nickname
+        FROM saletrade_board s
+        JOIN member m ON s.seller_id = m.member_id
+        WHERE s.is_deleted = 'N'
+        ORDER BY s.recommend_cnt DESC, s.trade_id DESC
+        LIMIT #{limit}
+
+    </select>
 	
 </mapper>

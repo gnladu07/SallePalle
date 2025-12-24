@@ -47,4 +47,10 @@ public interface SaleTradeService {
 	// 재등록 처리
 	public void relistSaleTrade(SaleTradeVO vo);
 
+	// 최신 중고 거래 5개
+	public Object getLatestSaleTradeList(int limit);
+
+	// 추천순 중고 거래 5개
+	public Object getRecommendSaleTradeList(int limit);
+
 }

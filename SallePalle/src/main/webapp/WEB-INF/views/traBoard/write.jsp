@@ -48,27 +48,31 @@
                           rows="6" 
                           required></textarea>
             </div>
-            <div class="gpt-box">
-			    <h4>GPT로 판매글 다듬기</h4>
+            <div class="write-field">
+			    <label class="write-label">GPT로 판매글 다듬기</label>
 			
 			    <textarea id="gptRawInput"
-			              rows="3"
-			              placeholder="예: 나 5년 정도 사용한 지포스5090GT 램16기가짜리 데스크탑 60만원에 팔고싶어"></textarea>
+			              rows="6"
+			              class="write-textarea"
+			              placeholder="예: 나 5년 정도 사용한 지포스5090GT 램16기가짜리 데스크탑 60만원에 팔고싶어"
+			              required></textarea>
 			
-			    <button type="button" id="btnGptGenerate">
-			        GPT로 문장 만들어보기
+			    <button type="button" id="btnGptGenerate" class="btn-gpt">
+			        ✨ GPT로 문장 만들어보기
 			    </button>
 			
-			    <div id="gptPreviewBox" style="display:none;">
-			        <h5>미리보기</h5>
-			        <textarea id="gptPreview" rows="6"></textarea>
+			    <div id="gptPreviewBox" class="write-field" style="display:none;">
+			        <label class="write-label">미리보기</label>
+			        <textarea id="gptPreview" class="write-textarea" rows="6"></textarea>
 			
-			        <button type="button" id="btnApplyGpt">
-			            이 문장 사용
-			        </button>
-			        <button type="button" id="btnRetryGpt">
-			            다시 만들어보기
-			        </button>
+			        <div class="gpt-preview-buttons">
+                        <button type="button" id="btnApplyGpt" class="btn-apply-gpt">
+                            ✨ 문장 사용
+                        </button>
+                        <button type="button" id="btnRetryGpt" class="btn-retry-gpt">
+                            🪄 다시 만들기
+                        </button>
+                    </div>
 			    </div>
 			</div>
 

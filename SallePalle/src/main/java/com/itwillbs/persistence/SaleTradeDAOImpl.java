@@ -288,6 +288,20 @@ public class SaleTradeDAOImpl implements SaleTradeDAO {
 		return sqlSession.update(NAMESPACE + "updateRelistSaleTrade",vo);
 	}
 
+	@Override
+	public Object selectLatestSaleTradeList(int limit) {
+		log.info(" SaleTradeDAOImpl: selectLatestSaleTradeList() 실행!");
+		log.info(" SaleTradeDAOImpl: selectLatestSaleTradeList() 끝!");
+		return sqlSession.selectList(NAMESPACE + "selectLatestSaleTradeList", limit);
+	}
+
+	@Override
+	public Object selectRecommendSaleTradeList(int limit) {
+		log.info(" SaleTradeDAOImpl: selectRecommendSaleTradeList() 실행!");
+		log.info(" SaleTradeDAOImpl: selectRecommendSaleTradeList() 끝!");
+		return sqlSession.selectList(NAMESPACE + "selectRecommendSaleTradeList", limit);
+	}
+
  
 
 }
