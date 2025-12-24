@@ -48,7 +48,7 @@
         display: flex;
         align-items: center;
         /* justify-content: space-between; */
-        padding: 0 655px;
+        padding: 0 430px;
         box-sizing: border-box;
         z-index: 99;
     }
@@ -228,7 +228,7 @@
 	
 	.header-col.center {
 	    justify-content: center;
-	    padding-right: 47px;
+	    padding-right: 72px;
 	}
 	
 	.header-col.right {
@@ -531,99 +531,295 @@
     }
     
     /* home.jsp */
-    .main-home {
-        margin-top: 100px;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
-    .main-inner {
-        width: 900px;
-    }
-
-    /* 검색창 */
-    .search-box {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 25px;
-    }
-
-    .search-box input {
-        width: 80%;
-        padding: 12px 20px;
-        border-radius: 30px;
-        border: 1px solid #ccc;
-        font-size: 15px;
-    }
-
-    /* 카테고리 탭 */
-    .category {
-        display: flex;
-        gap: 12px;
-        overflow-x: auto;
-        padding-bottom: 5px;
-        margin-bottom: 25px;
-    }
-
-    .category button {
-        padding: 10px 20px;
-        border-radius: 20px;
-        border: 1px solid #ddd;
-        background: white;
-        cursor: pointer;
-        font-size: 14px;
-        white-space: nowrap;
-    }
-
-    .category button:hover {
-        border-color: #FF6F61;
-        color: #FF6F61;
-    }
-
-    /* 게시물 피드 (2~3열 반응형) */
-    .post-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 20px;
-    }
-
-    .post-card {
-        background: white;
-        border-radius: 12px;
-        border: 1px solid #eee;
-        overflow: hidden;
-        transition: 0.2s;
-        cursor: pointer;
-    }
-
-    .post-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-
-    .post-img {
-        width: 100%;
-        height: 200px;
-        background: #dcdcdc;
-    }
-
-    .post-content {
-        padding: 12px 15px;
-    }
-
-    .post-title {
-        font-size: 15px;
-        font-weight: 600;
-        margin-bottom: 5px;
-    }
-
-    .post-price {
-        color: #FF6F61;
-        font-weight: 700;
-        margin-top: 4px;
-    }
+	.main-inner {
+	    max-width: 1200px;
+	    margin: 0 auto;
+	    padding: 140px 20px 60px;
+	}
 	
+	/* 타이틀 */
+	.home-title {
+	    text-align: center;
+	    font-size: 42px;
+	    font-weight: 700;
+	    color: #333;
+	    margin-bottom: 50px;
+	    line-height: 1.4;
+	}
+	
+	.home-subtitle {
+	    text-align: center;
+	    font-size: 18px;
+	    color: #666;
+	    margin-bottom: 40px;
+	    font-weight: 500;
+	}
+	
+	/* 검색창 */
+	.search-box {
+	    max-width: 700px;
+	    margin: 0 auto 60px;
+	}
+	
+	.search-box form {
+	    position: relative;
+	    display: flex;
+	    align-items: center;
+	    background: white;
+	    border: 2px solid #ddd;
+	    border-radius: 30px;
+	    overflow: hidden;
+	    transition: all 0.3s;
+	}
+	
+	.search-box form:focus-within {
+	    border-color: #FF6F61;
+	    box-shadow: 0 0 0 4px rgba(255, 111, 97, 0.1);
+	}
+	
+	.search-box input[type="text"] {
+	    flex: 1;
+	    padding: 18px 24px;
+	    border: none;
+	    font-size: 16px;
+	    outline: none;
+	}
+	
+	.search-box button {
+	    padding: 18px 40px;
+	    background: linear-gradient(135deg, #FF6F61, #9B59B6);
+	    border: none;
+	    color: white;
+	    font-size: 16px;
+	    font-weight: 600;
+	    cursor: pointer;
+	    transition: all 0.3s;
+	}
+	
+	.search-box button:hover {
+	    background: linear-gradient(135deg, #e55d50, #8a4ba3);
+	}
+	
+	/* 카테고리 */
+	.category-section {
+	    margin-bottom: 80px;
+	}
+	
+	.category {
+	    display: flex;
+	    gap: 15px;
+	    overflow-x: auto;
+	    padding: 10px 0;
+	    scrollbar-width: thin;
+	    scrollbar-color: #ddd transparent;
+	}
+	
+	.category::-webkit-scrollbar {
+	    height: 6px;
+	}
+	
+	.category::-webkit-scrollbar-track {
+	    background: transparent;
+	}
+	
+	.category::-webkit-scrollbar-thumb {
+	    background: #ddd;
+	    border-radius: 3px;
+	}
+	
+	.category::-webkit-scrollbar-thumb:hover {
+	    background: #ccc;
+	}
+	
+	.category a {
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    justify-content: center;
+	    min-width: 120px;
+	    padding: 25px 20px;
+	    background: white;
+	    border: 2px solid #f0f0f0;
+	    border-radius: 16px;
+	    text-decoration: none;
+	    color: #333;
+	    font-size: 14px;
+	    font-weight: 600;
+	    transition: all 0.3s;
+	    position: relative;
+	    white-space: nowrap;
+	}
+	
+	.category a:before {
+	    content: '🛍️';
+	    font-size: 36px;
+	    margin-bottom: 12px;
+	}
+	
+	.category a:nth-child(1):before { content: '📚'; }
+	.category a:nth-child(2):before { content: '🏠'; }
+	.category a:nth-child(3):before { content: '🪑'; }
+	.category a:nth-child(4):before { content: '👕'; }
+	.category a:nth-child(5):before { content: '🎮'; }
+	.category a:nth-child(6):before { content: '⚽'; }
+	.category a:nth-child(7):before { content: '🍎'; }
+	.category a:nth-child(8):before { content: '✈️'; }
+	.category a:nth-child(9):before { content: '💻'; }
+	.category a:nth-child(10):before { content: '🎪'; }
+	.category a:nth-child(11):before { content: '📦'; }
+	
+	.category a:hover {
+	    border-color: #FF6F61;
+	    transform: translateY(-4px);
+	    box-shadow: 0 6px 20px rgba(255, 111, 97, 0.2);
+	}
+	
+	/* 섹션 타이틀 */
+	.section-header {
+	    margin-bottom: 30px;
+	}
+	
+	.section-title {
+	    font-size: 28px;
+	    font-weight: 700;
+	    color: #333;
+	    margin-bottom: 8px;
+	    padding-left: 12px;
+	    border-left: 4px solid #FF6F61;
+	}
+	
+	.section-subtitle {
+	    font-size: 15px;
+	    color: #999;
+	    padding-left: 16px;
+	}
+	
+	/* 스크롤 애니메이션 */
+	.fade-in-section {
+	    opacity: 0;
+	    transform: translateY(30px);
+	    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+	}
+	
+	.fade-in-section.is-visible {
+	    opacity: 1;
+	    transform: translateY(0);
+	}
+	
+	/* 상품 그리드 */
+	.trade-grid {
+	    display: grid;
+	    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	    gap: 20px;
+	    margin-bottom: 80px;
+	}
+	
+	.trade-card {
+	    background: white;
+	    border-radius: 12px;
+	    border: 1px solid #eee;
+	    overflow: hidden;
+	    transition: all 0.3s;
+	    text-decoration: none;
+	    color: inherit;
+	    display: block;
+	}
+	
+	.trade-card:hover {
+	    transform: translateY(-5px);
+	    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+	}
+	
+	.trade-card-img {
+	    width: 100%;
+	    height: 200px;
+	    background: #f5f5f5;
+	    overflow: hidden;
+	    position: relative;
+	}
+	
+	.trade-card-img img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	}
+	
+	.trade-card-content {
+	    padding: 16px;
+	}
+	
+	.trade-card-title {
+	    font-size: 15px;
+	    font-weight: 600;
+	    color: #333;
+	    margin-bottom: 8px;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	}
+	
+	.trade-card-price {
+	    font-size: 18px;
+	    font-weight: 700;
+	    color: #FF6F61;
+	    margin-bottom: 8px;
+	}
+	
+	.trade-card-meta {
+	    display: flex;
+	    align-items: center;
+	    gap: 8px;
+	    font-size: 13px;
+	    color: #999;
+	}
+	
+	.trade-card-recommend {
+	    display: inline-flex;
+	    align-items: center;
+	    gap: 4px;
+	    color: #FF6F61;
+	    font-weight: 600;
+	}
+	
+	/* 반응형 */
+	@media (max-width: 768px) {
+	    .home-header {
+	        padding: 0 20px;
+	    }
+	    
+	    .home-title {
+	        font-size: 28px;
+	    }
+	    
+	    .home-subtitle {
+	        font-size: 15px;
+	    }
+	    
+	    .category {
+	        gap: 10px;
+	        padding: 10px 0;
+	    }
+	    
+	    .category a {
+	        min-width: 90px;
+	        padding: 20px 10px;
+	        font-size: 13px;
+	    }
+	    
+	    .category a:before {
+	        font-size: 28px;
+	        margin-bottom: 8px;
+	    }
+	    
+	    .trade-grid {
+	        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	        gap: 15px;
+	    }
+	    
+	    .trade-card-img {
+	        height: 160px;
+	    }
+	}
 	/* read.jsp */
 	.main-read {
 	    margin-top: 70px;
@@ -2140,7 +2336,7 @@
 	    max-width: 1200px;
 	}
 	
-	/* 검색창 */
+	/* 통합 검색창 */
 	.saleTradeList-search-box {
 	    position: relative;
 	    display: flex;
@@ -2148,29 +2344,55 @@
 	    margin-bottom: 25px;
 	}
 	
-	.saleTradeList-search-box input {
+	.saleTradeList-search-wrapper {
 	    width: 80%;
-	    padding: 14px 50px 14px 20px;
+	    display: flex;
+	    align-items: center;
+	    background: white;
+	    border: 2px solid #ddd;
 	    border-radius: 30px;
-	    border: 1px solid #ddd;
-	    font-size: 15px;
-	    transition: 0.2s;
+	    overflow: hidden;
+	    transition: all 0.3s;
 	}
 	
-	.saleTradeList-search-box input:focus {
-	    outline: none;
+	.saleTradeList-search-wrapper:focus-within {
 	    border-color: #FF6F61;
-	    box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.1);
+	    box-shadow: 0 0 0 4px rgba(255, 111, 97, 0.1);
 	}
 	
-	.saleTradeList-search-icon {
-	    position: absolute;
-	    right: 12%;
-	    top: 50%;
-	    transform: translateY(-50%);
-	    width: 20px;
-	    height: 20px;
-	    pointer-events: none;
+	.saleTradeList-search-select {
+	    padding: 14px 20px;
+	    border: none;
+	    background: transparent;
+	    font-size: 15px;
+	    font-weight: 600;
+	    color: #666;
+	    cursor: pointer;
+	    outline: none;
+	    border-right: 1px solid #eee;
+	}
+	
+	.saleTradeList-search-wrapper input {
+	    flex: 1;
+	    padding: 14px 20px;
+	    border: none;
+	    font-size: 15px;
+	    outline: none;
+	}
+	
+	.btn-search {
+	    padding: 14px 30px;
+	    background: linear-gradient(135deg, #FF6F61, #9B59B6);
+	    border: none;
+	    color: white;
+	    font-size: 15px;
+	    font-weight: 600;
+	    cursor: pointer;
+	    transition: all 0.3s;
+	}
+	
+	.btn-search:hover {
+	    background: linear-gradient(135deg, #e55d50, #8a4ba3);
 	}
 	
 	/* 카테고리 탭 */
@@ -2212,6 +2434,38 @@
 	    background: linear-gradient(135deg, #FF6F61, #9B59B6);
 	    border-color: transparent;
 	    color: white;
+	}
+	
+	/* 상품 등록 버튼 */
+	.saleTradeList-register-section {
+	    display: flex;
+	    justify-content: flex-end;
+	    margin-bottom: 25px;
+	}
+	
+	.btn-register-product {
+	    display: inline-flex;
+	    align-items: center;
+	    gap: 8px;
+	    padding: 14px 28px;
+	    background: linear-gradient(135deg, #FF6F61, #9B59B6);
+	    color: white;
+	    text-decoration: none;
+	    border-radius: 12px;
+	    font-size: 15px;
+	    font-weight: 700;
+	    transition: all 0.3s;
+	    box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3);
+	}
+	
+	.btn-register-product:hover {
+	    transform: translateY(-2px);
+	    box-shadow: 0 6px 20px rgba(255, 111, 97, 0.4);
+	}
+	
+	.btn-register-product svg {
+	    width: 20px;
+	    height: 20px;
 	}
 	
 	/* 물품 그리드 */
@@ -2322,12 +2576,13 @@
 	        height: 160px;
 	    }
 	    
-	    .saleTradeList-search-box input {
+	    .saleTradeList-search-wrapper {
 	        width: 100%;
 	    }
 	    
-	    .saleTradeList-search-icon {
-	        right: 20px;
+	    .btn-register-product {
+	        width: 100%;
+	        justify-content: center;
 	    }
 	}
 	
@@ -2829,6 +3084,73 @@
 	    margin-bottom: 40px;
 	}
 	
+	/* Textarea + GPT 버튼 영역 */
+    .btn-gpt {
+        margin-bottom: 10px;
+        padding: 10px 20px;
+        background: white;
+        color: #ff6987;
+        border: 2px solid #ff6987;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-gpt:hover {
+        background: #ff6987;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255, 105, 135, 0.3);
+    }
+    
+    .gpt-preview-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-apply-gpt {
+        background: white;
+        color: #ff6987;
+        border: 2px solid #ff6987;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        flex: 1;
+    }
+
+    .btn-apply-gpt:hover {
+        background: #ff6987;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255, 105, 135, 0.3);
+    }
+
+    .btn-retry-gpt {
+        background: white;
+        color: #9B59B6;
+        border: 2px solid #9B59B6;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        flex: 1;
+    }
+
+    .btn-retry-gpt:hover {
+        background: #9B59B6;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+    }
+	
 	/* 이미지 업로드 */
 	.write-field {
 	    margin-bottom: 25px;
@@ -2934,64 +3256,6 @@
 	    outline: none;
 	    border-color: #FF6F61;
 	}
-	/* 수정/삭제 버튼 */
-	.detail-btn-edit {
-	    flex: 1;
-	    padding: 14px;
-	    border: 1px solid #FF6F61;
-	    border-radius: 8px;
-	    background: white;
-	    color: #FF6F61;
-	    font-size: 16px;
-	    font-weight: 700;
-	    cursor: pointer;
-	    transition: 0.2s;
-	}
-	
-	.detail-btn-edit:hover {
-	    background: #FF6F61;
-	    color: white;
-	    transform: translateY(-2px);
-	}
-	
-	.detail-btn-delete {
-	    flex: 1;
-	    padding: 14px;
-	    border: 1px solid #dc3545;
-	    border-radius: 8px;
-	    background: white;
-	    color: #dc3545;
-	    font-size: 16px;
-	    font-weight: 700;
-	    cursor: pointer;
-	    transition: 0.2s;
-	}
-	
-	.detail-btn-delete:hover {
-	    background: #dc3545;
-	    color: white;
-	    transform: translateY(-2px);
-	}
-	
-	.detail-btn-login {
-	    flex: 1;
-	    padding: 14px;
-	    border: 1px solid #ddd;
-	    border-radius: 8px;
-	    background: white;
-	    color: #666;
-	    font-size: 16px;
-	    font-weight: 700;
-	    cursor: pointer;
-	    transition: 0.2s;
-	}
-	
-	.detail-btn-login:hover {
-	    background: #f8f9fa;
-	    border-color: #FF6F61;
-	    color: #FF6F61;
-	}
-	
 	/* 가로 배치 */
 	.write-field-row {
 	    display: grid;
@@ -3107,6 +3371,281 @@
 	        height: 200px;
 	    }
 	}
+	
+	/* 수정/삭제 버튼 */
+	.detail-btn-edit {
+	    flex: 1;
+	    padding: 14px;
+	    border: 1px solid #FF6F61;
+	    border-radius: 8px;
+	    background: white;
+	    color: #FF6F61;
+	    font-size: 16px;
+	    font-weight: 700;
+	    cursor: pointer;
+	    transition: 0.2s;
+	}
+	
+	.detail-btn-edit:hover {
+	    background: #FF6F61;
+	    color: white;
+	    transform: translateY(-2px);
+	}
+	
+	.detail-btn-delete {
+	    flex: 1;
+	    padding: 14px;
+	    border: 1px solid #dc3545;
+	    border-radius: 8px;
+	    background: white;
+	    color: #dc3545;
+	    font-size: 16px;
+	    font-weight: 700;
+	    cursor: pointer;
+	    transition: 0.2s;
+	}
+	
+	.detail-btn-delete:hover {
+	    background: #dc3545;
+	    color: white;
+	    transform: translateY(-2px);
+	}
+	
+	.detail-btn-login {
+	    flex: 1;
+	    padding: 14px;
+	    border: 1px solid #ddd;
+	    border-radius: 8px;
+	    background: white;
+	    color: #666;
+	    font-size: 16px;
+	    font-weight: 700;
+	    cursor: pointer;
+	    transition: 0.2s;
+	}
+	
+	.detail-btn-login:hover {
+	    background: #f8f9fa;
+	    border-color: #FF6F61;
+	    color: #FF6F61;
+	}
+	
+	/* traList.jsp */
+	.main-tralist {
+	    margin-top: 70px;
+	    min-height: calc(100vh - 140px);
+	    padding: 40px 20px;
+	    background: #f8f9fa;
+	}
+	
+	.tralist-container {
+	    max-width: 1200px;
+	    margin: 0 auto;
+	}
+	
+	.tralist-header {
+	    margin-bottom: 30px;
+	}
+	
+	.tralist-title {
+	    font-size: 28px;
+	    font-weight: 700;
+	    color: #333;
+	    margin-bottom: 8px;
+	}
+	
+	.tralist-subtitle {
+	    font-size: 15px;
+	    color: #888;
+	}
+	
+	.tralist-table-wrapper {
+	    background: white;
+	    border-radius: 16px;
+	    overflow: hidden;
+	    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+	}
+	
+	.tralist-table {
+	    width: 100%;
+	    border-collapse: collapse;
+	}
+	
+	.tralist-table thead {
+	    background: linear-gradient(135deg, #FF6F61, #9B59B6);
+	}
+	
+	.tralist-table thead th {
+	    padding: 16px 20px;
+	    text-align: left;
+	    font-size: 14px;
+	    font-weight: 600;
+	    color: white;
+	    border: none;
+	}
+	
+	.tralist-table tbody tr {
+	    border-bottom: 1px solid #f0f0f0;
+	    transition: background 0.2s;
+	}
+	
+	.tralist-table tbody tr:hover {
+	    background: #f8f9fa;
+	}
+	
+	.tralist-table tbody tr:last-child {
+	    border-bottom: none;
+	}
+	
+	.tralist-table tbody td {
+	    padding: 18px 20px;
+	    font-size: 14px;
+	    color: #333;
+	    vertical-align: middle;
+	}
+	
+	.tralist-date {
+	    color: #666;
+	    font-size: 13px;
+	}
+	
+	.tralist-title-link {
+	    color: #333;
+	    text-decoration: none;
+	    font-weight: 500;
+	    transition: color 0.2s;
+	}
+	
+	.tralist-title-link:hover {
+	    color: #FF6F61;
+	}
+	
+	.tralist-recommend {
+	    display: inline-flex;
+	    align-items: center;
+	    gap: 4px;
+	    padding: 6px 12px;
+	    background: #fff5f4;
+	    color: #FF6F61;
+	    border-radius: 20px;
+	    font-weight: 600;
+	    font-size: 13px;
+	}
+	
+	.tralist-status {
+	    display: inline-block;
+	    padding: 6px 16px;
+	    border-radius: 20px;
+	    font-size: 13px;
+	    font-weight: 600;
+	}
+	
+	.status-selling {
+	    background: #e3f2fd;
+	    color: #1976d2;
+	}
+	
+	.status-completed {
+	    background: #f1f8e9;
+	    color: #689f38;
+	}
+	
+	.tralist-actions {
+	    display: flex;
+	    gap: 8px;
+	}
+	
+	.btn-reupload {
+	    padding: 8px 16px;
+	    background: white;
+	    color: #FF6F61;
+	    border: 2px solid #FF6F61;
+	    border-radius: 8px;
+	    font-size: 13px;
+	    font-weight: 600;
+	    cursor: pointer;
+	    text-decoration: none;
+	    transition: all 0.2s;
+	    display: inline-block;
+	}
+	
+	.btn-reupload:hover {
+	    background: #FF6F61;
+	    color: white;
+	    transform: translateY(-1px);
+	}
+	
+	.btn-delete {
+	    padding: 8px 16px;
+	    background: white;
+	    color: #9B59B6;
+	    border: 2px solid #9B59B6;
+	    border-radius: 8px;
+	    font-size: 13px;
+	    font-weight: 600;
+	    cursor: pointer;
+	    transition: all 0.2s;
+	}
+	
+	.btn-delete:hover {
+	    background: #9B59B6;
+	    color: white;
+	    transform: translateY(-1px);
+	}
+	
+	.tralist-empty {
+	    text-align: center;
+	    padding: 60px 20px;
+	    color: #999;
+	}
+	
+	.tralist-empty svg {
+	    width: 80px;
+	    height: 80px;
+	    margin-bottom: 20px;
+	    opacity: 0.3;
+	}
+	
+	.tralist-empty p {
+	    font-size: 16px;
+	    margin-bottom: 20px;
+	}
+	
+	.btn-go-write {
+	    display: inline-block;
+	    padding: 12px 24px;
+	    background: linear-gradient(135deg, #FF6F61, #9B59B6);
+	    color: white;
+	    text-decoration: none;
+	    border-radius: 8px;
+	    font-weight: 600;
+	    transition: all 0.2s;
+	}
+	
+	.btn-go-write:hover {
+	    transform: translateY(-2px);
+	    box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3);
+	}
+	
+	@media (max-width: 768px) {
+	    .tralist-table thead th,
+	    .tralist-table tbody td {
+	        padding: 12px 10px;
+	        font-size: 13px;
+	    }
+	    
+	    .tralist-actions {
+	        flex-direction: column;
+	        gap: 6px;
+	    }
+	    
+	    .btn-reupload,
+	    .btn-delete {
+	        width: 100%;
+	        text-align: center;
+	    }
+	}
+	
 
 </style>
 </head>

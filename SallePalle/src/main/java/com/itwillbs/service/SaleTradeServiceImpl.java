@@ -223,4 +223,18 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 	    log.info(" SaleTradeServiceImpl: relistSaleTrade() 끝!");
 	}
 
+	@Override
+	public Object getLatestSaleTradeList(int limit) {
+		log.info(" SaleTradeServiceImpl: getLatestSaleTradeList() 실행!");
+	    log.info(" SaleTradeServiceImpl: getLatestSaleTradeList() 끝!");
+		return saleTradeDAO.selectLatestSaleTradeList(limit);
+	}
+
+	@Override
+	public Object getRecommendSaleTradeList(int limit) {
+		log.info(" SaleTradeServiceImpl: getRecommendSaleTradeList() 실행!");
+	    log.info(" SaleTradeServiceImpl: getRecommendSaleTradeList() 끝!");
+		return saleTradeDAO.selectRecommendSaleTradeList(limit);
+	}
+
 }

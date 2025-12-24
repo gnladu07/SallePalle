@@ -78,4 +78,10 @@ public interface SaleTradeDAO {
 	// 재등록 처리
 	public int updateRelistSaleTrade(SaleTradeVO vo);
 
+	// 최신 중고 거래 5개
+	public Object selectLatestSaleTradeList(int limit);
+
+	// 추천순 중고 거래 5개
+	public Object selectRecommendSaleTradeList(int limit);
+
 }

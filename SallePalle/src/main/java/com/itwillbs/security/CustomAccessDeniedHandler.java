@@ -26,7 +26,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 		logger.info(" 해당처리 동작 실행 => /accessError를 호출 ");
 		
 		// 에러 페이지(뷰) 호출
-		response.sendRedirect("/member/accessError");
+		request.getRequestDispatcher("/error/403")
+               .forward(request, response);
 		
 	}
 

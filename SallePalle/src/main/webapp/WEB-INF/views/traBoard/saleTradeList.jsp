@@ -3,85 +3,91 @@
 <%@ include file="../include/header.jsp" %>
 <div class="main-saleTradeList">
     <div class="saleTradeList-container">
-		<!-- 검색창 -->
-		<form action="/traBoard/saleTradeList" method="get" class="saleTradeList-search-box">
-		    
-		    <!-- 검색 조건 선택 -->
-		    <select name="type" class="saleTradeList-search-select">
-		        <option value="title">제목</option>
-		        <option value="content">내용</option>
-		        <option value="seller">판매자</option>
-		    </select>
-		
-		    <!-- 검색어 -->
-		    <input type="text" name="keyword" placeholder="검색어 입력"
-		           value="${param.keyword}">
-		
-		    <button type="submit" class="btn-search">검색</button>
-		</form>
+        <!-- 통합 검색창 -->
+        <form action="/traBoard/saleTradeList" method="get" class="saleTradeList-search-box">
+            <div class="saleTradeList-search-wrapper">
+                <!-- 검색 조건 선택 -->
+                <select name="type" class="saleTradeList-search-select">
+                    <option value="all">전체</option>
+                    <option value="title">제목</option>
+                    <option value="content">내용</option>
+                    <option value="seller">판매자</option>
+                </select>
+
+                <!-- 검색어 -->
+                <input type="text" name="keyword" placeholder="검색어를 입력하세요"
+                       value="${param.keyword}">
+
+                <button type="submit" class="btn-search">검색</button>
+            </div>
+        </form>
 
         <!-- 카테고리 탭 -->
-		<div class="saleTradeList-category">
-		
-		    <button class="saleTradeList-category-btn
-		        ${empty item_ctg_id ? 'active' : ''}"
-		        data-item-id="">전체</button>
-	
-		    <button class="saleTradeList-category-btn
-		        ${item_ctg_id == 2 ? 'active' : ''}"
-		        data-item-id="2">도서</button>
-		
-		    <button class="saleTradeList-category-btn
-		        ${item_ctg_id == 3 ? 'active' : ''}"
-		        data-item-id="3">생활/가전</button>
-		
-		    <button class="saleTradeList-category-btn
-		        ${item_ctg_id == 4 ? 'active' : ''}"
-		        data-item-id="4">가구/인테리어</button>
-		
-		    <button class="saleTradeList-category-btn
-		        ${item_ctg_id == 5 ? 'active' : ''}"
-		        data-item-id="5">의류</button>
-		
-		    <button class="saleTradeList-category-btn
-		        ${item_ctg_id == 6 ? 'active' : ''}"
-		        data-item-id="6">가구</button>
-		
-		    <button class="saleTradeList-category-btn
-		        ${item_ctg_id == 7 ? 'active' : ''}"
-		        data-item-id="7">게임</button>
-		
-		    <button class="saleTradeList-category-btn
-		        ${item_ctg_id == 8 ? 'active' : ''}"
-		        data-item-id="8">스포츠</button>
-		
-		    <button class="saleTradeList-category-btn
-		        ${item_ctg_id == 9 ? 'active' : ''}"
-		        data-item-id="9">식료품</button>
-		
-		    <button class="saleTradeList-category-btn
-		        ${item_ctg_id == 10 ? 'active' : ''}"
-		        data-item-id="10">해외직구</button>
-		
-		    <button class="saleTradeList-category-btn
-		        ${item_ctg_id == 11 ? 'active' : ''}"
-		        data-item-id="11">PC용품</button>
-		
-		    <button class="saleTradeList-category-btn
-		        ${item_ctg_id == 12 ? 'active' : ''}"
-		        data-item-id="12">레저</button>
-		
-		    <button class="saleTradeList-category-btn
-		        ${item_ctg_id == 13 ? 'active' : ''}"
-		        data-item-id="13">기타</button>
-		
-		</div>
-		
-		<c:if test="${loginInfo.seller_status eq 'Y'}">
-		    <a href="/traBoard/write" class="btn btn-primary">
-		        상품 등록
-		    </a>
-		</c:if>
+        <div class="saleTradeList-category">
+            <button class="saleTradeList-category-btn
+                ${empty item_ctg_id ? 'active' : ''}"
+                data-item-id="">전체</button>
+
+            <button class="saleTradeList-category-btn
+                ${item_ctg_id == 2 ? 'active' : ''}"
+                data-item-id="2">도서</button>
+
+            <button class="saleTradeList-category-btn
+                ${item_ctg_id == 3 ? 'active' : ''}"
+                data-item-id="3">생활/가전</button>
+
+            <button class="saleTradeList-category-btn
+                ${item_ctg_id == 4 ? 'active' : ''}"
+                data-item-id="4">가구/인테리어</button>
+
+            <button class="saleTradeList-category-btn
+                ${item_ctg_id == 5 ? 'active' : ''}"
+                data-item-id="5">의류</button>
+
+            <button class="saleTradeList-category-btn
+                ${item_ctg_id == 6 ? 'active' : ''}"
+                data-item-id="6">가구</button>
+
+            <button class="saleTradeList-category-btn
+                ${item_ctg_id == 7 ? 'active' : ''}"
+                data-item-id="7">게임</button>
+
+            <button class="saleTradeList-category-btn
+                ${item_ctg_id == 8 ? 'active' : ''}"
+                data-item-id="8">스포츠</button>
+
+            <button class="saleTradeList-category-btn
+                ${item_ctg_id == 9 ? 'active' : ''}"
+                data-item-id="9">식료품</button>
+
+            <button class="saleTradeList-category-btn
+                ${item_ctg_id == 10 ? 'active' : ''}"
+                data-item-id="10">해외직구</button>
+
+            <button class="saleTradeList-category-btn
+                ${item_ctg_id == 11 ? 'active' : ''}"
+                data-item-id="11">PC용품</button>
+
+            <button class="saleTradeList-category-btn
+                ${item_ctg_id == 12 ? 'active' : ''}"
+                data-item-id="12">레저</button>
+
+            <button class="saleTradeList-category-btn
+                ${item_ctg_id == 13 ? 'active' : ''}"
+                data-item-id="13">기타</button>
+        </div>
+
+        <!-- 상품 등록 버튼 -->
+        <c:if test="${loginInfo.seller_status eq 'Y'}">
+            <div class="saleTradeList-register-section">
+                <a href="/traBoard/write" class="btn-register-product">
+                    <svg viewBox="0 0 24 24" fill="white">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                    상품 등록
+                </a>
+            </div>
+        </c:if>
 
         <!-- 물품 그리드 -->
         <div class="saleTradeList-grid">
