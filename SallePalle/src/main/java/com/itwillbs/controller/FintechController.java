@@ -95,7 +95,7 @@ public class FintechController {
 	        session.setAttribute("loginInfo", freshMember);
 	
 	        // 완료 페이지로 이동
-	        session.setAttribute("msg", "포인트 충전이 완료되었습니다.");
+	        session.setAttribute("pointmsg", "포인트 충전이 완료되었습니다.");
 	        return "/fintech/callback";
 	    }
         
