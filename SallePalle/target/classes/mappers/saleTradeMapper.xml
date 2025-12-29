@@ -378,5 +378,11 @@
         LIMIT #{limit}
 
     </select>
+    
+    <select id="selectMileageBalance" resultType="int">
+	    SELECT IFNULL(mileage, 0)
+	    FROM mileage_wallet
+	    WHERE member_id = #{memberId}
+	</select>
 	
 </mapper>

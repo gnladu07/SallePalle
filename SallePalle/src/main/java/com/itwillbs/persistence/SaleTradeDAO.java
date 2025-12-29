@@ -84,4 +84,7 @@ public interface SaleTradeDAO {
 	// 추천순 중고 거래 5개
 	public Object selectRecommendSaleTradeList(int limit);
 
+	// 마일리지 잔액 조회
+	public int selectMileageBalance(int memberId);
+
 }

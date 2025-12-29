@@ -125,10 +125,7 @@ public class SaleTradeController {
 	        return "SUCCESS";
 
 	    } catch (IllegalStateException e) {
-	        if ("NOT_ENOUGH_POINT".equals(e.getMessage())) {
-	            return "NOT_ENOUGH_POINT";
-	        }
-	        throw e;
+	        return e.getMessage();
 	    }
 	}
 	
