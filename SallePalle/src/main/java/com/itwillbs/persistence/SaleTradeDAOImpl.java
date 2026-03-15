@@ -302,6 +302,13 @@ public class SaleTradeDAOImpl implements SaleTradeDAO {
 		return sqlSession.selectList(NAMESPACE + "selectRecommendSaleTradeList", limit);
 	}
 
+	@Override
+	public int selectMileageBalance(int memberId) {
+		log.info(" SaleTradeDAOImpl: selectMileageBalance() 실행!");
+    	log.info(" SaleTradeDAOImpl: selectMileageBalance() 끝!");
+		return sqlSession.selectOne(NAMESPACE + "selectMileageBalance", memberId);
+	}
+
  
 
 }

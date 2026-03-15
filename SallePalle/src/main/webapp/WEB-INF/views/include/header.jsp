@@ -3660,6 +3660,12 @@
 	    </script>
 	</c:if>	
 	
+	<c:if test="${!empty param.pointmsg}">
+	    <script>
+	        alert("${param.pointmsg}");
+	    </script>
+	</c:if>	
+	
 	<c:if test="${not empty sessionScope.notifyMsg}">
 	    <script>
 	        alert("${sessionScope.notifyMsg}");
