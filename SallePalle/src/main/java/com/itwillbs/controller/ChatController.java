@@ -31,7 +31,7 @@ public class ChatController {
     @Inject private SimpMessagingTemplate messagingTemplate;
     
     // ChatController.java 내부
-    @GetMapping("/chat/room")
+    @GetMapping("/chat/chatRoom")
     public String chatRoom(@RequestParam int room_id, Model model, HttpSession session) {
         MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
         if(loginInfo == null) return "redirect:/member/login";
@@ -89,6 +89,64 @@ public class ChatController {
         
         // 4. 수신자의 개인 알림 채널로 메시지 발송!
         messagingTemplate.convertAndSend("/sub/notify/" + receiverId, message);
+    }
+    
+ // ChatController.java 내부 추가
+
+    @PostMapping("/chat/pay")
+    @ResponseBody
+    public String processChatPayment(@RequestParam int room_id, HttpSession session) {
+        MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+        if (loginInfo == null) return "NO_LOGIN";
+
+        try {
+            // 채팅방 정보를 가져와서 거래 대상(상품, 판매자, 구매자) 파악
+            ChatRoomVO room = chatService.getRoom(room_id);
+            
+            // 본인이 구매자인지 확인
+            if (room.getBuyer_id() != loginInfo.getMember_id()) {
+                return "NOT_BUYER";
+            }
+
+            // 기존 SaleTradeService의 buyTrade 로직을 호출하거나 
+            // 채팅 전용 결제 서비스 로직을 실행 (아래 ChatService에 구현)
+            boolean success = chatService.executePayment(room);
+            
+            if (success) {
+                // 결제 완료 메시지를 웹소켓으로 전송 (상대방에게도 알림)
+                ChatMessageVO paymentMsg = new ChatMessageVO();
+                paymentMsg.setRoom_id(room_id);
+                paymentMsg.setSender_id(loginInfo.getMember_id());
+                paymentMsg.setMessage_text("💰 결제 및 송금이 완료되었습니다. (거래 완료)");
+                paymentMsg.setType("SYSTEM"); // 시스템 메시지 타입
+                
+                sendMessage(paymentMsg); // 기존의 sendMessage 메서드 활용
+                
+                return "OK";
+            } else {
+                return "INSUFFICIENT_POINTS";
+            }
+        } catch (Exception e) {
+            log.error("결제 처리 중 오류 발생: ", e);
+            return "ERROR";
+        }
+    }
+
+    // 채팅방 나가기 (방 및 메시지 삭제)
+    @PostMapping("/chat/leave")
+    @ResponseBody
+    public String leaveChatRoom(@RequestParam int room_id, HttpSession session) {
+        MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+        if (loginInfo == null) return "NO_LOGIN";
+
+        try {
+            // 서비스로 넘겨서 해당 방과 메시지 삭제 진행
+            chatService.leaveChatRoom(room_id);
+            return "OK";
+        } catch (Exception e) {
+            log.error("채팅방 나가기 오류: ", e);
+            return "ERROR";
+        }
     }
     
     

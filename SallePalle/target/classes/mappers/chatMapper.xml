@@ -54,5 +54,15 @@
     <select id="getRoom" resultType="ChatRoomVO">
 	    SELECT * FROM chat_room WHERE room_id = #{room_id}
 	</select>
+	
+	<delete id="deleteChatMessages">
+        DELETE FROM chat_message 
+        WHERE room_id = #{room_id}
+    </delete>
+
+    <delete id="deleteChatRoom">
+        DELETE FROM chat_room 
+        WHERE room_id = #{room_id}
+    </delete>
     
 </mapper>

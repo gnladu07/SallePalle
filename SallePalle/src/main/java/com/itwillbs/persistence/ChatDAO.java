@@ -11,4 +11,6 @@ public interface ChatDAO {
     public List<ChatMessageVO> getMessagesByRoomId(int room_id);
     public List<ChatRoomVO> getRoomList(int member_id);
     public ChatRoomVO getRoom(int room_id);
+	public void deleteChatMessages(int room_id) throws Exception;
+	public void deleteChatRoom(int room_id) throws Exception;
 }

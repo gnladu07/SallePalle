@@ -15,4 +15,8 @@ public interface ChatService {
     public List<ChatRoomVO> getMyChatRooms(int member_id);
     
     public ChatRoomVO getRoom(int room_id);
+    
+	public boolean executePayment(ChatRoomVO room);
+	
+	public void leaveChatRoom(int room_id) throws Exception;
 }

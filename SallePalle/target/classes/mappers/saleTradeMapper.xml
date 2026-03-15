@@ -145,10 +145,10 @@
     </select>
     
     <!-- 구매 전 포인트 잔액 검증 -->
-    <select id="selectPayBalance" resultType="int">
-	    SELECT IFNULL(balance, 0)
-	    FROM pay_wallet
-	    WHERE member_id = #{memberId}
+	<select id="selectPayBalance" resultType="int">
+	    SELECT IFNULL(MAX(balance), 0) 
+	    FROM pay_wallet 
+	    WHERE member_id = #{member_id}
 	</select>
 
     <!-- 구매자 포인트 차감 -->
