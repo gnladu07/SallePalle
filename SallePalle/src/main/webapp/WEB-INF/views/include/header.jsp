@@ -3924,7 +3924,7 @@
 	                    // 1. 헤더 메뉴에 빨간 뱃지 띄우기
 	                    $("#globalChatBadge").show().text("New");
 	                    
-	                    // 2. SweetAlert 띄우기
+	                    // 2. SweetAlert
 	                    swal({
 	                        title: notifyMsg.sender_nickname + "님의 새 메시지",
 	                        text: notifyMsg.message_text,
