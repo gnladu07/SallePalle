@@ -206,133 +206,14 @@
 $(function(){
     console.log("detail.jsp 로딩 완료");
 
-    // 추천 버튼
-    $("#btnRecommend").on("click", function(){
-        $.ajax({
-            url: "/traBoard/recommend",
-            type: "POST",
-            data: { trade_id: "${detail.trade_id}" },
-            success: function(res){
-                if(res === -1){
-                    alert("로그인이 필요한 기능입니다.");
-                    location.href = "/member/login?redirect=/traBoard/detail?trade_id=${detail.trade_id}";
-                }
-                else if(res === -2){
-                    alert("이미 추천한 상품입니다.");
-                }
-                else {
-                    $("#recCnt").text(res);
-                }
-            }
-        });
-    });
+    // [중요] 자바스크립트 문법 에러 방지를 위한 변수 선언
+    // 데이터가 비어있을 경우 0으로 치환하여 스크립트가 멈추는 것을 방지합니다.
+    var tradePrice = ${detail.price_point};
+    var myMileage = ${not empty loginInfo.wallet_mileage ? loginInfo.wallet_mileage : 0};
+    var myBalance = ${not empty loginInfo.wallet_balance ? loginInfo.wallet_balance : 0};
+    var myMemberId = "${loginInfo.member_id}";
 
-    // 구매 모달
-    $("#btnBuy").on("click", function(){
-        if("${detail.status}" !== "S"){
-            alert("판매가 완료된 물품입니다.");
-            return;
-        }
-        $("#buyModalOverlay").fadeIn(200);
-    });
-
-    $("#closeBuyModal, #buyModalOverlay").on("click", function(e){
-        if(e.target.id === "closeBuyModal" || e.target.id === "buyModalOverlay"){
-            closeBuyModal();
-        }
-    });
-
-    function closeBuyModal(){
-        $("#buyModalOverlay").fadeOut(200);
-        $("#payPoint, #payMileage").prop("checked", false);
-        $("#mileageOption").hide();
-        $("#confirmBuy").prop("disabled", true);
-        $("#useMileage").val("");
-        $("#finalPoint").text(${detail.price_point});
-        $("#walletInfo strong").css({"opacity": "1", "font-weight": "normal"});
-    }
-
-    // 결제 수단
-    $("#payPoint").on("change", function(){
-        $("#payMileage").prop("checked", false);
-        $("#mileageOption").hide();
-        $("#confirmBuy").prop("disabled", false);
-        $("#walletInfo strong").css("opacity", "0.4");
-        $("#walletInfo strong").first().css({"opacity": "1", "font-weight": "bold"});
-    });
-
-    $("#payMileage").on("change", function(){
-        $("#payPoint").prop("checked", false);
-        $("#mileageOption").show();
-        $("#confirmBuy").prop("disabled", true);
-        $("#walletInfo strong").css("opacity", "0.4");
-        $("#walletInfo strong").last().css({"opacity": "1", "font-weight": "bold"});
-    });
-
-    $("input[name=mileageType]").on("change", function(){
-        $("#confirmBuy").prop("disabled", false);
-    });
-
-    $("#useMileage").on("input", function(){
-        var price = ${detail.price_point};
-        var maxMileage = ${loginInfo.wallet_mileage};
-        var maxUsable = Math.min(price, maxMileage);
-
-        var use = Number($(this).val());
-
-        if(use > maxUsable){
-            alert("사용 가능한 마일리지를 초과했습니다.");
-            $(this).val(maxUsable);
-            use = maxUsable;
-        }
-
-        if(use < 0){
-            $(this).val(0);
-            use = 0;
-        }
-
-        var finalPrice = price - use;
-        $("#finalPoint").text(finalPrice);
-    });
-
-    // 구매 확정
-    $("#confirmBuy").on("click", function(){
-        $.ajax({
-            url: "/traBoard/buy",
-            type: "POST",
-            data: {
-                trade_id: "${detail.trade_id}",
-                payPoint: $("#payPoint").is(":checked"),
-                payMileage: $("#payMileage").is(":checked"),
-                mileageType: $("input[name=mileageType]:checked").val(),
-                useMileage: $("#useMileage").val()
-            },
-            success: function(res){
-                if(res === "NOT_ENOUGH_POINT"){
-                    alert("포인트가 부족합니다.");
-                    return;
-                }
-                if(res === "NOT_ENOUGH_MILEAGE"){
-                    alert("마일리지가 부족합니다.");
-                    return;
-                }
-                if(res === "SUCCESS"){
-                    $.ajax({
-                        url: "/member/refreshSession",
-                        type: "POST",
-                        success: function(r){
-                            if(r === "OK"){
-                                alert("구매가 완료되었습니다.");
-                                location.replace("/traBoard/detail?trade_id=${detail.trade_id}");
-                            }
-                        }
-                    });
-                }
-            }
-        });
-    });
-
-    // 카카오 지도
+    // 1. 카카오 지도 (스크립트 에러에 가장 민감하므로 상단 배치 고려)
     var address = "${detail.detail_address}";
     if(address && address.trim() !== ""){
         var mapContainer = document.getElementById('map');
@@ -355,31 +236,147 @@ $(function(){
             }
         });
     }
-});
-$(function(){
-    console.log("detail.jsp 삭제 스크립트 로드");
 
-    $("#btnDeleteTrade").on("click", function(){
-        let tradeId = $(this).data("trade-id");
-        console.log("삭제 클릭 trade_id =", tradeId);
+    // 2. 추천 버튼
+    $("#btnRecommend").on("click", function(){
+        $.ajax({
+            url: "/traBoard/recommend",
+            type: "POST",
+            data: { 
+                trade_id: "${detail.trade_id}",
+                "${_csrf.parameterName}": "${_csrf.token}"
+            },
+            success: function(res){
+                if(res === -1){
+                    alert("로그인이 필요한 기능입니다.");
+                    location.href = "/member/login?redirect=/traBoard/detail?trade_id=${detail.trade_id}";
+                }
+                else if(res === -2){
+                    alert("이미 추천한 상품입니다.");
+                }
+                else {
+                    $("#recCnt").text(res);
+                }
+            }
+        });
+    });
 
-        if(!confirm("정말 삭제하시겠습니까?")){
-            console.log("삭제 취소");
+    // 3. 구매 모달 및 결제 로직
+    $("#btnBuy").on("click", function(){
+        if("${detail.status}" !== "S"){
+            alert("판매가 완료된 물품입니다.");
             return;
         }
+        $("#buyModalOverlay").fadeIn(200);
+    });
 
+    $("#closeBuyModal, #buyModalOverlay").on("click", function(e){
+        if(e.target.id === "closeBuyModal" || e.target.id === "buyModalOverlay"){
+            closeBuyModal();
+        }
+    });
+
+    function closeBuyModal(){
+        $("#buyModalOverlay").fadeOut(200);
+        $("#payPoint, #payMileage").prop("checked", false);
+        $("#mileageOption").hide();
+        $("#confirmBuy").prop("disabled", true);
+        $("#useMileage").val("");
+        $("#finalPoint").text(tradePrice);
+        $("#walletInfo strong").css({"opacity": "1", "font-weight": "normal"});
+    }
+
+    $("#payPoint").on("change", function(){
+        $("#payMileage").prop("checked", false);
+        $("#mileageOption").hide();
+        $("#confirmBuy").prop("disabled", false);
+        $("#walletInfo strong").css("opacity", "0.4");
+        $("#walletInfo strong").first().css({"opacity": "1", "font-weight": "bold"});
+    });
+
+    $("#payMileage").on("change", function(){
+        $("#payPoint").prop("checked", false);
+        $("#mileageOption").show();
+        $("#confirmBuy").prop("disabled", true);
+        $("#walletInfo strong").css("opacity", "0.4");
+        $("#walletInfo strong").last().css({"opacity": "1", "font-weight": "bold"});
+    });
+
+    $("input[name=mileageType]").on("change", function(){
+        $("#confirmBuy").prop("disabled", false);
+    });
+
+    $("#useMileage").on("input", function(){
+        var maxUsable = Math.min(tradePrice, myMileage);
+        var use = Number($(this).val());
+
+        if(use > maxUsable){
+            alert("사용 가능한 마일리지를 초과했습니다.");
+            $(this).val(maxUsable);
+            use = maxUsable;
+        }
+
+        if(use < 0){
+            $(this).val(0);
+            use = 0;
+        }
+
+        var finalPrice = tradePrice - use;
+        $("#finalPoint").text(finalPrice);
+    });
+
+    $("#confirmBuy").on("click", function(){
+        $.ajax({
+            url: "/traBoard/buy",
+            type: "POST",
+            data: {
+                trade_id: "${detail.trade_id}",
+                payPoint: $("#payPoint").is(":checked"),
+                payMileage: $("#payMileage").is(":checked"),
+                mileageType: $("input[name=mileageType]:checked").val(),
+                useMileage: $("#useMileage").val(),
+                "${_csrf.parameterName}": "${_csrf.token}"
+            },
+            success: function(res){
+                if(res === "NOT_ENOUGH_POINT") alert("포인트가 부족합니다.");
+                else if(res === "NOT_ENOUGH_MILEAGE") alert("마일리지가 부족합니다.");
+                else if(res === "SUCCESS"){
+                    $.ajax({
+                        url: "/member/refreshSession",
+                        type: "POST",
+                        data: { "${_csrf.parameterName}": "${_csrf.token}" },
+                        success: function(r){
+                            if(r === "OK"){
+                                alert("구매가 완료되었습니다.");
+                                location.replace("/traBoard/detail?trade_id=${detail.trade_id}");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    // 4. 삭제 로직
+    $("#btnDeleteTrade").on("click", function(){
+        let tradeId = $(this).data("trade-id");
+        if(!confirm("정말 삭제하시겠습니까?")) return;
         $("#deleteTradeForm input[name='trade_id']").val(tradeId);
         $("#deleteTradeForm").submit();
     });
-});
-$(function(){
-    // 채팅으로 거래하기 버튼 클릭 이벤트
+
+    // 5. 채팅방 생성 로직
     $("#btnChatRoom").on("click", function(){
         let tradeId = $(this).data("trade-id");
         let sellerId = $(this).data("seller-id");
         
-        // 본인 물건인지 체크 (선택사항)
-        if("${loginInfo.member_id}" == sellerId) {
+        if(!myMemberId) {
+            alert("로그인이 필요합니다.");
+            location.href = "/member/login";
+            return;
+        }
+
+        if(myMemberId == sellerId) {
             alert("본인이 등록한 물품입니다.");
             return;
         }
@@ -390,15 +387,15 @@ $(function(){
             data: {
                 trade_id: tradeId,
                 seller_id: sellerId,
-                "${_csrf.parameterName}": "${_csrf.token}" // 시큐리티 CSRF 토큰
+                "${_csrf.parameterName}": "${_csrf.token}"
             },
             success: function(roomId){
                 if(roomId === -1) {
                     alert("로그인이 필요합니다.");
                     location.href = "/member/login";
                 } else {
-                    // 채팅방으로 이동
-                    location.href = "/chat/room?room_id=" + roomId;
+                    // NumberFormatException 방지를 위해 chatRoom 경로 사용
+                    location.href = "/chat/chatRoom?room_id=" + roomId;
                 }
             },
             error: function(){

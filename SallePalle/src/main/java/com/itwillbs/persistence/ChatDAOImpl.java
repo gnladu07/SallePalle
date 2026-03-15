@@ -47,4 +47,16 @@ public class ChatDAOImpl implements ChatDAO {
 	public ChatRoomVO getRoom(int room_id) {
 		return sqlSession.selectOne(NAMESPACE + "getRoom", room_id);
 	}
+	
+	@Override
+    public void deleteChatMessages(int room_id) throws Exception {
+        sqlSession.delete(NAMESPACE + "deleteChatMessages", room_id);
+    }
+
+    @Override
+    public void deleteChatRoom(int room_id) throws Exception {
+        sqlSession.delete(NAMESPACE + "deleteChatRoom", room_id);
+    }
+
+
 }

@@ -4,7 +4,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
 <style>
-    .chat-room-wrapper { max-width: 600px; margin: 30px auto; border: 1px solid #ddd; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; height: 700px; }
+    .chat-room-wrapper { max-width: 600px; margin: 100px auto 30px; border: 1px solid #ddd; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; height: 700px; }
     .chat-header { background: #FF6F61; color: white; padding: 15px; font-weight: bold; text-align: center; position: relative; }
     .chat-header button { position: absolute; right: 15px; top: 12px; background: white; color: #FF6F61; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
     
@@ -14,6 +14,10 @@
     .msg-content { max-width: 70%; padding: 10px 15px; border-radius: 15px; font-size: 14px; line-height: 1.4; word-break: break-all; }
     .msg-box.me .msg-content { background: #FF6F61; color: white; border-top-right-radius: 2px; }
     .msg-box.other .msg-content { background: white; color: #333; border: 1px solid #ddd; border-top-left-radius: 2px; }
+    
+    /* 시스템 메시지 스타일 */
+    .system-msg-container { text-align: center; margin: 20px 0; width: 100%; }
+    .system-msg { background: rgba(0,0,0,0.05); padding: 5px 15px; border-radius: 20px; font-size: 12px; color: #666; display: inline-block; }
     
     .chat-input-area { display: flex; padding: 15px; background: white; border-top: 1px solid #ddd; }
     .chat-input-area input { flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; outline: none; }
@@ -37,24 +41,56 @@
 
 <script>
     let stompClient = null;
-    const roomId = "${param.room_id}"; // URL 파라미터에서 가져옴
+    const roomId = "${param.room_id}"; 
     const myId = "${loginInfo.member_id}";
     const myNickname = "${loginInfo.nickname}";
 
     $(document).ready(function() {
-        connect(); // 페이지 로드 시 웹소켓 연결
-        loadHistory(); // 과거 메시지 불러오기
+        connect(); 
+        loadHistory(); 
+
+        // [결제/송금하기] 버튼 이벤트 추가
+        $("#btnPay").on("click", function() {
+            swal({
+                title: "송금 및 결제 확인",
+                text: "해당 상품의 금액만큼 포인트가 차감됩니다.\n정말로 송금하시겠습니까?",
+                icon: "warning",
+                buttons: ["취소", "송금하기"],
+            }).then((willPay) => {
+                if (willPay) {
+                    $.ajax({
+                        url: "/chat/pay",
+                        type: "POST",
+                        data: {
+                            room_id: roomId,
+                            "${_csrf.parameterName}": "${_csrf.token}"
+                        },
+                        success: function(res) {
+                            if (res === "OK") {
+                                swal("결제 완료", "판매자에게 포인트 송금이 완료되었습니다.", "success");
+                                $("#btnPay").hide(); // 결제 성공 시 버튼 숨김
+                            } else if (res === "INSUFFICIENT_POINTS") {
+                                swal("잔액 부족", "살래포인트가 부족합니다. 충전 후 이용해주세요.", "error");
+                            } else if (res === "NOT_BUYER") {
+                                swal("권한 없음", "구매자만 결제할 수 있습니다.", "error");
+                            } else {
+                                swal("오류", "결제 처리 중 문제가 발생했습니다.", "error");
+                            }
+                        },
+                        error: function() {
+                            swal("오류", "서버 통신 실패", "error");
+                        }
+                    });
+                }
+            });
+        });
     });
 
-    // 1. 웹소켓 연결
     function connect() {
         const socket = new SockJS('/ws-stomp');
         stompClient = Stomp.over(socket);
         
         stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
-            
-            // 해당 채팅방 구독 (메시지가 오면 실행될 콜백)
             stompClient.subscribe('/sub/chat/room/' + roomId, function (message) {
                 const recvMsg = JSON.parse(message.body);
                 drawMessage(recvMsg);
@@ -62,7 +98,6 @@
         });
     }
 
-    // 2. 메시지 전송
     function sendMsg() {
         const text = $("#msgInput").val().trim();
         if(text === "") return;
@@ -71,15 +106,14 @@
             room_id: roomId,
             sender_id: myId,
             message_text: text,
-            sender_nickname: myNickname // 화면 표시용
+            sender_nickname: myNickname,
+            type: "TEXT"
         };
 
-        // 서버로 메시지 발행(Publish)
         stompClient.send("/pub/chat/send", {}, JSON.stringify(chatMessage));
-        $("#msgInput").val(""); // 입력창 초기화
+        $("#msgInput").val(""); 
     }
 
-    // 3. 과거 메시지 불러오기 (AJAX)
     function loadHistory() {
         $.get("/chat/history?room_id=" + roomId, function(data) {
             data.forEach(msg => {
@@ -88,20 +122,30 @@
         });
     }
 
-    // 4. 화면에 메시지 그리기
     function drawMessage(msg) {
-        const isMe = (msg.sender_id == myId);
-        const boxClass = isMe ? "msg-box me" : "msg-box other";
-        
-        let html = "<div class='" + boxClass + "'>";
-        html += "<div class='msg-content'>" + msg.message_text + "</div>";
-        html += "</div>";
+        const chatArea = $("#chatArea");
+        let html = "";
 
-        $("#chatArea").append(html);
+        // 1. 시스템 메시지 처리 (결제 완료 등)
+        if (msg.type === "SYSTEM") {
+            html = "<div class='system-msg-container'>" +
+                   "<span class='system-msg'>" + msg.message_text + "</span>" +
+                   "</div>";
+        } 
+        // 2. 일반 메시지 처리
+        else {
+            const isMe = (msg.sender_id == myId);
+            const boxClass = isMe ? "msg-box me" : "msg-box other";
+            
+            html = "<div class='" + boxClass + "'>" +
+                   "<div class='msg-content'>" + msg.message_text + "</div>" +
+                   "</div>";
+        }
+
+        chatArea.append(html);
         
         // 스크롤 맨 아래로 이동
-        const chatArea = document.getElementById("chatArea");
-        chatArea.scrollTop = chatArea.scrollHeight;
+        chatArea.scrollTop(chatArea[0].scrollHeight);
     }
 </script>
 

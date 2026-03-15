@@ -3944,7 +3944,7 @@
 	                        },
 	                    }).then((value) => {
 	                        if (value === "go") {
-	                            location.href = "/chat/room?room_id=" + notifyMsg.room_id;
+	                            location.href = "/chat/chatRoom?room_id=" + notifyMsg.room_id;
 	                        }
 	                    });
 	                }
