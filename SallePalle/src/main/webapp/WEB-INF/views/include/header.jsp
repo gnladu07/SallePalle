@@ -16,7 +16,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <title>Insert title here</title>
 <style>
-	/* 공통 */
+	/* 공통 1*/
 	a {
 		text-decoration: none;   /* 밑줄 제거 */
 	    color: inherit;          /* 부모 색상 그대로 사용 */
