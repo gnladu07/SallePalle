@@ -1,0 +1,50 @@
+package com.itwillbs.persistence;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.inject.Inject;
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Repository;
+import com.itwillbs.domain.ChatMessageVO;
+import com.itwillbs.domain.ChatRoomVO;
+
+@Repository
+public class ChatDAOImpl implements ChatDAO {
+
+    private static final String NAMESPACE = "com.itwillbs.mapper.ChatMapper.";
+    @Inject private SqlSession sqlSession;
+
+    @Override
+    public int findRoom(int trade_id, int buyer_id) {
+        Map<String, Integer> paramMap = new HashMap<>();
+        paramMap.put("trade_id", trade_id);
+        paramMap.put("buyer_id", buyer_id);
+        return sqlSession.selectOne(NAMESPACE + "findRoom", paramMap);
+    }
+
+    @Override
+    public void createRoom(ChatRoomVO vo) {
+        sqlSession.insert(NAMESPACE + "createRoom", vo);
+    }
+
+    @Override
+    public void insertMessage(ChatMessageVO vo) {
+        sqlSession.insert(NAMESPACE + "insertMessage", vo);
+    }
+
+    @Override
+    public List<ChatMessageVO> getMessagesByRoomId(int room_id) {
+        return sqlSession.selectList(NAMESPACE + "getMessagesByRoomId", room_id);
+    }
+
+    @Override
+    public List<ChatRoomVO> getRoomList(int member_id) {
+        return sqlSession.selectList(NAMESPACE + "getRoomList", member_id);
+    }
+
+	@Override
+	public ChatRoomVO getRoom(int room_id) {
+		return sqlSession.selectOne(NAMESPACE + "getRoom", room_id);
+	}
+}

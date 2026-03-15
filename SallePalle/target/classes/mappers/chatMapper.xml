@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itwillbs.mapper.ChatMapper">
+
+    <select id="findRoom" resultType="int">
+        SELECT IFNULL(MAX(room_id), 0)
+        FROM chat_room
+        WHERE trade_id = #{trade_id} AND buyer_id = #{buyer_id}
+    </select>
+
+    <insert id="createRoom" useGeneratedKeys="true" keyProperty="room_id">
+        INSERT INTO chat_room (trade_id, buyer_id, seller_id)
+        VALUES (#{trade_id}, #{buyer_id}, #{seller_id})
+    </insert>
+
+    <insert id="insertMessage">
+        INSERT INTO chat_message (room_id, sender_id, message_text)
+        VALUES (#{room_id}, #{sender_id}, #{message_text})
+    </insert>
+
+    <select id="getMessagesByRoomId" resultType="ChatMessageVO">
+        SELECT 
+            cm.*, 
+            m.nickname AS sender_nickname, 
+            m.profile_img AS sender_profile
+        FROM chat_message cm
+        JOIN member m ON cm.sender_id = m.member_id
+        WHERE cm.room_id = #{room_id}
+        ORDER BY cm.sent_at ASC
+    </select>
+
+    <select id="getRoomList" resultType="ChatRoomVO">
+        SELECT 
+            cr.*,
+            sb.title AS trade_title,
+            sb.thumb_img AS trade_thumb_img,
+            sb.price_point AS trade_price,
+            sb.status AS trade_status,
+            buyer.nickname AS buyer_nickname,
+            seller.nickname AS seller_nickname,
+            (SELECT message_text FROM chat_message WHERE room_id = cr.room_id ORDER BY sent_at DESC LIMIT 1) AS last_message,
+            (SELECT sent_at FROM chat_message WHERE room_id = cr.room_id ORDER BY sent_at DESC LIMIT 1) AS last_message_time,
+            (SELECT COUNT(*) FROM chat_message WHERE room_id = cr.room_id AND sender_id != #{member_id} AND is_read = 'N') AS unread_count
+        FROM chat_room cr
+        JOIN saletrade_board sb ON cr.trade_id = sb.trade_id
+        JOIN member buyer ON cr.buyer_id = buyer.member_id
+        JOIN member seller ON cr.seller_id = seller.member_id
+        WHERE cr.buyer_id = #{member_id} OR cr.seller_id = #{member_id}
+        ORDER BY last_message_time DESC
+    </select>
+    
+    <select id="getRoom" resultType="ChatRoomVO">
+	    SELECT * FROM chat_room WHERE room_id = #{room_id}
+	</select>
+    
+</mapper>

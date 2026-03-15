@@ -102,7 +102,11 @@
 				    </c:when>
 				
 				    <c:otherwise>
-				        <button class="detail-btn-buy" id="btnBuy">구매하기</button>
+				        <button type="button" class="btn-chat" id="btnChatRoom" 
+						        data-trade-id="${detail.trade_id}" 
+						        data-seller-id="${detail.seller_id}">
+						    채팅으로 거래하기
+						</button>
 				    </c:otherwise>
 				</c:choose>
             </div>
@@ -366,6 +370,41 @@ $(function(){
 
         $("#deleteTradeForm input[name='trade_id']").val(tradeId);
         $("#deleteTradeForm").submit();
+    });
+});
+$(function(){
+    // 채팅으로 거래하기 버튼 클릭 이벤트
+    $("#btnChatRoom").on("click", function(){
+        let tradeId = $(this).data("trade-id");
+        let sellerId = $(this).data("seller-id");
+        
+        // 본인 물건인지 체크 (선택사항)
+        if("${loginInfo.member_id}" == sellerId) {
+            alert("본인이 등록한 물품입니다.");
+            return;
+        }
+
+        $.ajax({
+            url: "/chat/createRoom",
+            type: "POST",
+            data: {
+                trade_id: tradeId,
+                seller_id: sellerId,
+                "${_csrf.parameterName}": "${_csrf.token}" // 시큐리티 CSRF 토큰
+            },
+            success: function(roomId){
+                if(roomId === -1) {
+                    alert("로그인이 필요합니다.");
+                    location.href = "/member/login";
+                } else {
+                    // 채팅방으로 이동
+                    location.href = "/chat/room?room_id=" + roomId;
+                }
+            },
+            error: function(){
+                alert("채팅방 연결에 실패했습니다.");
+            }
+        });
     });
 });
 </script>
