@@ -14,7 +14,7 @@
 
 <div class="chat-list-container">
     <h2>내 채팅 목록</h2>
-    
+    <!-- test -->
     <c:if test="${empty roomList}">
         <p style="text-align:center; padding: 50px; color:#999;">진행 중인 채팅이 없습니다.</p>
     </c:if>
