@@ -95,7 +95,7 @@ public class FintechController {
 	        session.setAttribute("loginInfo", freshMember);
 	
 	        // 완료 페이지로 이동
-	        session.setAttribute("msg", "포인트 충전이 완료되었습니다.");
+	        session.setAttribute("pointmsg", "포인트 충전이 완료되었습니다.");
 	        return "/fintech/callback";
 	    }
         
@@ -105,7 +105,7 @@ public class FintechController {
         String state = UUID.randomUUID().toString().replace("-", "");
         session.setAttribute("fintech_state", state);
 
-        String redirectUri = "http://c6d2507t3p2.itwillbs.com/fintech/callback";
+        String redirectUri = "http://localhost:8088/fintech/callback";
 
         String authUrl =
                 "https://testapi.openbanking.or.kr/oauth/2.0/authorize"
@@ -138,7 +138,7 @@ public class FintechController {
         tokenVO.setCode(code);
         tokenVO.setClient_id(clientId);
         tokenVO.setClient_secret(clientSecret);
-        tokenVO.setRedirect_uri("http://c6d2507t3p2.itwillbs.com/fintech/callback");
+        tokenVO.setRedirect_uri("http://localhost:8088/fintech/callback");
         tokenVO.setGrant_type("authorization_code");
 
         ResponseTokenVO tokenResponse = bankingService.requestToken(tokenVO);

@@ -80,35 +80,59 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 	    int buyerId  = saleTradeDAO.selectMemberIdByUserid(userid);
 	    int sellerId = trade.getSeller_id();
 	    int price    = trade.getPrice_point();
+	    
+	    int myPoint   = saleTradeDAO.selectPayBalance(buyerId);
+	    int myMileage = saleTradeDAO.selectMileageBalance(buyerId);
 
 	    int usedPoint = 0;
 	    int usedMileage = 0;
 	    
 	    // 0. 구매 전 포인트 잔액 검증
-	    int myBalance = saleTradeDAO.selectPayBalance(buyerId);
-
-	    if (myBalance < price) {
-	        throw new IllegalStateException("NOT_ENOUGH_POINT");
-	    }
-
-	    // 1. 구매자 결제 처리
 	    if (payPoint) {
+	        if (myPoint < price) {
+	            throw new IllegalStateException("NOT_ENOUGH_POINT");
+	        }
 	        usedPoint = price;
 	        saleTradeDAO.usePoint(buyerId, usedPoint);
 	    }
 
 	    if (payMileage) {
+
 	        if ("FULL".equals(mileageType)) {
+
+	            if (myMileage < price) {
+	                throw new IllegalStateException("NOT_ENOUGH_MILEAGE");
+	            }
+
 	            usedMileage = price;
 	            saleTradeDAO.useMileage(buyerId, usedMileage);
+
 	        } else {
+
+	            if (useMileage == null || useMileage <= 0) {
+	                throw new IllegalStateException("INVALID_MILEAGE");
+	            }
+
+	            if (useMileage > myMileage) {
+	                throw new IllegalStateException("NOT_ENOUGH_MILEAGE");
+	            }
+
+	            if (useMileage > trade.getMax_mileage_use()) {
+	                throw new IllegalStateException("EXCEED_MAX_MILEAGE");
+	            }
+
 	            usedMileage = useMileage;
 	            usedPoint = price - useMileage;
+
+	            if (usedPoint > myPoint) {
+	                throw new IllegalStateException("NOT_ENOUGH_POINT");
+	            }
 
 	            saleTradeDAO.useMileage(buyerId, usedMileage);
 	            saleTradeDAO.usePoint(buyerId, usedPoint);
 	        }
 	    }
+	    
 	    // 2. 판매자 지갑 보장
 	    if (saleTradeDAO.existsPayWallet(sellerId) == 0) {
 	        saleTradeDAO.insertPayWallet(sellerId);

@@ -275,7 +275,22 @@ $(function(){
 
     $("#useMileage").on("input", function(){
         var price = ${detail.price_point};
+        var maxMileage = ${loginInfo.wallet_mileage};
+        var maxUsable = Math.min(price, maxMileage);
+
         var use = Number($(this).val());
+
+        if(use > maxUsable){
+            alert("사용 가능한 마일리지를 초과했습니다.");
+            $(this).val(maxUsable);
+            use = maxUsable;
+        }
+
+        if(use < 0){
+            $(this).val(0);
+            use = 0;
+        }
+
         var finalPrice = price - use;
         $("#finalPoint").text(finalPrice);
     });
