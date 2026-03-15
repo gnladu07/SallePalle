@@ -1,0 +1,14 @@
+package com.itwillbs.persistence;
+
+import java.util.List;
+import com.itwillbs.domain.ChatMessageVO;
+import com.itwillbs.domain.ChatRoomVO;
+
+public interface ChatDAO {
+    public int findRoom(int trade_id, int buyer_id);
+    public void createRoom(ChatRoomVO vo);
+    public void insertMessage(ChatMessageVO vo);
+    public List<ChatMessageVO> getMessagesByRoomId(int room_id);
+    public List<ChatRoomVO> getRoomList(int member_id);
+    public ChatRoomVO getRoom(int room_id);
+}

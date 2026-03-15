@@ -11,6 +11,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <title>Insert title here</title>
 <style>
 	/* 공통 */
@@ -3737,6 +3740,12 @@
 		                <span class="dropdown-item-icon">💰</span>
 		                <span>결제내역</span>
 		            </a>
+		            
+		            <a href="/chat/list" class="dropdown-item" style="display: flex; align-items: center;">
+					    <span class="dropdown-item-icon">💬</span>
+					    <span>채팅</span>
+					    <span id="globalChatBadge" style="display:none; background:#FF6F61; color:white; border-radius:50%; padding:2px 6px; font-size:11px; margin-left:5px; font-weight:bold;">N</span>
+					</a>
 
 		            <!-- 판매 권한 UI -->
 		            <c:choose>
@@ -3798,8 +3807,12 @@
 	    // location.href = '/charge/point';
 	}
 	
-	// jQuery - 드롭다운 토글
 	$(document).ready(function() {
+        // ==========================================
+        // 1. 드롭다운 및 UI 이벤트 로직
+        // ==========================================
+        
+	    // 드롭다운 토글
 	    $('.user-info-group').on('click', function(e) {
 	        e.stopPropagation();
 	        $('#userDropdown').toggleClass('active');
@@ -3826,9 +3839,8 @@
 	        }
 	    });
 	    
-		// jQuery - 판매 권한 신청
+		// 판매 권한 신청
 		$(document).on("click", "#btnSellerRequest", function(e) {
-			
 			e.preventDefault();
 	        e.stopPropagation();
 	        
@@ -3844,7 +3856,7 @@
 		    });
 		});
 		
-	    // 알림 클릭 시 처리
+	    // 기존 알림 클릭 시 처리
 	    $(document).on("click", "#notificationItem", function(e) {
 	        e.preventDefault();
 	        e.stopPropagation();
@@ -3865,13 +3877,11 @@
 	                        "${_csrf.parameterName}": "${_csrf.token}"
 	                    },
 	                    success: function(response) {
-	                        // 빨간점 제거
 	                        $('.notify-badge').fadeOut(300, function() {
 	                            $(this).remove();
 	                        });
 	                    },
 	                    error: function() {
-	                        // 에러가 나도 일단 UI에서는 제거
 	                        $('.notify-badge').fadeOut(300, function() {
 	                            $(this).remove();
 	                        });
@@ -3888,7 +3898,53 @@
 	            });
 	        }
 	    });
+
+        // ==========================================
+        // 2. 실시간 채팅 알림(STOMP WebSocket) 로직
+        // ==========================================
+	    const headerMyId = "${loginInfo.member_id}"; 
+	    
+	    // 로그인 한 상태에서만 알림 웹소켓 연결
+	    if(headerMyId && headerMyId !== "") {
+	        const socket = new SockJS('/ws-stomp');
+	        const headerStompClient = Stomp.over(socket);
+            
+            // 콘솔에 ping/pong 로그가 너무 많이 찍히면 아래 주석을 해제하세요.
+            // headerStompClient.debug = null;
+
+	        headerStompClient.connect({}, function (frame) {
+	            console.log("글로벌 알림 웹소켓 연결 성공!");
+	            
+	            headerStompClient.subscribe('/sub/notify/' + headerMyId, function (message) {
+	                const notifyMsg = JSON.parse(message.body);
+	                
+	                // 현재 내가 보고 있는 화면이 채팅방 화면(/chat/room)이 아닐 때만 알림 띄우기
+	                if(window.location.pathname !== "/chat/room") {
+	                    
+	                    // 1. 헤더 메뉴에 빨간 뱃지 띄우기
+	                    $("#globalChatBadge").show().text("New");
+	                    
+	                    // 2. SweetAlert 띄우기
+	                    swal({
+	                        title: notifyMsg.sender_nickname + "님의 새 메시지",
+	                        text: notifyMsg.message_text,
+	                        icon: "info",
+	                        buttons: {
+	                            cancel: "닫기",
+	                            catch: {
+	                                text: "채팅방으로 이동",
+	                                value: "go",
+	                            }
+	                        },
+	                    }).then((value) => {
+	                        if (value === "go") {
+	                            location.href = "/chat/room?room_id=" + notifyMsg.room_id;
+	                        }
+	                    });
+	                }
+	            });
+	        });
+	    }
 	});
-	
 </script>
 </header>
