@@ -3730,6 +3730,12 @@
 		                </div>
 		            </div>
 
+					<sec:authorize access="hasRole('ROLE_ADMIN')">
+					    <a href="/admin/home" class="dropdown-item">
+					    	<span class="dropdown-item-icon">👨‍💼</span>
+					    	<span>관리자 페이지</span>
+					    </a>
+					</sec:authorize>
 		            <a href="/member/read" class="dropdown-item">
 		                <span class="dropdown-item-icon">👤</span>
 		                <span>MY홈</span>
@@ -3803,9 +3809,7 @@
 	</div>
 	
 	<!-- 관리자만 -->
-	<sec:authorize access="hasRole('ROLE_ADMIN')">
-	    <a href="/admin">관리자 페이지</a>
-	</sec:authorize>
+	
 <script type="text/javascript">
 	// jQuery - 포인트 충전
 	function chargePoint() {
@@ -3924,30 +3928,39 @@
 	            headerStompClient.subscribe('/sub/notify/' + headerMyId, function (message) {
 	                const notifyMsg = JSON.parse(message.body);
 	                
-	                // 현재 내가 보고 있는 화면이 채팅방 화면(/chat/room)이 아닐 때만 알림 띄우기
-	                if(window.location.pathname !== "/chat/room") {
-	                    
-	                    // 1. 헤더 메뉴에 빨간 뱃지 띄우기
-	                    $("#globalChatBadge").show().text("New");
-	                    
-	                    // 2. SweetAlert
-	                    swal({
-	                        title: notifyMsg.sender_nickname + "님의 새 메시지",
-	                        text: notifyMsg.message_text,
-	                        icon: "info",
-	                        buttons: {
-	                            cancel: "닫기",
-	                            catch: {
-	                                text: "채팅방으로 이동",
-	                                value: "go",
-	                            }
-	                        },
-	                    }).then((value) => {
-	                        if (value === "go") {
-	                            location.href = "/chat/chatRoom?room_id=" + notifyMsg.room_id;
-	                        }
-	                    });
+	                // 1. 현재 URL 경로와 방 번호 가져오기
+	                const currentPath = window.location.pathname; 
+	                const urlParams = new URLSearchParams(window.location.search);
+	                const currentRoomId = urlParams.get('room_id'); 
+	                
+	                // JSON 데이터에서 방 번호 추출 (room_id와 roomId 둘 다 대응)
+	                const notifyRoomId = notifyMsg.room_id || notifyMsg.roomId;
+
+	                // ★ 2. 핵심 로직: 현재 '그 채팅방'에 들어와 있다면 알림 무시하고 바로 종료!
+	                // (includes를 사용하여 경로가 약간 달라도 안전하게 잡아냅니다)
+	                if (currentPath.includes('/chat/chatRoom') && currentRoomId == notifyRoomId) {
+	                    return; // 여기서 멈추기 때문에 아래의 SweetAlert가 뜨지 않습니다!
 	                }
+	                
+	                // 3. 채팅방 밖에 있거나, 다른 채팅방에 있을 때만 아래 알림 띄우기
+	                $("#globalChatBadge").show().text("New");
+	                
+	                swal({
+	                    title: notifyMsg.sender_nickname + "님의 새 메시지",
+	                    text: notifyMsg.message_text,
+	                    icon: "info",
+	                    buttons: {
+	                        cancel: "닫기",
+	                        catch: {
+	                            text: "채팅방으로 이동",
+	                            value: "go",
+	                        }
+	                    },
+	                }).then((value) => {
+	                    if (value === "go") {
+	                        location.href = "/chat/chatRoom?room_id=" + notifyRoomId;
+	                    }
+	                });
 	            });
 	        });
 	    }

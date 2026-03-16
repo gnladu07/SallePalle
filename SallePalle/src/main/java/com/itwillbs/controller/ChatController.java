@@ -149,5 +149,31 @@ public class ChatController {
         }
     }
     
+    // 채팅 읽음 처리 API
+    @PostMapping("/chat/markAsRead")
+    @ResponseBody
+    public String markAsRead(@RequestParam int room_id, HttpSession session) {
+        MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+        if (loginInfo == null) return "NO_LOGIN";
+        
+        try {
+            // 1. DB 업데이트 (읽음 처리)
+            chatService.markMessagesAsRead(room_id, loginInfo.getMember_id());
+            
+            // ★ 2. 상대방 화면의 '1'을 지우기 위해 웹소켓으로 "READ" 신호 발송 ★
+            ChatMessageVO readNotice = new ChatMessageVO();
+            readNotice.setRoom_id(room_id);
+            readNotice.setSender_id(loginInfo.getMember_id()); // 읽은 사람(나)
+            readNotice.setType("READ"); // 메시지 타입을 READ로 지정
+            
+            messagingTemplate.convertAndSend("/sub/chat/room/" + room_id, readNotice);
+            
+            return "OK";
+        } catch (Exception e) {
+            log.error("읽음 처리 중 오류 발생: ", e);
+            return "ERROR";
+        }
+    }
+    
     
 }

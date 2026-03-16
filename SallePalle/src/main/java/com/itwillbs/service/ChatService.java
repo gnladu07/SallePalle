@@ -19,4 +19,6 @@ public interface ChatService {
 	public boolean executePayment(ChatRoomVO room);
 	
 	public void leaveChatRoom(int room_id) throws Exception;
+	
+    public void markMessagesAsRead(int room_id, int reader_id) throws Exception;
 }
