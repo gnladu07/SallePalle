@@ -58,5 +58,10 @@ public class ChatDAOImpl implements ChatDAO {
         sqlSession.delete(NAMESPACE + "deleteChatRoom", room_id);
     }
 
+    @Override
+    public void markMessagesAsRead(Map<String, Object> paramMap) throws Exception {
+        sqlSession.update(NAMESPACE + "markMessagesAsRead", paramMap);
+    }
+
 
 }

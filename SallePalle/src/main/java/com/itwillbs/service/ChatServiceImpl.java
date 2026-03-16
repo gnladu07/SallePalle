@@ -1,6 +1,8 @@
 package com.itwillbs.service;
 
 import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,5 +92,14 @@ public class ChatServiceImpl implements ChatService {
         
         // 2. 그 다음 빈 '채팅방'을 삭제합니다.
         chatDAO.deleteChatRoom(room_id);
+    }
+    
+    @Override
+    public void markMessagesAsRead(int room_id, int reader_id) throws Exception {
+        Map<String, Object> paramMap = new java.util.HashMap<>();
+        paramMap.put("room_id", room_id);
+        paramMap.put("reader_id", reader_id);
+        
+        chatDAO.markMessagesAsRead(paramMap);
     }
 }

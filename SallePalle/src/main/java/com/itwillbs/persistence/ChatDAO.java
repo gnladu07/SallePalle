@@ -1,6 +1,8 @@
 package com.itwillbs.persistence;
 
 import java.util.List;
+import java.util.Map;
+
 import com.itwillbs.domain.ChatMessageVO;
 import com.itwillbs.domain.ChatRoomVO;
 
@@ -13,4 +15,5 @@ public interface ChatDAO {
     public ChatRoomVO getRoom(int room_id);
 	public void deleteChatMessages(int room_id) throws Exception;
 	public void deleteChatRoom(int room_id) throws Exception;
+    public void markMessagesAsRead(Map<String, Object> paramMap) throws Exception;
 }
