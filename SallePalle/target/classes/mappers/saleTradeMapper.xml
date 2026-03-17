@@ -385,4 +385,25 @@
 	    WHERE member_id = #{memberId}
 	</select>
 	
+	<insert id="insertOrUpdateRecentView">
+        INSERT INTO recent_view (member_id, trade_id)
+        VALUES (#{member_id}, #{trade_id})
+        ON DUPLICATE KEY UPDATE viewed_at = CURRENT_TIMESTAMP
+    </insert>
+
+    <select id="getRecentViewList" resultType="map">
+        SELECT 
+            rv.viewed_at,
+            sb.trade_id,
+            sb.title,
+            sb.price_point,
+            sb.thumb_img,
+            sb.status
+        FROM recent_view rv
+        JOIN saletrade_board sb ON rv.trade_id = sb.trade_id
+        WHERE rv.member_id = #{member_id}
+        ORDER BY rv.viewed_at DESC
+        LIMIT 20
+    </select>
+	
 </mapper>

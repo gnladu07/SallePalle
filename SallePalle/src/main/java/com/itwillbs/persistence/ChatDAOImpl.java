@@ -63,5 +63,10 @@ public class ChatDAOImpl implements ChatDAO {
         sqlSession.update(NAMESPACE + "markMessagesAsRead", paramMap);
     }
 
+    @Override
+    public List<ChatRoomVO> getChatHistoryLog(int member_id) throws Exception {
+        return sqlSession.selectList(NAMESPACE + "getChatHistoryLog", member_id);
+    }
+
 
 }

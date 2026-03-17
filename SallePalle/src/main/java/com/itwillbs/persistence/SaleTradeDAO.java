@@ -1,6 +1,7 @@
 package com.itwillbs.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import com.itwillbs.domain.SaleTradeVO;
 
@@ -86,5 +87,10 @@ public interface SaleTradeDAO {
 
 	// 마일리지 잔액 조회
 	public int selectMileageBalance(int memberId);
+	
+	// 최근 본 글 기록 추가/갱신
+    public void insertOrUpdateRecentView(int member_id, int trade_id) throws Exception;
+    
+    public List<Map<String, Object>> getRecentViewList(int member_id) throws Exception;
 
 }

@@ -1,6 +1,7 @@
 package com.itwillbs.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -259,6 +260,23 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 		log.info(" SaleTradeServiceImpl: getRecommendSaleTradeList() 실행!");
 	    log.info(" SaleTradeServiceImpl: getRecommendSaleTradeList() 끝!");
 		return saleTradeDAO.selectRecommendSaleTradeList(limit);
+	}
+
+	@Override
+	public void insertOrUpdateRecentView(int member_id, int trade_id) throws Exception {
+		log.info(" SaleTradeServiceImpl: insertOrUpdateRecentView() 실행!");
+		
+		saleTradeDAO.insertOrUpdateRecentView(member_id, trade_id);
+		
+	    log.info(" SaleTradeServiceImpl: insertOrUpdateRecentView() 끝!");
+		
+	}
+
+	@Override
+	public List<Map<String, Object>> getRecentViewList(int member_id) throws Exception {
+		log.info(" SaleTradeServiceImpl: getRecentViewList() 실행!");
+	    log.info(" SaleTradeServiceImpl: getRecentViewList() 끝!");
+	    return saleTradeDAO.getRecentViewList(member_id);
 	}
 
 }

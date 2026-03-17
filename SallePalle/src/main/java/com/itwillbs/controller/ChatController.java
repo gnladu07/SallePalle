@@ -33,8 +33,10 @@ public class ChatController {
     // ChatController.java 내부
     @GetMapping("/chat/chatRoom")
     public String chatRoom(@RequestParam int room_id, Model model, HttpSession session) {
+    	log.debug("ChatController: chatRoom() 실행!");
         MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
         if(loginInfo == null) return "redirect:/member/login";
+        log.debug("ChatController: chatRoom() 실행!");
         return "/chat/chatRoom"; 
     }
 
@@ -42,10 +44,12 @@ public class ChatController {
     @PostMapping("/chat/createRoom")
     @ResponseBody
     public int createRoom(@RequestParam int trade_id, @RequestParam int seller_id, HttpSession session) {
+    	log.debug("ChatController: createRoom() 실행!");
         MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
         if (loginInfo == null) return -1; // 비로그인 예외처리
         
         int buyer_id = loginInfo.getMember_id();
+        log.debug("ChatController: createRoom() 끝!");
         return chatService.createOrGetRoom(trade_id, buyer_id, seller_id);
     }
 
@@ -53,18 +57,21 @@ public class ChatController {
     @GetMapping("/chat/history")
     @ResponseBody
     public List<ChatMessageVO> getChatHistory(@RequestParam int room_id) {
+    	log.debug("ChatController: getChatHistory() 실행!");
+    	log.debug("ChatController: getChatHistory() 끝!");
         return chatService.getMessageHistory(room_id);
     }
 
     // 3. 내 채팅 목록 페이지로 이동
     @GetMapping("/chat/list")
     public String chatList(HttpSession session, Model model) {
+    	log.debug("ChatController: chatList() 실행!");
         MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
         if (loginInfo == null) return "redirect:/member/login";
         
         List<ChatRoomVO> roomList = chatService.getMyChatRooms(loginInfo.getMember_id());
         model.addAttribute("roomList", roomList);
-        
+        log.debug("ChatController: chatList() 끝!");
         return "/chat/chatList"; // 나중에 만들 JSP 화면
     }
 
@@ -72,6 +79,7 @@ public class ChatController {
     // 프론트에서 "/pub/chat/send" 로 메시지를 보내면 이 메서드가 실행됨
     @MessageMapping("/chat/send")
     public void sendMessage(ChatMessageVO message) {
+    	log.debug("ChatController: sendMessage() 실행!");
         log.info("수신된 채팅 메시지: {}", message);
         
         // 1. DB에 메시지 저장
@@ -89,6 +97,7 @@ public class ChatController {
         
         // 4. 수신자의 개인 알림 채널로 메시지 발송!
         messagingTemplate.convertAndSend("/sub/notify/" + receiverId, message);
+        log.debug("ChatController: sendMessage() 끝!");
     }
     
  // ChatController.java 내부 추가
@@ -96,9 +105,11 @@ public class ChatController {
     @PostMapping("/chat/pay")
     @ResponseBody
     public String processChatPayment(@RequestParam int room_id, HttpSession session) {
+    	log.debug("ChatController: processChatPayment() 실행!");
         MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
         if (loginInfo == null) return "NO_LOGIN";
 
+        log.debug("ChatController: processChatPayment() 끝!");
         try {
             // 채팅방 정보를 가져와서 거래 대상(상품, 판매자, 구매자) 파악
             ChatRoomVO room = chatService.getRoom(room_id);
@@ -136,9 +147,10 @@ public class ChatController {
     @PostMapping("/chat/leave")
     @ResponseBody
     public String leaveChatRoom(@RequestParam int room_id, HttpSession session) {
+    	log.debug("ChatController: leaveChatRoom() 실행!");
         MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
         if (loginInfo == null) return "NO_LOGIN";
-
+        log.debug("ChatController: leaveChatRoom() 끝!");
         try {
             // 서비스로 넘겨서 해당 방과 메시지 삭제 진행
             chatService.leaveChatRoom(room_id);
@@ -153,7 +165,9 @@ public class ChatController {
     @PostMapping("/chat/markAsRead")
     @ResponseBody
     public String markAsRead(@RequestParam int room_id, HttpSession session) {
+    	log.debug("ChatController: markAsRead() 실행!");
         MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+        log.debug("ChatController: markAsRead() 끝!");
         if (loginInfo == null) return "NO_LOGIN";
         
         try {
@@ -173,6 +187,19 @@ public class ChatController {
             log.error("읽음 처리 중 오류 발생: ", e);
             return "ERROR";
         }
+    }
+    
+    // 5. 마이페이지 - 내 전체 채팅 기록 리스트
+    @GetMapping("/chat/historyList")
+    public String chatHistoryList(HttpSession session, Model model) throws Exception {
+    	log.debug("ChatController: chatHistoryList() 실행!");
+        MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+        if (loginInfo == null) return "redirect:/member/login";
+        
+        List<ChatRoomVO> historyLog = chatService.getChatHistoryLog(loginInfo.getMember_id());
+        model.addAttribute("historyLog", historyLog);
+        log.debug("ChatController: chatHistoryList() 끝!");
+        return "/chat/chatHistoryList"; 
     }
     
     
