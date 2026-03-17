@@ -16,4 +16,5 @@ public interface ChatDAO {
 	public void deleteChatMessages(int room_id) throws Exception;
 	public void deleteChatRoom(int room_id) throws Exception;
     public void markMessagesAsRead(Map<String, Object> paramMap) throws Exception;
+    public List<ChatRoomVO> getChatHistoryLog(int member_id) throws Exception;
 }

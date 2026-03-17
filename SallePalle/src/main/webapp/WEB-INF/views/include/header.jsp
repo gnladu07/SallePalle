@@ -3736,18 +3736,22 @@
 					    	<span>관리자 페이지</span>
 					    </a>
 					</sec:authorize>
+					
 		            <a href="/member/read" class="dropdown-item">
 		                <span class="dropdown-item-icon">👤</span>
 		                <span>MY홈</span>
 		            </a>
+		            
 		            <a href="/member/traList" class="dropdown-item">
 		                <span class="dropdown-item-icon">📋</span>
 		                <span>등록 물품</span>
 		            </a>
-		            <a href="#" class="dropdown-item">
+		            
+		            <a href="/member/recentView" class="dropdown-item">
 		                <span class="dropdown-item-icon">🕒</span>
-		                <span>최근본 글</span>
+		                <span>최근 본 글</span>
 		            </a>
+		            
 		            <a href="/member/paymentHistory" class="dropdown-item">
 		                <span class="dropdown-item-icon">💰</span>
 		                <span>결제내역</span>
@@ -3758,6 +3762,11 @@
 					    <span>채팅</span>
 					    <span id="globalChatBadge" style="display:none; background:#FF6F61; color:white; border-radius:50%; padding:2px 6px; font-size:11px; margin-left:5px; font-weight:bold;">N</span>
 					</a>
+					
+					<a href="/chat/historyList" class="dropdown-item" style="display: flex; align-items: center;">
+				        <span class="dropdown-item-icon">👀</span>
+				        <span>채팅 기록</span>
+				    </a>
 
 		            <!-- 판매 권한 UI -->
 		            <c:choose>

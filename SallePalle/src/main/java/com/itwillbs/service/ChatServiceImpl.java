@@ -102,4 +102,9 @@ public class ChatServiceImpl implements ChatService {
         
         chatDAO.markMessagesAsRead(paramMap);
     }
+
+    @Override
+    public List<ChatRoomVO> getChatHistoryLog(int member_id) throws Exception {
+        return chatDAO.getChatHistoryLog(member_id);
+    }
 }

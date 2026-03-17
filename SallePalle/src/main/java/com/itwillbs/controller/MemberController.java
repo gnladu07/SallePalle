@@ -482,6 +482,23 @@ public class MemberController {
         logger.info(" myTradeList()끝! ");
         return "OK";
     }
+    
+    // 마이페이지 - 최근 본 글 목록
+    @GetMapping("/member/recentView")
+    public String recentViewList(HttpSession session, Model model) throws Exception {
+        MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+        
+        // 비로그인 접근 차단
+        if (loginInfo == null) {
+            return "redirect:/member/login";
+        }
+        
+        // 서비스 호출하여 최근 본 글(Map 리스트) 가져오기
+        List<Map<String, Object>> recentList = stService.getRecentViewList(loginInfo.getMember_id());
+        model.addAttribute("recentList", recentList);
+        
+        return "/member/recentView"; // JSP 뷰 연결
+    }
 
 	
 }

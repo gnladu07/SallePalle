@@ -1,6 +1,7 @@
 package com.itwillbs.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,5 +53,10 @@ public interface SaleTradeService {
 
 	// 추천순 중고 거래 5개
 	public Object getRecommendSaleTradeList(int limit);
+	
+	// 최근 본 글 기록 추가/갱신
+    public void insertOrUpdateRecentView(int member_id, int trade_id) throws Exception;
+    
+    public List<Map<String, Object>> getRecentViewList(int member_id) throws Exception;
 
 }

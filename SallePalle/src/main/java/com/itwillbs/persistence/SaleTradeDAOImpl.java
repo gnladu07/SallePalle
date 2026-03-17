@@ -309,6 +309,27 @@ public class SaleTradeDAOImpl implements SaleTradeDAO {
 		return sqlSession.selectOne(NAMESPACE + "selectMileageBalance", memberId);
 	}
 
+	@Override
+	public void insertOrUpdateRecentView(int member_id, int trade_id) throws Exception {
+		log.info(" SaleTradeDAOImpl: insertOrUpdateRecentView() 실행!");
+		Map<String, Integer> paramMap = new java.util.HashMap<>();
+        paramMap.put("member_id", member_id);
+        paramMap.put("trade_id", trade_id);
+        
+        // 매퍼의 네임스페이스에 맞게 호출 (네임스페이스 문자열 확인 필요)
+        sqlSession.insert("com.itwillbs.mapper.SaleTradeMapper.insertOrUpdateRecentView", paramMap);
+		
+    	log.info(" SaleTradeDAOImpl: insertOrUpdateRecentView() 끝!");
+		
+	}
+
+	@Override
+	public List<Map<String, Object>> getRecentViewList(int member_id) throws Exception {
+		log.info(" SaleTradeDAOImpl: getRecentViewList() 실행!");
+    	log.info(" SaleTradeDAOImpl: getRecentViewList() 끝!");
+	    return sqlSession.selectList("com.itwillbs.mapper.SaleTradeMapper.getRecentViewList", member_id);
+	}
+
  
 
 }

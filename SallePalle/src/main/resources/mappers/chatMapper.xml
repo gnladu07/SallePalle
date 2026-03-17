@@ -58,6 +58,28 @@
 	    SELECT * FROM chat_room WHERE room_id = #{room_id}
 	</select>
 	
+	<select id="getChatHistoryLog" resultType="ChatRoomVO">
+        SELECT 
+            cr.room_id,
+            cr.created_at,
+            cr.buyer_id,
+            cr.seller_id,
+            cr.buyer_status,
+            cr.seller_status,
+            sb.title AS trade_title,
+            sb.thumb_img AS trade_thumb_img,
+            buyer.nickname AS buyer_nickname,
+            seller.nickname AS seller_nickname,
+            (SELECT COUNT(*) FROM chat_message WHERE room_id = cr.room_id) AS message_count,
+            (SELECT send_time FROM chat_message WHERE room_id = cr.room_id ORDER BY send_time DESC LIMIT 1) AS last_message_time
+        FROM chat_room cr
+        JOIN saletrade_board sb ON cr.trade_id = sb.trade_id
+        JOIN member buyer ON cr.buyer_id = buyer.member_id
+        JOIN member seller ON cr.seller_id = seller.member_id
+        WHERE cr.buyer_id = #{member_id} OR cr.seller_id = #{member_id}
+        ORDER BY cr.created_at DESC
+    </select>
+	
 	<update id="markMessagesAsRead">
         UPDATE chat_message
         SET is_read = 'Y'

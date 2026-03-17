@@ -56,7 +56,8 @@ public class SaleTradeController {
 	@GetMapping("/detail")
 	public String saleTradeDetailGET(@RequestParam("trade_id") Integer tradeId,
 							         Model model,
-							         Principal principal) {
+							         Principal principal,
+							         HttpSession session) throws Exception {
 	    log.info(" saleTradeDetailGET() 실행! trade_id={}", tradeId);
 
 	    // 1. 판매글 상세 조회
@@ -72,6 +73,13 @@ public class SaleTradeController {
 	    if (principal != null) {
 	        model.addAttribute("loginUserid", principal.getName());
 	    }
+	    
+	    // 4. 로그인한 회원이면 '최근 본 글' 테이블에 기록
+	    MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+        if(loginInfo != null) {
+            // 회원 ID와 현재 보고 있는 게시글 번호를 넘겨서 DB에 저장/시간갱신
+        	stService.insertOrUpdateRecentView(loginInfo.getMember_id(), tradeId);
+        }
 	    
 	    log.info(" saleTradeDetailGET() 끝!");
 	    return "/traBoard/detail";

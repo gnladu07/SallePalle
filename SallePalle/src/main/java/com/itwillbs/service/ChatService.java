@@ -21,4 +21,6 @@ public interface ChatService {
 	public void leaveChatRoom(int room_id) throws Exception;
 	
     public void markMessagesAsRead(int room_id, int reader_id) throws Exception;
+    
+    public List<ChatRoomVO> getChatHistoryLog(int member_id) throws Exception;
 }
