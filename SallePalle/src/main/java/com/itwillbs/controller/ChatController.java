@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.itwillbs.component.FileComponent;
 import com.itwillbs.domain.ChatMessageVO;
 import com.itwillbs.domain.ChatRoomVO;
 import com.itwillbs.domain.MemberVO;
@@ -26,9 +28,8 @@ public class ChatController {
     private static final Logger log = LoggerFactory.getLogger(ChatController.class);
 
     @Inject private ChatService chatService;
-    
-    // 특정 브로커로 메시지를 전달해주는 스프링 객체
     @Inject private SimpMessagingTemplate messagingTemplate;
+    @Inject private FileComponent fileComponent;
     
     // ChatController.java 내부
     @GetMapping("/chat/chatRoom")
@@ -200,6 +201,26 @@ public class ChatController {
         model.addAttribute("historyLog", historyLog);
         log.debug("ChatController: chatHistoryList() 끝!");
         return "/chat/chatHistoryList"; 
+    }
+    
+    // 채팅 파일 업로드
+    @PostMapping("/chat/upload")
+    @ResponseBody
+    public String uploadChatFile(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) return "FAIL";
+        
+        try {
+            String savedFileName = fileComponent.upload(file);
+            
+            if (savedFileName != null) {
+                return savedFileName; // 생성된 파일명 반환 (예: 1234abcd.jpg)
+            } else {
+                return "FAIL";
+            }
+        } catch (Exception e) {
+            log.error("채팅 파일 업로드 실패: ", e);
+            return "FAIL";
+        }
     }
     
     

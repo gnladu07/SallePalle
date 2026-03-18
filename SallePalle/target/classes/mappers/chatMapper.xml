@@ -16,14 +16,18 @@
     </insert>
 
     <insert id="insertMessage">
-        INSERT INTO chat_message (room_id, sender_id, message_text)
-        VALUES (#{room_id}, #{sender_id}, #{message_text})
+        INSERT INTO chat_message (room_id, sender_id, message_text, message_type, is_read)
+        VALUES (#{room_id}, #{sender_id}, #{message_text}, #{type}, #{is_read})
     </insert>
 
     <select id="getMessagesByRoomId" resultType="ChatMessageVO">
         SELECT 
-            cm.*, 
-            m.nickname AS sender_nickname, 
+            cm.message_id,
+            cm.room_id,
+            cm.sender_id,
+            cm.message_text,
+            cm.message_type AS type,  cm.is_read,
+            cm.send_time AS sent_at,  m.nickname AS sender_nickname, 
             m.profile_img AS sender_profile 
         FROM chat_message cm 
         JOIN member m ON cm.sender_id = m.member_id 
