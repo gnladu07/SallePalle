@@ -50,6 +50,10 @@
         </div>
 
     <div class="chat-input-area">
+        <input type="file" id="chatFileInput" style="display:none;" onchange="uploadChatFile()">
+        
+        <button type="button" style="background:#ddd; color:#333; margin-right:5px; padding: 10px 15px; flex-shrink: 0; border: none; border-radius: 5px; cursor: pointer;" onclick="$('#chatFileInput').click()">🔗</button>
+        
         <input type="text" id="msgInput" placeholder="메시지를 입력하세요..." onkeypress="if(event.keyCode==13) sendMsg();">
         <button type="button" onclick="sendMsg()">전송</button>
     </div>
@@ -160,7 +164,8 @@
             sender_id: myId,
             message_text: text,
             sender_nickname: myNickname,
-            type: "TEXT"
+            type: "TEXT",
+           	is_read: "N"
         };
 
         stompClient.send("/pub/chat/send", {}, JSON.stringify(chatMessage));
@@ -187,29 +192,41 @@
                    "</div>";
         } 
         
-     	// 2. 일반 텍스트 메시지 처리
+     // 2. 일반 텍스트, 사진, 파일 메시지 처리
         else {
             const isMe = (msg.sender_id == myId);
             const boxClass = isMe ? "msg-box me" : "msg-box other";
             
             html += "<div class='" + boxClass + "'>";
             
-            // ★ 내 메시지일 때: [ 1 ] [ 말풍선 ] 순서로 가로 배치
+            let displayContent = msg.message_text;
+            let contentStyle = ""; // 사진일 때는 말풍선 배경을 투명하게 만들기 위한 변수
+            
+            if (msg.type === 'IMAGE') {
+                displayContent = "<img src='/upload/" + msg.message_text + "' style='max-width: 200px; border-radius: 8px; cursor: pointer;' onclick='window.open(this.src)'/>";
+                contentStyle = "background: transparent; padding: 0; border: none;"; // 사진은 말풍선 배경 없앰
+            } else if (msg.type === 'FILE') {
+                displayContent = "<a href='/upload/" + msg.message_text + "' download style='color: blue; text-decoration: underline; font-weight:bold;'>📁 파일 다운로드</a>";
+            }
+            
+            // 내 메시지일 때: [ 1 ] [ 말풍선/사진 ]
             if (isMe) {
                 html += "<div class='msg-wrapper' style='display:flex; flex-direction:row; align-items:flex-end;'>";
                 // 안 읽은 메시지('N')라면 1을 붙임
                 if (msg.is_read === 'N') {
                     html += "<span class='unread-mark'>1</span>";
                 }
-                html += "<div class='msg-content'>" + msg.message_text + "</div>";
+                // 기존 msg.message_text 대신 displayContent 삽입!
+                html += "<div class='msg-content' style='" + contentStyle + "'>" + displayContent + "</div>";
                 html += "</div>";
             } 
-            // ★ 상대방 메시지일 때: [ 닉네임 ] 과 [ 말풍선 ] 세로 배치
+            // 상대방 메시지일 때: [ 닉네임 ] [ 말풍선/사진 ]
             else {
                 html += "<div class='msg-wrapper'>";
                 html += "<div class='msg-nickname'>" + msg.sender_nickname + "</div>";
                 html += "<div style='display:flex; align-items:flex-end;'>";
-                html += "<div class='msg-content'>" + msg.message_text + "</div>";
+                // 기존 msg.message_text 대신 displayContent 삽입!
+                html += "<div class='msg-content' style='" + contentStyle + "'>" + displayContent + "</div>";
                 html += "</div>";
                 html += "</div>";
             }
@@ -221,6 +238,67 @@
         
         // 스크롤 맨 아래로 부드럽게 이동
         chatArea.scrollTop(chatArea[0].scrollHeight);
+    }
+ 	
+	// 첨부파일 선택 시 팝업으로 확인 후 업로드 및 전송
+    function uploadChatFile() {
+        const fileInput = $("#chatFileInput")[0];
+        if(fileInput.files.length === 0) return;
+
+        const file = fileInput.files[0];
+        const fileName = file.name; // 파일 원본 이름
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2); // 파일 용량 (MB 단위로 변환)
+
+        // ★ 파일을 바로 보내지 않고, 예쁜 팝업창을 먼저 띄워서 물어봅니다!
+        swal({
+            title: "파일 전송",
+            text: "[" + fileName + "] (" + fileSizeMB + "MB)\n이 파일을 채팅방에 전송하시겠습니까?",
+            icon: "info",
+            buttons: ["취소", "전송하기"],
+        }).then((willSend) => {
+            
+            // '전송하기' 버튼을 눌렀을 때만 업로드 시작
+            if (willSend) {
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("${_csrf.parameterName}", "${_csrf.token}");
+
+                $.ajax({
+                    url: "/chat/upload",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(savedFileName) {
+                        if(savedFileName !== "FAIL") {
+                            // 확장자로 이미지/파일 구분
+                            const ext = savedFileName.split('.').pop().toLowerCase();
+                            const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
+                            const msgType = isImage ? "IMAGE" : "FILE";
+
+                            // 웹소켓으로 메시지 쏘기
+                            const chatMessage = {
+                                room_id: roomId,
+                                sender_id: myId,
+                                message_text: savedFileName,
+                                sender_nickname: myNickname,
+                                type: msgType, 
+                                is_read: "N"
+                            };
+
+                            stompClient.send("/pub/chat/send", {}, JSON.stringify(chatMessage));
+                        } else {
+                            swal("오류", "파일 업로드에 실패했습니다.", "error");
+                        }
+                        // 완료 후 input 초기화
+                        $("#chatFileInput").val(""); 
+                    }
+                });
+            } else {
+                // '취소'를 눌렀을 때도 다음 번 선택을 위해 input 안을 비워줌
+                $("#chatFileInput").val("");
+            }
+        });
     }
 </script>
 
