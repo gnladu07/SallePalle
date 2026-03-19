@@ -26,4 +26,6 @@ public class ChatRoomVO {
     private Timestamp last_message_time; // 마지막 메시지 시간
     private int unread_count;            // 안 읽은 메시지 개수
     private int message_count;           // 총 나눈 대화 수
+    
+    private String is_flagged;			 // 관리자 모니터링용 (위험 거래 감지 여부)
 }

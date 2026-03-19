@@ -218,7 +218,7 @@
     /* 메뉴 그리드 */
     .home-menu-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 25px;
     }
 
@@ -447,6 +447,16 @@
                 </div>
                 <h3>물품 관리</h3>
                 <p>등록된 물품 조회 및 관리<br>부적절한 물품 삭제</p>
+            </a>
+            
+            <a href="/admin/chatList" class="home-menu-card">
+                <div class="home-menu-icon" style="background: linear-gradient(135deg, #f1c40f, #e67e22);">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                    </svg>
+                </div>
+                <h3>채팅 모니터링</h3>
+                <p>위험 거래 감지 채팅방 관리<br>실시간 채팅 내역 열람</p>
             </a>
         </div>
 
