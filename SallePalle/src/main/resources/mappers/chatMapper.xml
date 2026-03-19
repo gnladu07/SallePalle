@@ -83,6 +83,23 @@
         WHERE cr.buyer_id = #{member_id} OR cr.seller_id = #{member_id}
         ORDER BY cr.created_at DESC
     </select>
+    
+    <select id="getAdminChatList" resultType="ChatRoomVO">
+        SELECT 
+            cr.room_id,
+            cr.created_at,
+            cr.is_flagged,
+            sb.title AS trade_title,
+            buyer.nickname AS buyer_nickname,
+            seller.nickname AS seller_nickname,
+            (SELECT message_text FROM chat_message WHERE room_id = cr.room_id ORDER BY send_time DESC LIMIT 1) AS last_message,
+            (SELECT send_time FROM chat_message WHERE room_id = cr.room_id ORDER BY send_time DESC LIMIT 1) AS last_message_time
+        FROM chat_room cr
+        JOIN saletrade_board sb ON cr.trade_id = sb.trade_id
+        JOIN member buyer ON cr.buyer_id = buyer.member_id
+        JOIN member seller ON cr.seller_id = seller.member_id
+        ORDER BY cr.is_flagged DESC, last_message_time DESC
+    </select>
 	
 	<update id="markMessagesAsRead">
         UPDATE chat_message
@@ -90,6 +107,12 @@
         WHERE room_id = #{room_id} 
           AND sender_id != #{reader_id} 
           AND is_read = 'N'
+    </update>
+    
+    <update id="flagChatRoom">
+        UPDATE chat_room
+        SET is_flagged = 'Y'
+        WHERE room_id = #{room_id}
     </update>
 	
 	<delete id="deleteChatMessages">

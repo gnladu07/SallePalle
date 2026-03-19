@@ -20,6 +20,7 @@ import com.itwillbs.component.FileComponent;
 import com.itwillbs.domain.ChatMessageVO;
 import com.itwillbs.domain.ChatRoomVO;
 import com.itwillbs.domain.MemberVO;
+import com.itwillbs.service.ChatGPTService;
 import com.itwillbs.service.ChatService;
 
 @Controller
@@ -30,6 +31,7 @@ public class ChatController {
     @Inject private ChatService chatService;
     @Inject private SimpMessagingTemplate messagingTemplate;
     @Inject private FileComponent fileComponent;
+    @Inject private ChatGPTService gptService;
     
     // ChatController.java 내부
     @GetMapping("/chat/chatRoom")
@@ -89,7 +91,6 @@ public class ChatController {
         // 2. 해당 방(room_id)을 켜놓고 있는 사람들에게 메시지 쏴주기
         messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoom_id(), message);
         
-        // --- [추가된 알림 로직] ---
         // 3. 채팅방 정보를 조회해서 누가 수신자인지 파악
         ChatRoomVO room = chatService.getRoom(message.getRoom_id());
         
@@ -98,11 +99,41 @@ public class ChatController {
         
         // 4. 수신자의 개인 알림 채널로 메시지 발송!
         messagingTemplate.convertAndSend("/sub/notify/" + receiverId, message);
+        
+        // 5. ChatGPT를 이용한 외부 거래 유도 감지 필터링
+        if ("TEXT".equals(message.getType())) {
+            try {
+                // 판단 기준이 될 강력한 시스템 프롬프트 작성
+                String systemPrompt = "너는 중고거래 사이트 보안 감시관이야. "
+                                    + "사용자의 채팅 메시지에 '현금', '계좌이체', '직거래', '카톡', '라인', '수수료 없는 거래' 등 "
+                                    + "사이트 내 안전결제를 우회하려는 의도나 외부 연락처를 공유하려는 의도가 포함되어 있다면 오직 'TRUE', "
+                                    + "일상적인 대화나 안전결제를 진행하려는 내용이라면 오직 'FALSE'만 출력해. 부가 설명은 절대 하지마.";
+
+                // 만들어두신 ChatGPTService를 호출하여 판별!
+                String gptResponse = gptService.askChatGPT(systemPrompt, message.getMessage_text());
+                
+                // GPT가 TRUE라고 판단했다면 경고 메시지 발송
+                if (gptResponse != null && gptResponse.contains("TRUE")) {
+                    ChatMessageVO warningMsg = new ChatMessageVO();
+                    warningMsg.setRoom_id(message.getRoom_id());
+                    warningMsg.setSender_id(1); // 0번을 시스템 관리자용 ID로 사용
+                    warningMsg.setType("SYSTEM");
+                    warningMsg.setMessage_text("🚨 시스템 경고: 외부 메신저 유도 또는 직접 현금 거래 정황이 감지되었습니다. 당사 안전결제 외의 거래는 사기 피해의 위험이 있습니다.\n\n※ 추가로 동일한 발언을 할 경우 운영자가 즉시 호출되며, 채팅방이 강제로 종료될 수 있습니다.");
+                    
+                    // 경고 메시지 DB 저장 및 채팅방 발송
+                    chatService.saveMessage(warningMsg);
+                    messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoom_id(), warningMsg);
+                    
+                    chatService.flagChatRoom(message.getRoom_id());
+                }
+            } catch (Exception e) {
+                log.error("GPT 필터링 중 오류 발생: ", e);
+            }
+        }	
         log.debug("ChatController: sendMessage() 끝!");
     }
     
- // ChatController.java 내부 추가
-
+    // ChatController.java 내부 추가
     @PostMapping("/chat/pay")
     @ResponseBody
     public String processChatPayment(@RequestParam int room_id, HttpSession session) {

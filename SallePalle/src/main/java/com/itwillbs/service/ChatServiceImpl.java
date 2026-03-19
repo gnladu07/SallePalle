@@ -107,4 +107,14 @@ public class ChatServiceImpl implements ChatService {
     public List<ChatRoomVO> getChatHistoryLog(int member_id) throws Exception {
         return chatDAO.getChatHistoryLog(member_id);
     }
+
+	@Override
+	public void flagChatRoom(int room_id) throws Exception {
+		chatDAO.flagChatRoom(room_id);
+	}
+
+	@Override
+    public List<ChatRoomVO> getAdminChatList() throws Exception {
+        return chatDAO.getAdminChatList();
+    }
 }

@@ -17,4 +17,6 @@ public interface ChatDAO {
 	public void deleteChatRoom(int room_id) throws Exception;
     public void markMessagesAsRead(Map<String, Object> paramMap) throws Exception;
     public List<ChatRoomVO> getChatHistoryLog(int member_id) throws Exception;
+    public void flagChatRoom(int room_id) throws Exception;
+    public List<ChatRoomVO> getAdminChatList() throws Exception; // 관리자용 채팅 리스트
 }

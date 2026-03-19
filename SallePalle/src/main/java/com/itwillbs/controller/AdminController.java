@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwillbs.domain.ChatRoomVO;
 import com.itwillbs.domain.Criteria;
 import com.itwillbs.domain.MemberVO;
 import com.itwillbs.domain.PageVO;
 import com.itwillbs.domain.SellerRequestVO;
 import com.itwillbs.service.AdminService;
+import com.itwillbs.service.ChatGPTService;
+import com.itwillbs.service.ChatService;
 import com.itwillbs.service.MemberService;
 import com.itwillbs.service.SellerService;
 
@@ -35,6 +38,7 @@ public class AdminController {
 	@Inject private SellerService sService;
 	@Inject private MemberService mService;
 	@Inject private AdminService aService;
+	@Inject private ChatService chatService;
 	
 	@GetMapping("/login")
 	public void loginGET() {
@@ -175,6 +179,16 @@ public class AdminController {
 
         log.info(" memberList() 끝! ");
         return "/admin/members";
+    }
+    
+    // 관리자 - 채팅 모니터링 페이지
+    @GetMapping("/admin/chatList")
+    public String adminChatList(Model model) throws Exception {
+        
+        List<ChatRoomVO> adminChatList = chatService.getAdminChatList();
+        model.addAttribute("chatList", adminChatList);
+        
+        return "/admin/chatList";
     }
 
 

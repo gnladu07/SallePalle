@@ -68,5 +68,15 @@ public class ChatDAOImpl implements ChatDAO {
         return sqlSession.selectList(NAMESPACE + "getChatHistoryLog", member_id);
     }
 
+    @Override
+    public void flagChatRoom(int room_id) throws Exception {
+        sqlSession.update(NAMESPACE + "flagChatRoom", room_id);
+    }
+
+    @Override
+    public List<ChatRoomVO> getAdminChatList() throws Exception {
+        return sqlSession.selectList("com.itwillbs.mapper.ChatMapper.getAdminChatList");
+    }
+
 
 }
