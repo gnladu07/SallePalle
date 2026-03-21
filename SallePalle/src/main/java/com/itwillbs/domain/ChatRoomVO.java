@@ -28,4 +28,5 @@ public class ChatRoomVO {
     private int message_count;           // 총 나눈 대화 수
     
     private String is_flagged;			 // 관리자 모니터링용 (위험 거래 감지 여부)
+    private String admin_closed;         // 관리자 강제 해산 여부 (Y / N)
 }

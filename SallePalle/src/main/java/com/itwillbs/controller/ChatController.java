@@ -254,5 +254,41 @@ public class ChatController {
         }
     }
     
+    // 관리자 - 채팅방 강제 해산 API
+    @PostMapping("/admin/chat/close")
+    @ResponseBody
+    public String adminCloseChat(@RequestParam int room_id, HttpSession session) {
+        log.debug("ChatController: adminCloseChat() 실행!");
+        MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+        
+        // (실무에서는 여기서 loginInfo의 권한이 관리자인지 한번 더 체크하면 좋습니다)
+        if (loginInfo == null) return "NO_LOGIN";
+        
+        try {
+            // 1. 방에 있는 구매자/판매자에게 '강제 종료' 알림 쏘기
+            ChatMessageVO closeMsg = new ChatMessageVO();
+            closeMsg.setRoom_id(room_id);
+            closeMsg.setSender_id(1); // 관리자 아이디
+            closeMsg.setType("CLOSE"); // ★ 새로운 메시지 타입 지정!
+            closeMsg.setMessage_text("🚨 관리자에 의해 채팅방이 강제 해산되었습니다. 사기 거래에 주의하세요.");
+            
+            messagingTemplate.convertAndSend("/sub/chat/room/" + room_id, closeMsg);
+            
+            // 2. 0.5초 정도 웹소켓 전송될 시간을 벌어준 뒤 DB에서 방 상태 변경!
+            Thread.sleep(500);
+            
+            // 기존 완전 삭제 로직 주석 처리 (또는 삭제)
+            // chatService.adminDeleteRoom(room_id); 
+            
+            // ★ 수정됨: 데이터는 살려두고 관리자 강제해산 상태만 'Y'로 업데이트 (소프트 딜리트)
+            chatService.adminSoftCloseRoom(room_id);
+            
+            return "OK";
+        } catch (Exception e) {
+            log.error("채팅방 강제 종료 중 오류: ", e);
+            return "ERROR";
+        }
+    }
+    
     
 }

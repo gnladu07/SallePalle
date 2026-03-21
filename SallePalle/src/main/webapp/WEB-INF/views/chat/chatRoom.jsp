@@ -44,6 +44,10 @@
     <div class="chat-header">
         채팅방
         <button type="button" id="btnPay">결제/송금하기</button>
+        
+        <sec:authorize access="hasRole('ROLE_ADMIN')">
+            <button type="button" id="btnAdminClose" style="background:#e74c3c; color:white; margin-right:5px; position:absolute; right:120px; top:12px; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;">강제 해산 🚨</button>
+        </sec:authorize>
     </div>
 
     <div class="chat-messages" id="chatArea">
@@ -86,6 +90,37 @@
         connect(); 
         loadHistory(); 
         markAsRead();
+        
+     	// [강제 해산] 버튼 이벤트 (관리자 전용)
+        $("#btnAdminClose").on("click", function() {
+            swal({
+                title: "채팅방 강제 해산",
+                text: "이 채팅방을 즉시 폭파하고 모든 대화 내역을 삭제하시겠습니까?\n(참여자들은 메인화면으로 튕겨납니다)",
+                icon: "warning",
+                buttons: ["취소", "강제 해산"],
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        url: "/admin/chat/close",
+                        type: "POST",
+                        data: {
+                            room_id: roomId,
+                            "${_csrf.parameterName}": "${_csrf.token}"
+                        },
+                        success: function(res) {
+                            if (res === "OK") {
+                                swal("해산 완료", "채팅방이 강제로 폭파되었습니다.", "success")
+                                .then(() => {
+                                    window.close(); // 관리자는 팝업창을 닫거나
+                                    location.href = "/admin/chatList"; // 목록으로 이동
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        });
 
         // [결제/송금하기] 버튼 이벤트 추가
         $("#btnPay").on("click", function() {
@@ -135,7 +170,21 @@
             stompClient.subscribe('/sub/chat/room/' + roomId, function(message) {
                 const msg = JSON.parse(message.body);
                 
-                // ★ [핵심 추가] 누군가 메시지를 읽었다는 신호(READ)가 오면?
+             	// [추가] 관리자가 방을 폭파했을 때!!
+                if (msg.type === "CLOSE") {
+                    swal({
+                        title: "강제 해산 🚨",
+                        text: msg.message_text,
+                        icon: "error",
+                        button: "확인"
+                    }).then(() => {
+                        // 확인 누르면 가차 없이 메인 화면으로 쫓아냄!
+                        location.href = "/"; 
+                    });
+                    return; // 화면에 말풍선 그리지 않고 바로 종료
+                }
+                
+                // [추가] 누군가 메시지를 읽었다는 신호(READ)가 오면?
                 if (msg.type === "READ") {
                     // 내가 보낸 신호가 아닐 때(상대방이 읽었을 때) 내 화면의 숫자 1을 싹 다 지움
                     if (msg.sender_id != myId) {
@@ -192,7 +241,7 @@
                    "</div>";
         } 
         
-     // 2. 일반 텍스트, 사진, 파일 메시지 처리
+     	// 2. 일반 텍스트, 사진, 파일 메시지 처리
         else {
             const isMe = (msg.sender_id == myId);
             const boxClass = isMe ? "msg-box me" : "msg-box other";
@@ -225,7 +274,6 @@
                 html += "<div class='msg-wrapper'>";
                 html += "<div class='msg-nickname'>" + msg.sender_nickname + "</div>";
                 html += "<div style='display:flex; align-items:flex-end;'>";
-                // 기존 msg.message_text 대신 displayContent 삽입!
                 html += "<div class='msg-content' style='" + contentStyle + "'>" + displayContent + "</div>";
                 html += "</div>";
                 html += "</div>";

@@ -75,7 +75,17 @@ public class ChatDAOImpl implements ChatDAO {
 
     @Override
     public List<ChatRoomVO> getAdminChatList() throws Exception {
-        return sqlSession.selectList("com.itwillbs.mapper.ChatMapper.getAdminChatList");
+        return sqlSession.selectList(NAMESPACE + "getAdminChatList");
+    }
+
+    @Override
+    public void adminSoftCloseRoom(int room_id) throws Exception {
+        sqlSession.update(NAMESPACE + "adminSoftCloseRoom", room_id);
+    }
+
+    @Override
+    public List<ChatRoomVO> getAdminClosedChatList() throws Exception {
+        return sqlSession.selectList(NAMESPACE + "getAdminClosedChatList");
     }
 
 
