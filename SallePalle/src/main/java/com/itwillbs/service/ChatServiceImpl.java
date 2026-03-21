@@ -117,4 +117,14 @@ public class ChatServiceImpl implements ChatService {
     public List<ChatRoomVO> getAdminChatList() throws Exception {
         return chatDAO.getAdminChatList();
     }
+
+	@Override
+    public void adminSoftCloseRoom(int room_id) throws Exception {
+        chatDAO.adminSoftCloseRoom(room_id);
+    }
+
+    @Override
+    public List<ChatRoomVO> getAdminClosedChatList() throws Exception {
+        return chatDAO.getAdminClosedChatList();
+    }
 }

@@ -24,6 +24,10 @@
     .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
     .badge-danger { background: #e74c3c; color: white; }
     .badge-safe { background: #2ecc71; color: white; }
+    .badge-closed { background: #7f8c8d; color: white; } /* ★ 추가: 해산 완료 회색 뱃지 */
+    
+    .closed-row { background: #f0f0f0 !important; }
+    .closed-row td { color: #888; }
     
     .btn-view { padding: 6px 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 13px; }
     .btn-view:hover { background: #2980b9; }
@@ -48,11 +52,23 @@
             </thead>
             <tbody>
                 <c:forEach var="room" items="${chatList}">
-                    <tr class="${room.is_flagged == 'Y' ? 'flagged-row' : ''}">
+                    <tr class="${room.admin_closed == 'Y' ? 'closed-row' : (room.is_flagged == 'Y' ? 'flagged-row' : '')}">
                         <td>${room.room_id}</td>
                         <td>
-                            <c:if test="${room.is_flagged == 'Y'}"><span class="badge badge-danger">위험 감지</span></c:if>
-                            <c:if test="${room.is_flagged != 'Y'}"><span class="badge badge-safe">정상</span></c:if>
+                            <c:choose>
+                                <%-- 1순위: 이미 강제 해산된 방인지 체크 --%>
+                                <c:when test="${room.admin_closed == 'Y'}">
+                                    <span class="badge badge-closed">해산 완료</span>
+                                </c:when>
+                                <%-- 2순위: 해산 안 됐지만, GPT가 위험을 감지한 방인지 체크 --%>
+                                <c:when test="${room.is_flagged == 'Y'}">
+                                    <span class="badge badge-danger">위험 감지</span>
+                                </c:when>
+                                <%-- 3순위: 아무 문제 없는 깨끗한 방 --%>
+                                <c:otherwise>
+                                    <span class="badge badge-safe">정상</span>
+                                </c:otherwise>
+                            </c:choose>
                         </td>
                         <td>${room.trade_title}</td>
                         <td>${room.buyer_nickname} ↔ ${room.seller_nickname}</td>

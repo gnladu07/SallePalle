@@ -27,4 +27,8 @@ public interface ChatService {
     public void flagChatRoom(int room_id) throws Exception;
     
     public List<ChatRoomVO> getAdminChatList() throws Exception;
+
+    public void adminSoftCloseRoom(int room_id) throws Exception; // 관리자 채팅방 강제 해산 (소프트 딜리트)
+    
+    public List<ChatRoomVO> getAdminClosedChatList() throws Exception; // 관리자 강제 해산된 채팅방 목록 조회
 }

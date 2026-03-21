@@ -35,7 +35,7 @@
         ORDER BY cm.send_time ASC
     </select>
 
-    <select id="getRoomList" resultType="ChatRoomVO">
+	<select id="getRoomList" resultType="ChatRoomVO">
         SELECT 
             cr.*, 
             sb.title AS trade_title, 
@@ -52,9 +52,12 @@
         JOIN member buyer ON cr.buyer_id = buyer.member_id 
         JOIN member seller ON cr.seller_id = seller.member_id 
         WHERE 
-            (cr.buyer_id = #{member_id} AND cr.buyer_status = 'J') 
-            OR 
-            (cr.seller_id = #{member_id} AND cr.seller_status = 'J')
+            (
+                (cr.buyer_id = #{member_id} AND cr.buyer_status = 'J') 
+                OR 
+                (cr.seller_id = #{member_id} AND cr.seller_status = 'J')
+            )
+            AND cr.admin_closed = 'N'
         ORDER BY last_message_time DESC
     </select>
     
@@ -80,7 +83,8 @@
         JOIN saletrade_board sb ON cr.trade_id = sb.trade_id
         JOIN member buyer ON cr.buyer_id = buyer.member_id
         JOIN member seller ON cr.seller_id = seller.member_id
-        WHERE cr.buyer_id = #{member_id} OR cr.seller_id = #{member_id}
+        WHERE (cr.buyer_id = #{member_id} OR cr.seller_id = #{member_id})
+          AND cr.admin_closed = 'N'
         ORDER BY cr.created_at DESC
     </select>
     
@@ -89,7 +93,7 @@
             cr.room_id,
             cr.created_at,
             cr.is_flagged,
-            sb.title AS trade_title,
+            cr.admin_closed,  sb.title AS trade_title,
             buyer.nickname AS buyer_nickname,
             seller.nickname AS seller_nickname,
             (SELECT message_text FROM chat_message WHERE room_id = cr.room_id ORDER BY send_time DESC LIMIT 1) AS last_message,
@@ -114,6 +118,29 @@
         SET is_flagged = 'Y'
         WHERE room_id = #{room_id}
     </update>
+    
+    <update id="adminSoftCloseRoom">
+        UPDATE chat_room
+        SET admin_closed = 'Y'
+        WHERE room_id = #{room_id}
+    </update>
+    
+    <select id="getAdminClosedChatList" resultType="ChatRoomVO">
+        SELECT 
+            cr.room_id,
+            cr.created_at,
+            sb.title AS trade_title,
+            buyer.nickname AS buyer_nickname,
+            seller.nickname AS seller_nickname,
+            (SELECT message_text FROM chat_message WHERE room_id = cr.room_id ORDER BY send_time DESC LIMIT 1) AS last_message,
+            (SELECT send_time FROM chat_message WHERE room_id = cr.room_id ORDER BY send_time DESC LIMIT 1) AS last_message_time
+        FROM chat_room cr
+        JOIN saletrade_board sb ON cr.trade_id = sb.trade_id
+        JOIN member buyer ON cr.buyer_id = buyer.member_id
+        JOIN member seller ON cr.seller_id = seller.member_id
+        WHERE cr.admin_closed = 'Y'
+        ORDER BY last_message_time DESC
+    </select>
 	
 	<delete id="deleteChatMessages">
         DELETE FROM chat_message 
