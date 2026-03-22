@@ -73,6 +73,7 @@
             </div>
 
             <!-- 지역 선택 -->
+            <%-- 
             <div class="join-field">
                 <label class="join-label">거주 지역</label>
                 <select class="join-select" name="toplct_id" required>
@@ -83,14 +84,21 @@
                         </option>
                     </c:forEach>
                 </select>
-            </div>
+            </div> --%>
+            
+            <!-- 주소 찾기 -->
+            <div class="join-field">
+			    <label class="join-label">주소</label>
+			    <input type="text" class="join-input" name="address" id="address" 
+			           placeholder="주소 찾기 (클릭)" readonly required>
+			</div>
 
             <!-- 상세주소 -->
             <div class="join-field">
-                <label class="join-label">상세주소</label>
-                <input type="text" class="join-input" name="detail_address" id="detail_address" 
-                       placeholder="상세주소 찾기 (클릭)" readonly required>
-            </div>
+			    <label class="join-label">상세주소</label>
+			    <input type="text" class="join-input" name="detail_address" id="detail_address" 
+			           placeholder="상세주소 입력 (예: 000아파트 101동 202호)" required>
+			</div>
 
             <!-- 생년월일 -->
             <div class="join-field">
@@ -270,7 +278,7 @@
 
 
     // 카카오 주소찾기 API
-	$("#detail_address").click(function(){
+	$("#address").click(function(){
 	    new daum.Postcode({
 	        oncomplete: function(data){
 	            $("#detail_address").val(data.roadAddress);

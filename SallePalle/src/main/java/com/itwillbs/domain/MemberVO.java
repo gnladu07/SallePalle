@@ -53,7 +53,8 @@ public class MemberVO {
 	private String email;					// 이메일 (인증 필요)
 	private String gender;					// 성별(M/F)
 	
-	private int    toplct_id;				// 선택형 주소 (시/군/구 FK)
+	private Integer toplct_id;			// 선택형 주소 (시/군/구 FK) 사용 안 함
+	private String address;                 // 카카오 주소찾기 API로 입력받은 기본 주소
 	private String detail_address;			// 상세 주소 입력값
 	
 	private String profile_img;				// 기본 프로필 이미지

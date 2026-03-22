@@ -3,6 +3,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -168,12 +169,23 @@ public class MemberServiceImpl implements MemberService {
 		}
 		
         // 지역 변경 기록
-        if (old.getToplct_id() != vo.getToplct_id()) {
+		if (!Objects.equals(old.getToplct_id(), vo.getToplct_id())) {
             memberDAO.insertMemberHistory(new MemberHistoryVO(
                 vo.getUserid(),
                 "toplct_id",
                 String.valueOf(old.getToplct_id()),
                 String.valueOf(vo.getToplct_id()),
+                vo.getUserid()
+            ));
+        }
+		
+		// 기본 주소 변경 기록
+        if (old.getAddress() != null && !old.getAddress().equals(vo.getAddress())) {
+            memberDAO.insertMemberHistory(new MemberHistoryVO(
+                vo.getUserid(),
+                "address",
+                old.getAddress(),
+                vo.getAddress(),
                 vo.getUserid()
             ));
         }
