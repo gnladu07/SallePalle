@@ -29,52 +29,52 @@
                 data-item-id="">전체</button>
 
             <button class="saleTradeList-category-btn
+                ${item_ctg_id == 1 ? 'active' : ''}"
+                data-item-id="1">도서</button>
+
+            <button class="saleTradeList-category-btn
                 ${item_ctg_id == 2 ? 'active' : ''}"
-                data-item-id="2">도서</button>
+                data-item-id="2">생활/가전</button>
 
             <button class="saleTradeList-category-btn
                 ${item_ctg_id == 3 ? 'active' : ''}"
-                data-item-id="3">생활/가전</button>
+                data-item-id="3">가구/인테리어</button>
 
             <button class="saleTradeList-category-btn
                 ${item_ctg_id == 4 ? 'active' : ''}"
-                data-item-id="4">가구/인테리어</button>
+                data-item-id="4">의류</button>
 
             <button class="saleTradeList-category-btn
                 ${item_ctg_id == 5 ? 'active' : ''}"
-                data-item-id="5">의류</button>
+                data-item-id="5">가구</button>
 
             <button class="saleTradeList-category-btn
                 ${item_ctg_id == 6 ? 'active' : ''}"
-                data-item-id="6">가구</button>
+                data-item-id="6">게임</button>
 
             <button class="saleTradeList-category-btn
                 ${item_ctg_id == 7 ? 'active' : ''}"
-                data-item-id="7">게임</button>
+                data-item-id="7">스포츠</button>
 
             <button class="saleTradeList-category-btn
                 ${item_ctg_id == 8 ? 'active' : ''}"
-                data-item-id="8">스포츠</button>
+                data-item-id="8">식료품</button>
 
             <button class="saleTradeList-category-btn
                 ${item_ctg_id == 9 ? 'active' : ''}"
-                data-item-id="9">식료품</button>
+                data-item-id="9">해외직구</button>
 
             <button class="saleTradeList-category-btn
                 ${item_ctg_id == 10 ? 'active' : ''}"
-                data-item-id="10">해외직구</button>
+                data-item-id="10">PC용품</button>
 
             <button class="saleTradeList-category-btn
                 ${item_ctg_id == 11 ? 'active' : ''}"
-                data-item-id="11">PC용품</button>
+                data-item-id="11">레저</button>
 
             <button class="saleTradeList-category-btn
                 ${item_ctg_id == 12 ? 'active' : ''}"
-                data-item-id="12">레저</button>
-
-            <button class="saleTradeList-category-btn
-                ${item_ctg_id == 13 ? 'active' : ''}"
-                data-item-id="13">기타</button>
+                data-item-id="12">기타</button>
         </div>
 
         <!-- 상품 등록 버튼 -->
