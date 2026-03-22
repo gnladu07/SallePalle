@@ -12,6 +12,7 @@
 	    <result property="email" column="email" />
 	    <result property="gender" column="gender" />
 	    <result property="toplct_id" column="toplct_id" />
+	    <result property="address" column="address" />
 	    <result property="detail_address" column="detail_address" />
 	    <result property="profile_img" column="profile_img" />
 	    <result property="seller_status" column="seller_status" />
@@ -41,19 +42,19 @@
 	<!-- 회원가입 -->
 	<insert id="insertMember">
 		insert into member (
-			userid, userpw, username, nickname, email, gender, 
-			toplct_id, detail_address, 
-			profile_img, seller_status, provider, provider_id, mobile, birth6, enable_flag, 
-			agree_terms_required, agree_privacy_required, agree_location_optional, 
-			agree_marketing_email, agree_marketing_sms
-		)
-		values (
-			#{userid}, #{userpw}, #{username}, #{nickname}, #{email}, #{gender}, 
-			#{toplct_id}, #{detail_address}, 
-			'default_profile.png', 'N', #{provider}, #{provider_id}, #{mobile}, #{birth6}, '1', 
-			#{agree_terms_required}, #{agree_privacy_required}, #{agree_location_optional}, 
-			#{agree_marketing_email}, #{agree_marketing_sms} 
-		)
+	        userid, userpw, username, nickname, email, gender, 
+	        toplct_id, address, detail_address, 
+	        profile_img, seller_status, provider, provider_id, mobile, birth6, enable_flag, 
+	        agree_terms_required, agree_privacy_required, agree_location_optional, 
+	        agree_marketing_email, agree_marketing_sms
+	    )
+	    values (
+	        #{userid}, #{userpw}, #{username}, #{nickname}, #{email}, #{gender}, 
+	        #{toplct_id}, #{address}, #{detail_address}, 
+	        'default_profile.png', 'N', #{provider}, #{provider_id}, #{mobile}, #{birth6}, '1', 
+	        #{agree_terms_required}, #{agree_privacy_required}, #{agree_location_optional}, 
+	        #{agree_marketing_email}, #{agree_marketing_sms} 
+	    )
 	</insert>
 	
 	<!-- 아이디 중복 체크  -->
@@ -80,6 +81,7 @@
 		        m.email,
 		        m.gender,
 		        m.toplct_id,
+		        m.address,
 		        m.detail_address,
 		        m.profile_img,
 		        m.seller_status,
@@ -124,7 +126,8 @@
 		set 
 			nickname = #{nickname}, 
 			toplct_id = #{toplct_id}, 
-			detail_address = #{detail_address}, 
+	        address = #{address},
+	        detail_address = #{detail_address}, 
 			email = #{email} 
 		where userid = #{userid}
 	</update>
@@ -148,6 +151,10 @@
 			toplct_id = (select old_value from update_member_history 
 						 where userid = #{userid} and changed_field = 'toplct_id' 
 						 order by changed_at asc limit 1), 
+						 
+		 	address = (select old_value from update_member_history 
+	                   where userid = #{userid} and changed_field = 'address' 
+	                   order by changed_at asc limit 1),
 			
 			detail_address = (select old_value from update_member_history 
 						      where userid = #{userid} and changed_field = 'detail_address' 
