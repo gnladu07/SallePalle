@@ -3720,15 +3720,21 @@
 		            </div>
 
 		            <div class="dropdown-stats">
-		                <div class="stat-item">
-		                    <div class="stat-label"><a href="/fintech/chargePoint">살래P</a></div>
-		                    <div class="stat-value"><a href="/fintech/chargePoint"><fmt:formatNumber value="${loginInfo.wallet_balance }" /></a></div>
-		                </div>
-		                <div class="stat-item">
-		                    <div class="stat-label">팔래M</div>
-		                    <div class="stat-value"><fmt:formatNumber value="${loginInfo.wallet_mileage}" /></div>
-		                </div>
-		            </div>
+					    <div class="stat-item">
+					        <div class="stat-label"><a href="/fintech/chargePoint">살래P</a></div>
+					        <div class="stat-value">
+					            <a href="/fintech/chargePoint">
+					                <fmt:formatNumber value="${empty loginInfo.wallet_balance ? 0 : loginInfo.wallet_balance}" />
+					            </a>
+					        </div>
+					    </div>
+					    <div class="stat-item">
+					        <div class="stat-label">팔래M</div>
+					        <div class="stat-value">
+					            <fmt:formatNumber value="${empty loginInfo.wallet_mileage ? 0 : loginInfo.wallet_mileage}" />
+					        </div>
+					    </div>
+					</div>
 
 					<sec:authorize access="hasRole('ROLE_ADMIN')">
 					    <a href="/admin/home" class="dropdown-item">
