@@ -72,9 +72,9 @@
             </div>
             
             <div class="read-info-card read-info-card-wide">
-                <div class="read-info-label">주소</div>
-                <div class="read-info-value">${loginInfo.detail_address}</div>
-            </div>
+			    <div class="read-info-label">주소</div>
+			    <div class="read-info-value">${loginInfo.address} ${loginInfo.detail_address}</div>
+			</div>
         </div>
 
         <!-- 버튼 그룹 -->

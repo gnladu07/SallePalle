@@ -109,21 +109,17 @@
                 <div class="update-field-notice">성별은 변경할 수 없습니다</div>
             </div>
 
-            <!-- 거주 지역 (수정 가능) -->
+            <!-- 주소 (수정 가능) -->
             <div class="update-field">
-                <label class="update-label">거주 지역</label>
-                <select class="update-select" name="toplct_id" required>
-                    <option value="">-- 지역 선택 --</option>
-                    <c:forEach var="loc" items="${topList}">
-                        <option value="${loc.toplct_id}"
-                            <c:if test="${loc.toplct_id == loginInfo.toplct_id}">
-                                selected
-                            </c:if>
-                        >
-                            ${loc.toplct_name}
-                        </option>
-                    </c:forEach>
-                </select>
+                <label class="update-label">주소</label>
+                <input type="text" 
+                       class="update-input" 
+                       name="address" 
+                       id="address" 
+                       value="${loginInfo.address}"
+                       placeholder="주소 찾기 (클릭)"
+                       readonly
+                       required>
             </div>
 
             <!-- 상세 주소 (수정 가능) -->
@@ -134,8 +130,7 @@
                        name="detail_address" 
                        id="detail_address" 
                        value="${loginInfo.detail_address}"
-                       placeholder="주소 찾기 (클릭)"
-                       readonly
+                       placeholder="상세주소 입력 (예: 봉우아파트 201동 1306호)"
                        required>
             </div>
 
@@ -160,10 +155,14 @@
 	let emailVerified = false;
 	
 	// 1) 카카오 주소찾기 API
-	$("#detail_address").click(function(){
+	$("#address").click(function(){
 	    new daum.Postcode({
 	        oncomplete: function(data){
-	            $("#detail_address").val(data.roadAddress);
+	            // API에서 받아온 주소를 address 칸에 넣음
+	            $("#address").val(data.roadAddress);
+	            
+	            // 바로 상세주소를 입력할 수 있게 detail_address 칸으로 포커스 이동
+	            $("#detail_address").focus();
 	        }
 	    }).open();
 	});
