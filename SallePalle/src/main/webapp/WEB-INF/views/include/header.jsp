@@ -17,6 +17,68 @@
 <title>Insert title here</title>
 <style>
 	/* 공통 1*/
+	/* 상태 오버레이 (사진 위 검은 배경) */
+    .status-overlay {
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+        font-weight: 700;
+        z-index: 100;
+        letter-spacing: 2px;
+    }
+
+    /* 홈 화면, 리스트 화면 썸네일에 오버레이 기준점 강제 부여 */
+    .trade-card-img, 
+    .saleTradeList-img {
+        position: relative !important;
+    }
+
+    /* 토글 스위치 디자인 */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+    }
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px; width: 18px;
+        left: 4px; bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+        background-color: #FF6F61;
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(24px);
+    }
+    
 	a {
 		text-decoration: none;   /* 밑줄 제거 */
 	    color: inherit;          /* 부모 색상 그대로 사용 */
@@ -3698,6 +3760,8 @@
 	        white-space: nowrap; 
 	        gap: 15px;
 	    }
+	    
+	    
 	}
 
 </style>

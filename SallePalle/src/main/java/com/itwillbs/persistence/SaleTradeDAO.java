@@ -93,4 +93,6 @@ public interface SaleTradeDAO {
     
     public List<Map<String, Object>> getRecentViewList(int member_id) throws Exception;
 
+	public int updateTradeStatus(int trade_id, String status, int seller_id);
+
 }

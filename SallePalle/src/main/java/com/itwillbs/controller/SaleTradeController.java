@@ -297,4 +297,17 @@ public class SaleTradeController {
 	    log.info(" reupdateSubmit() 끝! ");
 	    return "redirect:/member/traList";
 	}
+	
+	@PostMapping("/updateStatus")
+    @ResponseBody
+    public String updateStatus(@RequestParam("trade_id") int trade_id, 
+                               @RequestParam("status") String status, 
+                               HttpSession session) {
+        MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
+        if (loginInfo == null) return "fail";
+        
+        // 서비스 호출
+        int result = stService.updateTradeStatus(trade_id, status, loginInfo.getMember_id());
+        return result > 0 ? "success" : "fail";
+    }
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../include/header.jsp"%>
+
 <c:if test="${!empty msg}">
     <script>alert("${msg}");</script>
 </c:if>
@@ -8,15 +9,57 @@
     <script>alert("${mailMsg}");</script>
 </c:if>
 
+<style>
+    .update-btn-auth {
+        padding: 12px 20px;
+        background: #fff5f4;
+        border: 1px solid #FF6F61;
+        border-radius: 8px;
+        color: #FF6F61;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+    }
+    .update-btn-auth:hover {
+        background: #FF6F61;
+        color: white;
+        box-shadow: 0 4px 10px rgba(255, 111, 97, 0.2);
+    }
+    
+    .update-btn-confirm {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #FF6F61, #9B59B6);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+    }
+    .update-btn-confirm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3);
+    }
+    
+    .auth-input-active {
+        border: 2px solid #FF6F61 !important;
+        background-color: #fffcfb !important;
+    }
+</style>
+
 <div class="main-update">
     <div class="update-container">
         <h1 class="update-title">개인정보 수정</h1>
         <p class="update-subtitle">회원 정보를 수정하고 저장하세요</p>
 
-        <form action="/member/update" method="post">
+        <form action="/member/update" method="post" id="updateForm">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
             <input type="hidden" id="emailVerified" name="emailVerified" value="false">
 
-            <!-- 아이디 (수정 불가) -->
             <div class="update-field">
                 <label class="update-label">아이디</label>
                 <input type="text" 
@@ -24,32 +67,30 @@
                        name="userid" 
                        id="userid" 
                        value="${loginInfo.userid}" 
-                       disabled>
+                       readonly>
                 <div class="update-field-notice">아이디는 변경할 수 없습니다</div>
             </div>
 
-            <!-- 실명 (수정 불가) -->
             <div class="update-field">
                 <label class="update-label">실명</label>
                 <input type="text" 
                        class="update-input update-input-disabled" 
                        name="username" 
+                       id="username" 
                        value="${loginInfo.username}" 
-                       disabled>
-                <div class="update-field-notice">실명은 변경할 수 없습니다</div>
+                       readonly>
             </div>
 
-            <!-- 닉네임 (수정 가능) -->
             <div class="update-field">
                 <label class="update-label">닉네임</label>
                 <input type="text" 
                        class="update-input" 
                        name="nickname" 
-                       value="${loginInfo.nickname}"
+                       id="nickname" 
+                       value="${loginInfo.nickname}" 
                        required>
             </div>
 
-            <!-- 이메일 + 인증 -->
             <div class="update-field">
                 <label class="update-label">이메일</label>
                 <div class="update-input-row">
@@ -57,59 +98,26 @@
                            class="update-input" 
                            name="email" 
                            id="email" 
-                           value="${loginInfo.email}"
+                           value="${loginInfo.email}" 
+                           placeholder="예) example@naver.com"
                            required>
-                    <button type="button" class="update-btn-check" id="btnEmailAuth">인증번호 받기</button>
+                    <button type="button" class="update-btn-auth" id="btnEmailAuth">인증번호 받기</button>
                 </div>
-                <div id="emailMsg"></div>
+                <div id="emailMsg" style="margin-top: 8px; font-size: 13px; font-weight: 600;"></div>
             </div>
 
-            <div class="update-field">
-                <label class="update-label">인증번호</label>
+            <div class="update-field" id="emailCodeDiv" style="display:none; padding-top: 10px;">
+                <label class="update-label" style="color: #FF6F61;">인증번호 6자리</label>
                 <div class="update-input-row">
                     <input type="text" 
-                           class="update-input" 
+                           class="update-input auth-input-active" 
                            id="emailCode" 
-                           placeholder="인증번호 입력">
-                    <button type="button" class="update-btn-check" id="btnEmailCheck">확인</button>
+                           placeholder="전송된 인증번호를 입력해주세요">
+                    <button type="button" class="update-btn-confirm" id="btnEmailCheck">인증 확인</button>
                 </div>
-                <div id="emailCodeMsg"></div>
+                <div id="emailCodeMsg" style="margin-top: 8px; font-size: 13px; font-weight: 600;"></div>
             </div>
 
-            <!-- 휴대폰 번호 (수정 불가) -->
-            <div class="update-field">
-                <label class="update-label">휴대폰 번호</label>
-                <input type="text" 
-                       class="update-input update-input-disabled" 
-                       name="mobile" 
-                       value="${loginInfo.mobile}" 
-                       disabled>
-                <div class="update-field-notice">휴대폰 번호는 변경할 수 없습니다</div>
-            </div>
-
-            <!-- 생년월일 (수정 불가) -->
-            <div class="update-field">
-                <label class="update-label">생년월일</label>
-                <input type="text" 
-                       class="update-input update-input-disabled" 
-                       name="birth6" 
-                       value="${loginInfo.birth6}" 
-                       disabled>
-                <div class="update-field-notice">생년월일은 변경할 수 없습니다</div>
-            </div>
-
-            <!-- 성별 (수정 불가) -->
-            <div class="update-field">
-                <label class="update-label">성별</label>
-                <input type="text" 
-                       class="update-input update-input-disabled" 
-                       name="gender" 
-                       value="${loginInfo.gender == 'M' ? '남자' : '여자'}" 
-                       disabled>
-                <div class="update-field-notice">성별은 변경할 수 없습니다</div>
-            </div>
-
-            <!-- 주소 (수정 가능) -->
             <div class="update-field">
                 <label class="update-label">주소</label>
                 <input type="text" 
@@ -122,7 +130,6 @@
                        required>
             </div>
 
-            <!-- 상세 주소 (수정 가능) -->
             <div class="update-field">
                 <label class="update-label">상세 주소</label>
                 <input type="text" 
@@ -134,120 +141,125 @@
                        required>
             </div>
 
-            <!-- 버튼 그룹 -->
             <div class="update-button-group">
-                <button type="submit" class="update-btn update-btn-primary">
-                    저장
-                </button>
-                <button type="button" class="update-btn update-btn-reset" id="btnReset">
-                    초기화
-                </button>
-                <a href="/member/read" class="update-btn update-btn-outline">
-                    뒤로가기
-                </a>
+                <button type="button" class="update-btn update-btn-outline" id="btnCancel">취소</button>
+                <button type="button" class="update-btn update-btn-outline" id="btnReset" style="color: #ffc107; border-color: #ffc107;">초기화</button>
+                <button type="submit" class="update-btn update-btn-primary">저장하기</button>
             </div>
         </form>
     </div>
 </div>
-<script type="text/javascript">
 
-	let emailAuthCode = "";
-	let emailVerified = false;
-	
-	// 1) 카카오 주소찾기 API
-	$("#address").click(function(){
-	    new daum.Postcode({
-	        oncomplete: function(data){
-	            // API에서 받아온 주소를 address 칸에 넣음
-	            $("#address").val(data.roadAddress);
-	            
-	            // 바로 상세주소를 입력할 수 있게 detail_address 칸으로 포커스 이동
-	            $("#detail_address").focus();
-	        }
-	    }).open();
-	});
-	
-	// 2) 이메일 인증번호 AJAX 요청
-	$("#btnEmailAuth").click(function(){
-	    const email = $("#email").val().trim();
-	
-	    if(email.trim() == ""){
-	        alert("이메일을 입력해주세요.");
-	        return;
-	    }
-	
-	    $.ajax({
-	        url: "/member/emailCode",
-	        type: "post",
-	        data: {email: email},
-	        success: function(code){
-	            emailAuthCode = code;
-	            $("#emailMsg").removeClass().addClass("ok")
-	                .html("인증번호가 전송되었습니다.");
-	        },
-	        error: function(xhr){
-	            console.error("AJAX 오류", xhr);
-	            alert("서버와 통신에 실패했습니다.");
-	        }
-	    });
-	});
+<script>
+$(document).ready(function() {
+    let emailAuthCode = "";
+    let emailVerified = false;
 
-	// 인증번호 확인
-	$("#btnEmailCheck").click(function(){
-	    const val = $("#emailCode").val();
-	
-	    if(val == emailAuthCode){
-	        emailVerified = true;
-	        $("#emailVerified").val("true");
-	        $("#emailCodeMsg").html("인증 완료!").addClass("ok").removeClass("no");
-	    } else {
-	        emailVerified = false;
-	        $("#emailVerified").val("false");
-	        $("#emailCodeMsg").html("인증번호가 일치하지 않습니다.").addClass("no").removeClass("ok");
-	    }
-	
-	    /* checkJoinReady() */;
-	});
-	
-	// 이메일 바뀔 때 인증필드 강제 false 처리
-	$("#email").on("input", function(){
-	    $("#emailVerified").val("false");
-	});
-	
-	// “저장” 버튼 누르기 전 검증
-	$("form").submit(function(e){
-	    const oriEmail = "${loginInfo.email}";
-	    const newEmail = $("#email").val().trim();
-	    const verified = $("#emailVerified").val();
-	
-	    // 이메일을 변경했는데 인증이 false라면 → 저장 차단
-	    if(oriEmail !== newEmail && verified !== "true"){
-	        alert("메일 인증을 진행해주세요!");
-	        e.preventDefault();
-	        return false;
-	    }
-	});
-	
-	// 3) 수정 내용 초기화
-	$("#btnReset").click(function(){
+    // 1) 카카오 주소찾기 API
+    $("#address").click(function(){
+        new daum.Postcode({
+            oncomplete: function(data){
+                $("#address").val(data.roadAddress);
+                $("#detail_address").focus();
+            }
+        }).open();
+    });
 
-	    if(!confirm("모든 정보를 초기값(첫 저장 이력)으로 복구하시겠습니까?")) return;
+    // 2) 이메일 인증번호 받기
+    $("#btnEmailAuth").click(function(){
+        const email = $("#email").val().trim();
+        const emailRegex = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
 
-	    $.ajax({
-	        url: "/member/update/reset",
-	        type: "post",
-	        data: {
-	            "${_csrf.parameterName}": "${_csrf.token}"
-	        },
-	        success: function(){
-	            alert("초기값으로 복구되었습니다.");
-	            location.reload();
-	        },
-	        error: function(){
-	            alert("복구 중 오류 발생!");
-	        }
-	    });
+        if(email === ""){
+            alert("이메일을 입력해주세요.");
+            $("#email").focus();
+            return;
+        }
+        
+        if(!emailRegex.test(email)){
+            alert("올바른 이메일 형식으로 입력해주세요. (예: example@gmail.com)");
+            $("#email").focus();
+            return;
+        }
 
-	});
+        $.ajax({
+            url: "/member/emailCode",
+            type: "post",
+            data: {
+                email: email,
+                "${_csrf.parameterName}": "${_csrf.token}"
+            },
+            success: function(code){
+                emailAuthCode = code;
+                $("#emailMsg").html("인증번호가 전송되었습니다! 메일함을 확인해주세요.").css("color", "blue");
+                $("#emailCodeDiv").slideDown(); // 숨겨진 인증번호 입력칸 부드럽게 표시
+                $("#emailCode").focus();
+            },
+            error: function(xhr){
+                console.error("AJAX 오류", xhr);
+                alert("서버와 통신에 실패했습니다.");
+            }
+        });
+    });
+
+    // 3) 인증번호 확인
+    $("#btnEmailCheck").click(function(){
+        const val = $("#emailCode").val().trim();
+        
+        if(val == emailAuthCode && val !== ""){
+            emailVerified = true;
+            $("#emailVerified").val("true");
+            $("#emailCodeMsg").html("인증이 완료되었습니다.").css("color", "blue");
+            
+            // 인증 완료 시 테두리 색상 원래대로 원복
+            $("#emailCode").removeClass("auth-input-active")
+                           .css("border", "1px solid #ddd")
+                           .css("background-color", "#f8f9fa")
+                           .prop("readonly", true);
+            $("#btnEmailCheck").prop("disabled", true).css("background", "#ddd");
+        } else {
+            emailVerified = false;
+            $("#emailVerified").val("false");
+            $("#emailCodeMsg").html("인증번호가 일치하지 않습니다.").css("color", "red");
+        }
+    });
+
+    // 이메일 입력값 변경 시 인증 상태 강제 초기화
+    $("#email").on("input", function(){
+        $("#emailVerified").val("false");
+        $("#emailCodeDiv").slideUp();
+        $("#emailCode").val("").prop("readonly", false).addClass("auth-input-active");
+        $("#btnEmailCheck").prop("disabled", false).css("background", "linear-gradient(135deg, #FF6F61, #9B59B6)");
+        $("#emailMsg").html("");
+        $("#emailCodeMsg").html("");
+    });
+
+    // 4) 폼 제출 전 최종 검증
+    $("#updateForm").submit(function(e){
+        const oriEmail = "${loginInfo.email}";
+        const newEmail = $("#email").val().trim();
+        const verified = $("#emailVerified").val();
+
+        // 기존 이메일과 다르게 변경했는데, 인증을 통과하지 못한 경우 저장을 막음
+        if(oriEmail !== newEmail && verified !== "true"){
+            alert("이메일이 변경되었습니다. 메일 인증을 먼저 진행해주세요!");
+            $("#email").focus();
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // 5) 취소 및 초기화 버튼 로직
+    $("#btnCancel").click(function(){
+        location.href = "/member/read";
+    });
+
+    $("#btnReset").click(function(){
+        if(confirm("모든 정보를 저장된 값으로 초기화하시겠습니까?")){
+            location.reload();
+        }
+    });
+});
 </script>
+
 <%@ include file="../include/footer.jsp"%>
