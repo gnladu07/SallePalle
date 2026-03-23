@@ -117,7 +117,7 @@
                         <button type="button" class="detail-btn-buy" id="btnChatRoom" 
                                 data-trade-id="${detail.trade_id}" 
                                 data-seller-id="${detail.seller_id}">
-                            채팅으로 거래하기
+                            거래요청
                         </button>
                     </c:otherwise>
                 </c:choose>
