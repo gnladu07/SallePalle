@@ -97,7 +97,7 @@
             <div class="join-field">
 			    <label class="join-label">상세주소</label>
 			    <input type="text" class="join-input" name="detail_address" id="detail_address" 
-			           placeholder="상세주소 입력 (예: 000아파트 101동 202호)" required>
+			           placeholder="상세주소 입력 (예: ~~~아파트 ~~동 ~~~호)" required>
 			</div>
 
             <!-- 생년월일 -->
@@ -281,7 +281,8 @@
 	$("#address").click(function(){
 	    new daum.Postcode({
 	        oncomplete: function(data){
-	            $("#detail_address").val(data.roadAddress);
+	            $("#address").val(data.roadAddress);            
+	            $("#detail_address").focus();
 	        }
 	    }).open();
 	});
