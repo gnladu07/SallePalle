@@ -68,8 +68,18 @@ public class ChatServiceImpl implements ChatService {
         int balance = saleTradeDAO.selectPayBalance(room.getBuyer_id());
         if (balance < price) return false;
 
+        // 구매자 지갑이 없으면 생성 (안전장치)
+        if (saleTradeDAO.existsPayWallet(room.getBuyer_id()) == 0) {
+            saleTradeDAO.insertPayWallet(room.getBuyer_id());
+        }
+
         // 3. 구매자 포인트 차감
         saleTradeDAO.usePoint(room.getBuyer_id(), price);
+
+        // 판매자 지갑이 없으면 생성 (이게 없어서 돈이 안 들어왔습니다!)
+        if (saleTradeDAO.existsPayWallet(room.getSeller_id()) == 0) {
+            saleTradeDAO.insertPayWallet(room.getSeller_id());
+        }
 
         // 4. 판매자 포인트 적립
         saleTradeDAO.earnPoint(room.getSeller_id(), price);
@@ -79,7 +89,8 @@ public class ChatServiceImpl implements ChatService {
         saleTradeDAO.insertTradeHistory(room.getTrade_id(), room.getBuyer_id(), room.getSeller_id(), price, price, 0);
 
         // 6. 게시글 상태 변경 (S:판매중 -> C:완료)
-        saleTradeDAO.updateTradeStatusComplete(room.getTrade_id());
+        // (요청하신 대로 구매 완료 처리가 안 되도록 주석 처리 유지)
+        // saleTradeDAO.updateTradeStatusComplete(room.getTrade_id());
 
         return true;
     }
