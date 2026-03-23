@@ -93,13 +93,16 @@
         <div class="saleTradeList-grid">
             <c:forEach var="s" items="${saleTradeList}">
                 <a href="/traBoard/detail?trade_id=${s.trade_id}" class="saleTradeList-card">
-                    <div class="saleTradeList-img">
-                        <c:if test="${!empty s.thumb_img}">
-                            <img src="/upload/${s.thumb_img}" alt="${s.title}">
-                        </c:if>
-                    </div>
+                   <div class="saleTradeList-img">
+			            <img src="/upload/${s.thumb_img}" alt="${s.title}">
+			            
+			            <c:if test="${fn:contains(s.status, 'R')}">
+			                <div class="status-overlay">판매중지</div>
+			            </c:if>
+			        </div>
+				   
                     <div class="saleTradeList-content">
-                        <div class="saleTradeList-title">${s.title}</div>
+                        <div class="saleTradeList-title">${s.title} <span style="color:red;">[상태값: ${s.status}]</span></div>
                         <div class="saleTradeList-price">${s.price_point} P</div>
                         <div class="saleTradeList-info">
                             <span class="saleTradeList-location">

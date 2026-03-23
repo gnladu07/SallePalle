@@ -1,13 +1,50 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../include/header.jsp" %>
+
+<style>
+    /* 토글 스위치 전용 디자인 */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+    }
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px; width: 18px;
+        left: 4px; bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .slider {
+        background-color: #FF6F61;
+    }
+    input:checked + .slider:before {
+        transform: translateX(24px);
+    }
+</style>
+
 <div class="main-detail">
     <div class="detail-container">
         
-        <!-- 상품 이미지 섹션 -->
         <div class="detail-image-section">
-        	<!-- 제목 & 정보 -->
-            <h1 class="detail-title">${detail.title}</h1>
+        	<h1 class="detail-title">${detail.title}</h1>
             <div class="detail-meta">
                 <span>
                     <fmt:formatDate value="${detail.regdate}" pattern="yyyy-MM-dd HH:mm"/>
@@ -19,7 +56,6 @@
             <div class="detail-main-image">
                 <img src="/upload/${detail.thumb_img}" alt="${detail.title}">
             </div>
-            <!-- 판매자 정보 -->
             <div class="detail-seller">
                 <img src="/upload/${detail.profile_img}" 
                      alt="판매자" class="detail-seller-img">
@@ -30,10 +66,21 @@
             </div>
         </div>
 
-        <!-- 상품 정보 섹션 -->
         <div class="detail-info-section">
 
-            <!-- 가격 -->
+            <c:if test="${loginInfo.member_id == detail.seller_id && detail.status != 'C'}">
+                <div class="toggle-container" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 12px;">
+                    <span style="font-size: 14px; font-weight: 600; color: #666;">상품 상태 설정</span>
+                    <label class="switch">
+                        <input type="checkbox" id="statusToggle" ${detail.status == 'S' ? 'checked' : ''}>
+                        <span class="slider"></span>
+                    </label>
+                    <span id="statusText" style="font-size: 15px; font-weight: bold; color: ${detail.status == 'S' ? '#FF6F61' : '#999'};">
+                        ${detail.status == 'S' ? '판매중' : '판매중지'}
+                    </span>
+                </div>
+            </c:if>
+
             <div class="detail-pricezon">            
 	            <div class="detail-price" style="color: #FF6F61;">
 	            	<p style="font-size: 20px; color: black;">희망 판매가:</p>
@@ -45,76 +92,74 @@
 	            </div>
             </div>
 
-            <!-- 상태 배지 -->
             <c:if test="${detail.status eq 'C'}">
                 <div class="detail-status-badge sold">판매완료</div>
             </c:if>
 
-            <!-- 설명 -->
             <div class="detail-description">
                 <h3>상품 설명</h3>
                 <p>${detail.content}</p>
             </div>
 
-            <!-- 지도 -->
             <div class="detail-map-section">
                 <h3>거래 희망 장소</h3>
                 <div id="map" class="detail-map"></div>
                 <p class="detail-address">${detail.detail_address}</p>
             </div>
 
-            <!-- 액션 버튼 -->
-            <div class="detail-actions">
-                <!-- 추천 버튼 -->
-			    <button class="detail-btn-recommend" id="btnRecommend">
-			        <svg viewBox="0 0 24 24" fill="currentColor">
-			            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
-			                     2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 
-			                     4.5 2.09C13.09 3.81 14.76 3 16.5 3 
-			                     19.58 3 22 5.42 22 8.5c0 3.78-3.4 
-			                     6.86-8.55 11.54L12 21.35z"/>
-			        </svg>
-			        <span id="recCnt">${detail.recommend_cnt}</span>
-			    </button>
-				<c:choose>
-				    <c:when test="${detail.status eq 'C'}">
-				        <button class="detail-btn-sold" disabled>판매완료</button>
-				    </c:when>
-				
-				    <c:when test="${not empty loginUserid
-				                   && loginUserid eq detail.seller_userid}">
-				        <button class="detail-btn-edit"
-				                onclick="location.href='/traBoard/update?trade_id=${detail.trade_id}'">
-				            수정
-				        </button>
-				        <button type="button"
-						        id="btnDeleteTrade"
-						        class="detail-btn-delete"
-						        data-trade-id="${detail.trade_id}">
-						    삭제
-						</button>
-				    </c:when>
-				
-				    <c:when test="${empty loginUserid && detail.status eq 'S'}">
-				        <button class="detail-btn-login" onclick="goLogin()">
-				            로그인시 구매 가능합니다.
-				        </button>
-				    </c:when>
-				
-				    <c:otherwise>
-				        <button type="button" class="btn-chat" id="btnChatRoom" 
-						        data-trade-id="${detail.trade_id}" 
-						        data-seller-id="${detail.seller_id}">
-						    채팅으로 거래하기
-						</button>
-				    </c:otherwise>
-				</c:choose>
+			<div class="detail-actions">
+                <button class="detail-btn-recommend" id="btnRecommend">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
+                                 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 
+                                 4.5 2.09C13.09 3.81 14.76 3 16.5 3 
+                                 19.58 3 22 5.42 22 8.5c0 3.78-3.4 
+                                 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    <span id="recCnt">${detail.recommend_cnt}</span>
+                </button>
+
+                <c:choose>
+                    <c:when test="${detail.status eq 'C'}">
+                        <button class="detail-btn-sold" disabled>판매완료</button>
+                    </c:when>
+                
+                    <c:when test="${not empty loginUserid && loginUserid eq detail.seller_userid}">
+                        <button class="detail-btn-edit"
+                                onclick="location.href='/traBoard/update?trade_id=${detail.trade_id}'">
+                            수정
+                        </button>
+                        <button type="button"
+                                id="btnDeleteTrade"
+                                class="detail-btn-delete"
+                                data-trade-id="${detail.trade_id}">
+                            삭제
+                        </button>
+                    </c:when>
+                    
+                    <c:when test="${detail.status eq 'R'}">
+                        <button class="detail-btn-sold" disabled>판매중지된 상품입니다</button>
+                    </c:when>
+                
+                    <c:when test="${empty loginUserid && detail.status eq 'S'}">
+                        <button class="detail-btn-login" onclick="goLogin()">
+                            로그인시 구매 가능합니다.
+                        </button>
+                    </c:when>
+                
+                    <c:otherwise>
+                        <button type="button" class="detail-btn-buy" id="btnChatRoom" 
+                                data-trade-id="${detail.trade_id}" 
+                                data-seller-id="${detail.seller_id}">
+                            채팅으로 거래하기
+                        </button>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
 
     </div>
 
-    <!-- 다른 상품 -->
     <div class="detail-other-section">
         <h2>이 판매자의 다른 상품</h2>
         <div class="detail-other-grid">
@@ -124,14 +169,13 @@
                         <img src="/upload/${o.thumb_img}" alt="${o.title}">
                     </div>
                     <div class="detail-other-title">${o.title}</div>
-                    <div class="detail-other-price">${o.price_point} P</div>
+                    <div class="detail-other-price"><fmt:formatNumber value="${o.price_point}" /> P</div>
                 </a>
             </c:forEach>
         </div>
     </div>
 </div>
 
-<!-- 구매 모달 -->
 <div id="buyModalOverlay" class="detail-modal-overlay">
     <div class="detail-modal">
         <button class="detail-modal-close" id="closeBuyModal">×</button>
@@ -142,11 +186,10 @@
             <img src="/upload/${detail.thumb_img}" alt="${detail.title}">
             <div>
                 <div class="detail-modal-product-title">${detail.title}</div>
-                <div class="detail-modal-product-price">${detail.price_point} P</div>
+                <div class="detail-modal-product-price"><fmt:formatNumber value="${detail.price_point}" /> P</div>
             </div>
         </div>
 
-        <!-- 결제 수단 -->
         <div class="detail-modal-payment">
             <h3>결제 수단 선택</h3>
             
@@ -160,7 +203,6 @@
                 <span>팔래 마일리지로 구매</span>
             </label>
 
-            <!-- 마일리지 옵션 -->
             <div id="mileageOption" class="detail-modal-mileage">
                 <label class="detail-modal-radio">
                     <input type="radio" name="mileageType" value="FULL">
@@ -175,18 +217,16 @@
                 <input type="number" id="useMileage" class="detail-modal-input" placeholder="사용 마일리지">
 
                 <div class="detail-modal-final">
-                    최종 포인트 결제: <strong><span id="finalPoint">${detail.price_point}</span> P</strong>
+                    최종 포인트 결제: <strong><span id="finalPoint"><fmt:formatNumber value="${detail.price_point}" /></span> P</strong>
                 </div>
             </div>
         </div>
 
-        <!-- 보유 자산 -->
         <div class="detail-modal-wallet" id="walletInfo">
             <div>보유 살래P: <strong><fmt:formatNumber value="${loginInfo.wallet_balance}"/> P</strong></div>
             <div>보유 팔래M: <strong><fmt:formatNumber value="${loginInfo.wallet_mileage}"/> M</strong></div>
         </div>
 
-        <!-- 구매 확정 -->
         <button class="detail-modal-btn" id="confirmBuy" disabled>구매 확정</button>
     </div>
 </div>
@@ -196,24 +236,22 @@
 
     <input type="hidden" name="trade_id">
 
-    <!-- CSRF 토큰 (현재 disable 되어 있어도 구조상 유지) -->
     <input type="hidden"
            name="${_csrf.parameterName}"
            value="${_csrf.token}">
 </form>
+
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f741118517088ca2272cc9689f78f15e&libraries=services"></script>
 <script>
 $(function(){
     console.log("detail.jsp 로딩 완료");
 
-    // [중요] 자바스크립트 문법 에러 방지를 위한 변수 선언
-    // 데이터가 비어있을 경우 0으로 치환하여 스크립트가 멈추는 것을 방지합니다.
     var tradePrice = ${detail.price_point};
     var myMileage = ${not empty loginInfo.wallet_mileage ? loginInfo.wallet_mileage : 0};
     var myBalance = ${not empty loginInfo.wallet_balance ? loginInfo.wallet_balance : 0};
     var myMemberId = "${loginInfo.member_id}";
 
-    // 1. 카카오 지도 (스크립트 에러에 가장 민감하므로 상단 배치 고려)
+    // 1. 카카오 지도
     var address = "${detail.detail_address}";
     if(address && address.trim() !== ""){
         var mapContainer = document.getElementById('map');
@@ -282,7 +320,7 @@ $(function(){
         $("#mileageOption").hide();
         $("#confirmBuy").prop("disabled", true);
         $("#useMileage").val("");
-        $("#finalPoint").text(tradePrice);
+        $("#finalPoint").text(tradePrice.toLocaleString());
         $("#walletInfo strong").css({"opacity": "1", "font-weight": "normal"});
     }
 
@@ -322,7 +360,7 @@ $(function(){
         }
 
         var finalPrice = tradePrice - use;
-        $("#finalPoint").text(finalPrice);
+        $("#finalPoint").text(finalPrice.toLocaleString());
     });
 
     $("#confirmBuy").on("click", function(){
@@ -394,12 +432,44 @@ $(function(){
                     alert("로그인이 필요합니다.");
                     location.href = "/member/login";
                 } else {
-                    // NumberFormatException 방지를 위해 chatRoom 경로 사용
                     location.href = "/chat/chatRoom?room_id=" + roomId;
                 }
             },
             error: function(){
                 alert("채팅방 연결에 실패했습니다.");
+            }
+        });
+    });
+
+    // 6. ★ 판매 상태 변경 토글 스위치 로직
+    $("#statusToggle").change(function() {
+        let isChecked = $(this).is(":checked");
+        let newStatus = isChecked ? 'S' : 'R'; // S: 판매중, R: 판매중지
+        let tradeId = ${detail.trade_id};
+
+        $.ajax({
+            url: "/traBoard/updateStatus",
+            type: "POST",
+            data: {
+                trade_id: tradeId,
+                status: newStatus,
+                "${_csrf.parameterName}": "${_csrf.token}"
+            },
+            success: function(res) {
+                if(res === "success") {
+                    if(isChecked) {
+                        $("#statusText").text("판매중").css("color", "#FF6F61");
+                    } else {
+                        $("#statusText").text("판매중지").css("color", "#999");
+                    }
+                } else {
+                    alert("상태 변경에 실패했습니다.");
+                    $("#statusToggle").prop("checked", !isChecked); // 실패 시 스위치 원상복구
+                }
+            },
+            error: function() {
+                alert("서버와 통신 중 오류가 발생했습니다.");
+                $("#statusToggle").prop("checked", !isChecked); // 실패 시 스위치 원상복구
             }
         });
     });

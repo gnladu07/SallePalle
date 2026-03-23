@@ -330,6 +330,13 @@ public class SaleTradeDAOImpl implements SaleTradeDAO {
 	    return sqlSession.selectList("com.itwillbs.mapper.SaleTradeMapper.getRecentViewList", member_id);
 	}
 
- 
+	@Override
+    public int updateTradeStatus(int trade_id, String status, int seller_id) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("trade_id", trade_id);
+        paramMap.put("status", status);
+        paramMap.put("seller_id", seller_id);
+        return sqlSession.update(NAMESPACE + "updateTradeStatus", paramMap);
+    }
 
 }

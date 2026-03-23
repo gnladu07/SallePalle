@@ -12,6 +12,7 @@
             s.thumb_img,
             s.recommend_cnt,
             s.regdate,
+            s.status,
             m.nickname AS seller_nickname,
             t.toplct_id,
             t.toplct_name,
@@ -349,6 +350,7 @@
             s.thumb_img,
             s.regdate,
             s.thumb_img,
+            s.status,
             m.nickname AS seller_nickname
         FROM saletrade_board s
         JOIN member m ON s.seller_id = m.member_id
@@ -370,6 +372,7 @@
             s.thumb_img,
             s.recommend_cnt,
             s.thumb_img,
+            s.status,
             m.nickname AS seller_nickname
         FROM saletrade_board s
         JOIN member m ON s.seller_id = m.member_id
@@ -405,5 +408,11 @@
         ORDER BY rv.viewed_at DESC
         LIMIT 20
     </select>
+    
+    <update id="updateTradeStatus">
+        UPDATE saletrade_board
+        SET status = #{status}
+        WHERE trade_id = #{trade_id} AND seller_id = #{seller_id}
+    </update>
 	
 </mapper>

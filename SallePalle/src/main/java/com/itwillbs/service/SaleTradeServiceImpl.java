@@ -278,5 +278,10 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 	    log.info(" SaleTradeServiceImpl: getRecentViewList() 끝!");
 	    return saleTradeDAO.getRecentViewList(member_id);
 	}
+	
+	@Override
+    public int updateTradeStatus(int trade_id, String status, int seller_id) {
+        return saleTradeDAO.updateTradeStatus(trade_id, status, seller_id);
+    }
 
 }

@@ -58,5 +58,7 @@ public interface SaleTradeService {
     public void insertOrUpdateRecentView(int member_id, int trade_id) throws Exception;
     
     public List<Map<String, Object>> getRecentViewList(int member_id) throws Exception;
+    
+    public int updateTradeStatus(int trade_id, String status, int seller_id);
 
 }

@@ -45,10 +45,13 @@
                 <c:forEach var="trade" items="${latestTradeList}">
                     <a href="/traBoard/detail?trade_id=${trade.trade_id}" class="trade-card">
                         <div class="trade-card-img">
-                            <c:if test="${!empty trade.thumb_img}">
-                                <img src="/upload/${trade.thumb_img}" alt="${trade.title}">
-                            </c:if>
-                        </div>
+				            <img src="/upload/${trade.thumb_img}" alt="${trade.title}">
+				            
+				            <c:if test="${fn:contains(trade.status, 'R')}">
+				                <div class="status-overlay">판매중지</div>
+				            </c:if>
+				        </div>
+				        
                         <div class="trade-card-content">
 						    <div class="trade-card-title">${trade.title}</div>
 						    <div class="trade-card-price"><fmt:formatNumber value="${trade.price_point}" /> P</div>
@@ -71,9 +74,11 @@
                 <c:forEach var="trade" items="${recommendTradeList}">
                     <a href="/traBoard/detail?trade_id=${trade.trade_id}" class="trade-card">
                         <div class="trade-card-img">
-                            <c:if test="${!empty trade.thumb_img}">
-                                <img src="/upload/${trade.thumb_img}" alt="${trade.title}">
-                            </c:if>
+                            <img src="/upload/${trade.thumb_img}" alt="${trade.title}">
+				            
+				            <c:if test="${fn:contains(trade.status, 'R')}">
+				                <div class="status-overlay">판매중지</div>
+				            </c:if>
                         </div>
                         <div class="trade-card-content">
                             <div class="trade-card-title">${trade.title}</div>
