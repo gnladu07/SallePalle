@@ -1960,7 +1960,7 @@
         margin-bottom: 40px;
     }
 
-/*     .findId-msg {
+/* .findId-msg {
         padding: 12px 15px;
         background: #fff5f4;
         border: 1px solid #ffddda;
@@ -3649,6 +3649,56 @@
 	    }
 	}
 	
+	/* =========================================
+	   💡 반응형 (화면 줄어들 때 깨짐 방지)
+	   ========================================= */
+	
+	/* 1. 화면이 살짝 줄어들 때: 과도하게 잡힌 양옆 여백(430px)을 줄여서 공간 확보 */
+	@media (max-width: 1400px) {
+	    header { 
+	        padding: 0 50px; 
+	    }
+	    .header-col.center { 
+	        padding-right: 0; 
+	    }
+	    .header-col.left { 
+	        padding-left: 0; 
+	    }
+	}
+
+	/* 2. 화면이 많이 좁아질 때 (태블릿/모바일): 메뉴를 아랫줄로 내리기 */
+	@media (max-width: 800px) {
+	    header {
+	        height: auto;
+	        padding: 15px 20px;
+	        flex-wrap: wrap;
+	    }
+	    
+	    .header-col.left {
+	        order: 1;
+	        flex: 1;
+	    }
+	    
+	    .header-col.right {
+	        order: 2;
+	        flex: 1;
+	        justify-content: flex-end;
+	    }
+	    
+	    .header-col.center {
+	        order: 3;
+	        flex: 0 0 100%;
+	        justify-content: center;
+	        margin-top: 15px;
+	        padding-top: 15px !important;
+	        border-top: 1px solid #f0f0f0;
+	    }
+	    
+	    .menu-group {
+	        white-space: nowrap; 
+	        gap: 15px;
+	    }
+	}
 
 </style>
 </head>
@@ -3688,7 +3738,6 @@
     </div>
     
 	<div class="header-col right">
-		<!-- 로그인 X -->
 		<sec:authorize access="isAnonymous()">  
 		    <div class="auth-group">
 		        <a href="/member/login"><button class="auth-login">로그인</button></a>
@@ -3696,7 +3745,6 @@
 		    </div>
 		</sec:authorize>
 		
-		<!-- 로그인 O -->
 		<sec:authorize access="isAuthenticated()">
 		    <div class="user-dropdown" id="userDropdown">
 		        <div class="user-info-group">
@@ -3712,7 +3760,6 @@
 		            <span class="dropdown-arrow">▼</span>
 		        </div>
 		        
-		        <!-- 드롭다운 메뉴 -->
 		        <div class="dropdown-menu">
 		            <div class="dropdown-header">
 		                <div class="user-name">${loginInfo.nickname}</div>
@@ -3774,7 +3821,6 @@
 				        <span>채팅 기록</span>
 				    </a>
 
-		            <!-- 판매 권한 UI -->
 		            <c:choose>
 		                <c:when test="${loginInfo.seller_status == 'N'}">
 		                    <form id="sellerRequestForm" action="/seller/request" method="post" style="display:none;">
@@ -3812,20 +3858,16 @@
 		                </form>
 		            </div>
 		            <a href="#" id="notificationItem" >
-			            <!-- <img src="/resources/img/free-icon-mails-5028538.png" class="bell-icon"> -->
 			            <c:if test="${loginInfo.notify_flag == 'Y'}">
 			                <span class="notify-badge"></span>
 			            </c:if>
-			           <!--  <span>SMS 알림</span> -->
-			        </a>
+			           </a>
 		        </div>
 		    </div>
 		</sec:authorize>
 	</div>
 	
-	<!-- 관리자만 -->
-	
-<script type="text/javascript">
+	<script type="text/javascript">
 	// jQuery - 포인트 충전
 	function chargePoint() {
 	    alert('살래포인트 충전 페이지로 이동합니다.');
