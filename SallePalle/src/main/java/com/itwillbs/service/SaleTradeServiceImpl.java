@@ -154,7 +154,7 @@ public class SaleTradeServiceImpl implements SaleTradeService {
 
 
 	     // 5. 판매 완료 처리
-	    saleTradeDAO.updateTradeStatusComplete(tradeId);
+	    // saleTradeDAO.updateTradeStatusComplete(tradeId);
 
 	    log.info(" SaleTradeServiceImpl: buyTrade() 끝!");
 	}
