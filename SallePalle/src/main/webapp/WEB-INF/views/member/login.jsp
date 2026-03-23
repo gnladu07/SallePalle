@@ -35,18 +35,17 @@
     <div class="login-container">
     <h1 class="login-title">로그인</h1>
 	<form id="loginForm" action="/member/loginProcess" method="post">
-	<!-- hidden타입 csrf 토큰 정보 -->
 	<input type="hidden" name="${_csrf.parameterName }" 
 	                     value="${_csrf.token }" >
 		<div class="login-inputs">
 			<label class="login-label">아이디</label>
 			<div>
-				<input type="text" name="userid" placeholder="ID"
+				<input type="text" name="userid" id="userid" placeholder="ID"
 				       autocomplete="off" required >
 			</div>
 			<label class="login-label">비밀번호</label>
 			<div>
-				<input type="password" name="userpw" placeholder="Password"
+				<input type="password" name="userpw" id="userpw" placeholder="Password"
 				       required >
 			</div>
 		</div>
@@ -73,12 +72,30 @@
 <script type="text/javascript">
 	$(function() {
 		
-		// 로그인 버튼 출력
-		$("#externalSubmitBtn").on("click", function() {
-		    $("#loginForm").submit();  // ★ form 강제 제출
+		// 로그인 버튼 클릭 시 빈칸 검증 후 제출
+		$("#externalSubmitBtn").on("click", function(e) {
+		    const userid = $("#userid").val().trim();
+		    const userpw = $("#userpw").val().trim();
+
+		    if (userid === "") {
+		        alert("아이디를 입력해 주세요.");
+		        $("#userid").focus();
+		        e.preventDefault();
+		        return false;
+		    }
+
+		    if (userpw === "") {
+		        alert("비밀번호를 입력해 주세요.");
+		        $("#userpw").focus();
+		        e.preventDefault();
+		        return false;
+		    }
+
+		    // 검증을 통과하면 form 강제 제출
+		    $("#loginForm").submit();
 		});
 
-/* 	    // 1) 회원가입 메시지 출력
+/* // 1) 회원가입 메시지 출력
 	    const message = '${joinMsg}';
 	    if (message !== '') {
 	        swal('회원 가입 결과', message, 'success');
