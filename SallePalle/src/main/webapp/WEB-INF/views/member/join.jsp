@@ -239,20 +239,35 @@
 	// 이메일 인증번호 AJAX 요청
 	$("#btnEmailAuth").click(function(){
 	    const email = $("#email").val().trim();
+	    
+	    // 이메일 형식 검사를 위한 정규식 (ex: test@gmail.com)
+	    const emailRegex = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
 	
-	    if(email.trim() == ""){
+	    // 1) 빈칸 검사
+	    if(email === ""){
 	        alert("이메일을 입력해주세요.");
+	        $("#email").focus();
+	        return;
+	    }
+	    
+	    // 2) 이메일 형식 검사
+	    if(!emailRegex.test(email)){
+	        alert("올바른 이메일 형식으로 입력해주세요. (예: example@gmail.com)");
+	        $("#email").focus();
 	        return;
 	    }
 	
+	    // 검사를 통과하면 서버로 AJAX 요청
 	    $.ajax({
 	        url: "/member/emailCode",
 	        type: "post",
-	        data: {email: email},
+	        data: {
+	            email: email,
+	            "${_csrf.parameterName}": "${_csrf.token}"
+	        },
 	        success: function(code){
 	            emailAuthCode = code;
-	            $("#emailMsg").removeClass().addClass("ok")
-	                .html("인증번호가 전송되었습니다.");
+	            $("#emailMsg").removeClass().addClass("ok").html("인증번호가 전송되었습니다.");
 	        },
 	        error: function(xhr){
 	            console.error("AJAX 오류", xhr);
