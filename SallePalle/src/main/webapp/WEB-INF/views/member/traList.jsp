@@ -53,8 +53,8 @@
 
                                     <td>
                                         <c:choose>
-                                            <c:when test="${item.status eq 'C'}">
-                                                <span class="tralist-status status-completed">판매완료</span>
+                                            <c:when test="${item.status eq 'R'}">
+                                                <span class="tralist-status status-completed">판매중지</span>
                                             </c:when>
                                             <c:otherwise>
                                                 <span class="tralist-status status-selling">판매중</span>
