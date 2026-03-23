@@ -37,11 +37,11 @@
             <div class="detail-pricezon">            
 	            <div class="detail-price" style="color: #FF6F61;">
 	            	<p style="font-size: 20px; color: black;">희망 판매가:</p>
-	            		${detail.price_point} P
+	            	<fmt:formatNumber value="${detail.price_point}" /> P
 	            </div>
 	            <div class="detail-mileage" style="color: #9B59B6;">
 	            	<p style="font-size: 20px; color: black;">할인 가능 마일리지:</p>
-	            	${detail.max_mileage_use} M
+	            	<fmt:formatNumber value="${empty detail.max_mileage_use ? 0 : detail.max_mileage_use}" /> M
 	            </div>
             </div>
 

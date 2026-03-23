@@ -50,10 +50,10 @@
                             </c:if>
                         </div>
                         <div class="trade-card-content">
-                            <div class="trade-card-title">${trade.title}</div>
-                            <div class="trade-card-price">${trade.price_point} P</div>
-                            <div class="trade-card-meta">
-                                <span>${trade.toplct_name}</span>
+						    <div class="trade-card-title">${trade.title}</div>
+						    <div class="trade-card-price"><fmt:formatNumber value="${trade.price_point}" /> P</div>
+						    <div class="trade-card-meta">
+						        <span>${trade.toplct_name}</span>
                             </div>
                         </div>
                     </a>
@@ -77,7 +77,7 @@
                         </div>
                         <div class="trade-card-content">
                             <div class="trade-card-title">${trade.title}</div>
-                            <div class="trade-card-price">${trade.price_point} P</div>
+						    <div class="trade-card-price"><fmt:formatNumber value="${trade.price_point}" /> P</div>
                             <div class="trade-card-meta">
                                 <span>${trade.toplct_name}</span>
                                 <span class="trade-card-recommend">
