@@ -2,11 +2,6 @@ package com.itwillbs.domain;
 
 import lombok.Data;
 
-/*
- * 	2.1.2. 토큰발급 API 정보를 저장하는 객체(응답 데이터)
- * 	p28 페이지 참조
- */
-
 @Data
 public class ResponseTokenVO {
 	

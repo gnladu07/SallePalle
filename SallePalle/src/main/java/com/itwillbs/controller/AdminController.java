@@ -42,13 +42,13 @@ public class AdminController {
 	
 	@GetMapping("/login")
 	public void loginGET() {
-		log.info(" loginGET() 실행!");
-		log.info(" loginGET() 끝!");
+		log.debug(" AdminController: loginGET() 실행!");
+		log.debug(" AdminController: loginGET() 끝!");
 	}
 	
 	@GetMapping("/home")
     public String dashboard(Model model) {
-		log.info(" dashboard() 실행! ");
+		log.debug(" AdminController: dashboard() 실행! ");
 		
 		int list = aService.getTotalCount();
 		model.addAttribute("listsize", list);
@@ -56,37 +56,41 @@ public class AdminController {
 		int slist = aService.getSellerCount();
 		model.addAttribute("slistsize", slist);
 		
-		log.info(" dashboard() 끝! ");
+		log.debug(" AdminController: dashboard() 끝! ");
         return "/admin/home";
     }
 	
 	@GetMapping("/sellerPendingCount")
 	@ResponseBody
 	public Map<String, Object> sellerPendingCount() {
+		log.debug(" AdminController: sellerPendingCount() 실행!");
 	    Map<String, Object> map = new HashMap<>();
 	    int cnt = aService.getSellerCount();
 	    map.put("count", cnt);
+	    log.debug(" AdminController: sellerPendingCount() 끝!");
 	    return map;
 	}
 	
 	@GetMapping("/memberPendingCount")
 	@ResponseBody
 	public Map<String, Object> memberPendingCount() {
+		log.debug(" AdminController: memberPendingCount() 실행!");
 		Map<String, Object> map = new HashMap<>();
 		int cnt = aService.getTotalCount();
 		map.put("count", cnt);
+		log.debug(" AdminController: memberPendingCount() 끝!");
 		return map;
 	}
 	
 	// 판매 권한 신청 리스트
     @GetMapping("/sellerRequest")
     public String sellerRequestList(Model model) {
-    	log.info(" sellerRequestList() 실행! ");
+    	log.debug(" AdminController: sellerRequestList() 실행! ");
 
         List<SellerRequestVO> list = sService.getWaitingRequests();
         model.addAttribute("list", list);
 
-        log.info(" sellerRequestList() 끝! ");
+        log.debug(" AdminController: sellerRequestList() 끝! ");
         return "/admin/sellerRequest";
     }
     
@@ -94,10 +98,10 @@ public class AdminController {
     @PostMapping("/seller/approve")
     public String approveSeller(int request_id, int member_id, 
     		                    RedirectAttributes rttr) {
-    	log.info(" approveSeller() 실행! ");
+    	log.debug(" AdminController: approveSeller() 실행! ");
         sService.approveRequest(request_id, member_id);
         rttr.addFlashAttribute("msgA", "판매 권한 승인 완료!");
-        log.info(" approveSeller() 끝! ");
+        log.debug(" AdminController: approveSeller() 끝! ");
         return "redirect:/admin/sellerRequest";
     }
     
@@ -105,55 +109,43 @@ public class AdminController {
     @PostMapping("/seller/reject")
     public String rejectSeller(int request_id, int member_id,
     		                   RedirectAttributes rttr) {
-    	log.info(" rejectSeller() 실행! ");
+    	log.debug(" AdminController: rejectSeller() 실행! ");
         sService.rejectRequest(request_id, member_id);
         rttr.addFlashAttribute("msgR", "거절 처리 완료!");
-        log.info(" rejectSeller() 끝! ");
+        log.debug(" AdminController: rejectSeller() 끝! ");
         return "redirect:/admin/sellerRequest";
     }
-    
-    // 회원 리스트 페이지
-//    @GetMapping("/members")
-//    public String membersPage(Model model) {
-//    	log.info(" membersPage() 실행! ");
-//
-//        List<MemberVO> list = mService.getMemberList();
-//        model.addAttribute("memberList", list);
-//
-//        log.info(" membersPage() 끝! ");
-//        return "/admin/members";
-//    }
     
     // 회원 정지
     @PostMapping("/disableMember")
     public String disableMember(int member_id) {
-    	log.info(" disableMember() 실행! ");
+    	log.debug(" AdminController: disableMember() 실행! ");
     	
         mService.disableMember(member_id); // enable_flag = 0
 
-        log.info(" disableMember() 끝! ");
+        log.debug(" AdminController: disableMember() 끝! ");
         return "redirect:/admin/members";
     }
     
     // 정지 해제 
     @PostMapping("/enableMember")
     public String enableMember(int member_id) {
-    	log.info(" enableMember() 실행! ");
+    	log.debug(" AdminController: enableMember() 실행! ");
     	
     	mService.enableMember(member_id); // 추가된 기능
 
-    	log.info(" enableMember() 끝! ");
+    	log.debug(" AdminController: enableMember() 끝! ");
         return "redirect:/admin/members";
     }
     
     // 회원 삭제
     @PostMapping("/deleteMember")
     public String deleteMember(int member_id) {
-    	log.info(" deleteMember() 실행! ");
+    	log.debug(" AdminController: deleteMember() 실행! ");
 
         mService.deleteMember(member_id);
 
-        log.info(" deleteMember() 끝! ");
+        log.debug(" AdminController: deleteMember() 끝! ");
         return "redirect:/admin/members";
     }
     
@@ -161,33 +153,33 @@ public class AdminController {
     @GetMapping("/members")
     public String memberList(Model model,
                              Criteria cri) {
-    	log.info(" memberList() 실행! ");
+    	log.debug(" AdminController: memberList() 실행! ");
     	
-    	// sort 없으면 기본값 regdate
         if (cri.getSort() == null || cri.getSort().equals("")) {
             cri.setSort("regdate");
         }
 
         List<MemberVO> list = aService.getMemberListPaged(cri);
 
-//        int total = aService.getTotalCount();
-        int total = aService.getTotalCountFiltered(cri);  // 검색 조건 포함된 total
+        int total = aService.getTotalCountFiltered(cri);
         PageVO pageDTO = new PageVO(cri, total);
 
         model.addAttribute("memberList", list);
         model.addAttribute("pageMaker", pageDTO);
 
-        log.info(" memberList() 끝! ");
+        log.debug(" AdminController: memberList() 끝! ");
         return "/admin/members";
     }
     
     // 관리자 - 채팅 모니터링 페이지
     @GetMapping("/admin/chatList")
     public String adminChatList(Model model) throws Exception {
+        log.debug(" AdminController: adminChatList() 실행! ");
         
         List<ChatRoomVO> adminChatList = chatService.getAdminChatList();
         model.addAttribute("chatList", adminChatList);
         
+        log.debug(" AdminController: adminChatList() 끝! ");
         return "/admin/chatList";
     }
 

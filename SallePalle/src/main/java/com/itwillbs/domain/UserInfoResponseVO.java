@@ -4,16 +4,6 @@ import java.util.List;
 
 import lombok.Data;
 
-// 2.2.1. 사용자정보조회 API
-// 응답 사용자 정보
-
-//user_info (선택) AN(8) 생년월일
-//user_gender (선택) A(1) 성별
-//user_cell_no (선택) AN(11) 휴대폰번호
-//user_email (선택) E(100) 이메일주소
-//res_cnt N(5) 등록된 계좌 개수
-//res_list 등록된 계좌 목록
-
 @Data
 public class UserInfoResponseVO {
 	

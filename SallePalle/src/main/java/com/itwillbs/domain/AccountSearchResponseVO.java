@@ -4,10 +4,6 @@ import java.util.List;
 
 import lombok.Data;
 
-/*
- * 2.2.3. 등록계좌조회 API - 응답정보객체
- */
-
 @Data
 public class AccountSearchResponseVO {
 	

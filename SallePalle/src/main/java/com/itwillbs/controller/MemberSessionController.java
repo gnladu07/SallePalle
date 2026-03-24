@@ -28,7 +28,6 @@ public class MemberSessionController {
             return "NO_SESSION";
         }
 
-        // DB 최신 값 재조회
         MemberVO fresh =
             memberService.getMemberById(loginInfo.getMember_id());
 

@@ -20,9 +20,7 @@ public class MailComponent {
 			helper.setFrom("gnlaud07@naver.com");
 			helper.setTo(email);
 			helper.setSubject(subject);
-
-			// 핵심: HTML 이메일 전송
-			helper.setText(htmlContent, true);   // true = HTML 모드
+			helper.setText(htmlContent, true);
 
 			mailSender.send(message);
 			return 1;

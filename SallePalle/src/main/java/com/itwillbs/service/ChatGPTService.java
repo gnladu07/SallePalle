@@ -9,15 +9,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChatGPTService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ChatGPTService.class);
+	private static final Logger log = LoggerFactory.getLogger(ChatGPTService.class);
 	
 	@Inject
 	private ChatGPTClient gptClient;
 	
 	public String askChatGPT(String systemPrompt, String userPrompt) throws Exception{
-		logger.info("askChatGPT() 실행");
-		// gpt 호출동작 실행
+		log.debug(" ChatGPTService: askChatGPT() 실행! ");
+		
 		String result = gptClient.sendChatGPT(systemPrompt, userPrompt);
+		
+		log.debug(" ChatGPTService: askChatGPT() 끝! ");
 	    return result;
 	}
 }
