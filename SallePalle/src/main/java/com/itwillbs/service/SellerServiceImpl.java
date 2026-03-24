@@ -26,49 +26,45 @@ public class SellerServiceImpl implements SellerService {
 	
 	@Override
 	public void createRequest(int member_id) {
-		log.info(" SellerServiceImpl: createRequest()실행! ");
+		log.debug(" SellerServiceImpl: createRequest()실행! ");
 		
 		sellerDAO.insertSellerRequest(member_id);
 		
-		log.info(" SellerServiceImpl: createRequest()끝! ");
+		log.debug(" SellerServiceImpl: createRequest()끝! ");
 	}
 
 	@Override
 	public SellerRequestVO getRequest(int request_id) {
-		log.info(" SellerServiceImpl: getRequest()실행! ");
+		log.debug(" SellerServiceImpl: getRequest()실행! ");
 		
 		SellerRequestVO resultVO = sellerDAO.selectSellerRequest(request_id);
 		
-		log.info(" SellerServiceImpl: getRequest()끝! ");
+		log.debug(" SellerServiceImpl: getRequest()끝! ");
 		return resultVO;
 	}
 
 	@Override
 	public void updateRequestStatus(int request_id, String status) {
-		log.info(" SellerServiceImpl: updateRequestStatus()실행! ");
+		log.debug(" SellerServiceImpl: updateRequestStatus()실행! ");
 		
 		sellerDAO.updateSellerRequestStatus(request_id, status);
 		
-		log.info(" SellerServiceImpl: updateRequestStatus()끝! ");
+		log.debug(" SellerServiceImpl: updateRequestStatus()끝! ");
 	}
 
 	@Override
 	public List<SellerRequestVO> getWaitingRequests() {
-		log.info(" SellerServiceImpl: getWaitingRequests() 실행!");
+		log.debug(" SellerServiceImpl: getWaitingRequests() 실행!");
+		log.debug(" SellerServiceImpl: getWaitingRequests() 끝!");
 		return sellerDAO.getWaitingRequests();
 	}
 
 	@Override
 	public void approveRequest(int request_id, int member_id) {
-		log.info(" SellerServiceImpl: approveRequest() 실행!");
+		log.debug(" SellerServiceImpl: approveRequest() 실행!");
 		
-		// seller_request 승인 처리
 		sellerDAO.approveRequest(request_id);
-
-        // member 테이블 seller_status = 'Y'
         mService.updateSellerStatus(member_id, "Y");
-    
-        // 메일 발송 확인 
         mService.setNotifyFlag(member_id, "Y");
         
         // 이메일 발송
@@ -82,18 +78,16 @@ public class SellerServiceImpl implements SellerService {
 
         mail.sendMassage(member.getEmail(), subject, content);
 		
+        log.debug(" SellerServiceImpl: approveRequest() 끝!");
 	}
 
 	@Override
 	public void rejectRequest(int request_id, int member_id) {
-		log.info(" SellerServiceImpl: rejectRequest() 실행!");
+		log.debug(" SellerServiceImpl: rejectRequest() 실행!");
 		
 		sellerDAO.rejectRequest(request_id);
-		
-        // member 테이블 seller_status = 'N'
+
         mService.updateSellerStatus(member_id, "N");
-     
-        // 메일 발송 확인
         mService.setNotifyFlag(member_id, "Y");
 		
 		// 이메일 발송
@@ -106,6 +100,7 @@ public class SellerServiceImpl implements SellerService {
                 + "감사합니다.";
 
         mail.sendMassage(member.getEmail(), subject, content);
+        log.debug(" SellerServiceImpl: rejectRequest() 끝!");
 	}
 
 }

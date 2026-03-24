@@ -23,11 +23,11 @@ public class TopLoactionDAOImpl implements TopLocationDAO {
 
 	@Override
 	public List<TopLocation> selectListLocation() {
-		logger.info(" selectListLocation() 실행! ");
+		logger.info(" TopLoactionDAOImpl: selectListLocation() 실행! ");
 		
 		List<TopLocation> resultList = sqlSession.selectList(NAMESPACE + "selectListLocation");
 		
-		logger.info(" selectListLocation() 끝! ");
+		logger.info(" TopLoactionDAOImpl: selectListLocation() 끝! ");
 		return resultList;
 	}
 

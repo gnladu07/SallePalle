@@ -21,10 +21,6 @@ public class OpenBankingService {
 	
 	// API 호출 객체 주입
 	@Inject private OpenBankingApiClient apiClient;
-	
-//	public void setApiClient(OpenBankingApiClient apiClient) {
-//		this.apiClient = apiClient;
-//	}
 
 	// 토큰발급 요청
 	public ResponseTokenVO requestToken(RequestTokenVO requestTokenVO) throws Exception {

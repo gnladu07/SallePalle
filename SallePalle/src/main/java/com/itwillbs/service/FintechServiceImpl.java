@@ -38,7 +38,7 @@ public class FintechServiceImpl implements FintechService {
 
 	@Override
 	public void processCharge(int member_id, Integer amount) {
-	       log.info("FintechServiceImpl: processCharge() 실행");
+	       log.debug("FintechServiceImpl: processCharge() 실행");
 
 	        PayWalletVO wallet = payWalletDAO.getWallet(member_id);
 
@@ -60,7 +60,7 @@ public class FintechServiceImpl implements FintechService {
 
 	        payHistoryDAO.insertHistory(his);
 
-	     // 4) 마일리지 적립 (10%)
+	        // 4) 마일리지 적립
 	        int mileageAmount = (int) (amount * 0.1);
 
 	        MileageWalletVO mWallet = mileageWalletDAO.getWallet(member_id);
@@ -80,7 +80,7 @@ public class FintechServiceImpl implements FintechService {
 	        mh.setMemo("포인트 충전 적립");
 	        mileageHistoryDAO.insertHistory(mh);
 
-	        log.info("포인트 충전 완료: {} P / 마일리지 적립 완료: {} M", amount, mileageAmount);
+	        log.debug("포인트 충전 완료: {} P / 마일리지 적립 완료: {} M", amount, mileageAmount);
 		
 	}
 }

@@ -18,7 +18,7 @@ public interface SaleTradeService {
 	// 판매자의 다른 상품
 	public List<SaleTradeVO> getOtherSaleTradeBySeller(Integer seller_id, int tradeId);
 
-	// 중고 판매글 추천 처리 - ajax
+	// 중고 판매글 추천 처리
 	public int recommendTrade(int tradeId, String userid);
 
 	// 중고 제품 구매 처리
@@ -57,8 +57,10 @@ public interface SaleTradeService {
 	// 최근 본 글 기록 추가/갱신
     public void insertOrUpdateRecentView(int member_id, int trade_id) throws Exception;
     
+    // 회원의 최근 본 글 전체 목록 조회
     public List<Map<String, Object>> getRecentViewList(int member_id) throws Exception;
     
+    // 거래 게시글 상태 변경
     public int updateTradeStatus(int trade_id, String status, int seller_id);
 
 }

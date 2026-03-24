@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <title>채팅 모니터링 - 관리자</title>
 <style>
-    /* 기본 레이아웃 스타일 (home.jsp 재사용) */
+    /* 기본 레이아웃 스타일 */
     body { font-family: 'Noto Sans KR', sans-serif; background: #f5f6fa; margin: 0; }
     .main-content { margin-left: 260px; padding: 40px; }
     .page-title { font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #333; }
@@ -24,7 +24,7 @@
     .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
     .badge-danger { background: #e74c3c; color: white; }
     .badge-safe { background: #2ecc71; color: white; }
-    .badge-closed { background: #7f8c8d; color: white; } /* ★ 추가: 해산 완료 회색 뱃지 */
+    .badge-closed { background: #7f8c8d; color: white; }
     
     .closed-row { background: #f0f0f0 !important; }
     .closed-row td { color: #888; }
