@@ -28,7 +28,7 @@ public interface SaleTradeDAO {
 	// 4. 최신 추천 수 조회
 	public int selectRecommendCnt(int tradeId);
 
-	// userid -> member_id 변환
+
 	public int selectMemberIdByUserid(String userid);
 	
 	// 구매 전 포인트 잔액 검증

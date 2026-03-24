@@ -74,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return new CustomAccessDeniedHandler();
 	}
 	
-	// AuthenticationManager 설정 (로그인 인증 핵심 로직)
+	// 로그인 인증 핵심 로직
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(customUserDetailsService())

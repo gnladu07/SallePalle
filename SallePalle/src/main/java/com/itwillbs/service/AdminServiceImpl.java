@@ -19,54 +19,44 @@ public class AdminServiceImpl implements AdminService {
 		= LoggerFactory.getLogger(AdminServiceImpl.class);
 	
 	@Inject private AdminDAO aDAO;
-	
-//	@Override
-//	public List<MemberVO> getSortedMembers(String sort) {
-//		log.info(" AdminServiceImpl: getSortedMembers() 실행! ");
-//		
-//		List<MemberVO> resultVO = aDAO.getSortedMembers(sort);
-//		
-//		log.info(" AdminServiceImpl: getSortedMembers() 끝! ");
-//		return resultVO;
-//	}
 
 	@Override
 	public List<MemberVO> getMemberListPaged(Criteria cri) {
-		log.info(" AdminServiceImpl: getMemberListPaged() 실행! ");
+		log.debug(" AdminServiceImpl: getMemberListPaged() 실행! ");
 		
 		List<MemberVO> resultVO = aDAO.getMemberListPaged(cri);
 		
-		log.info(" AdminServiceImpl: getMemberListPaged() 끝! ");
+		log.debug(" AdminServiceImpl: getMemberListPaged() 끝! ");
 		return resultVO;
 	}
 	
 	@Override
 	public int getTotalCount() {
-		log.info(" AdminServiceImpl: getTotalCount() 실행! ");
+		log.debug(" AdminServiceImpl: getTotalCount() 실행! ");
 		
 		int resultVO = aDAO.getTotalCount();
 		
-		log.info(" AdminServiceImpl: getTotalCount() 끝! ");
+		log.debug(" AdminServiceImpl: getTotalCount() 끝! ");
 		return resultVO;
 	}
 
 	@Override
 	public int getSellerCount() {
-		log.info(" AdminServiceImpl: getSellerCount() 실행! ");
+		log.debug(" AdminServiceImpl: getSellerCount() 실행! ");
 		
 		int resultVO = aDAO.getSellerCount();
 		
-		log.info(" AdminServiceImpl: getSellerCount() 끝! ");
+		log.debug(" AdminServiceImpl: getSellerCount() 끝! ");
 		return resultVO;
 	}
 	
 	@Override
 	public int getTotalCountFiltered(Criteria cri) {
-		log.info(" AdminServiceImpl: getTotalCountFiltered() 실행! ");
+		log.debug(" AdminServiceImpl: getTotalCountFiltered() 실행! ");
 		
 		int resultVO = aDAO.getTotalCountFiltered(cri);
 		
-		log.info(" AdminServiceImpl: getTotalCountFiltered() 끝! ");
+		log.debug(" AdminServiceImpl: getTotalCountFiltered() 끝! ");
 		return resultVO;
 	}
 

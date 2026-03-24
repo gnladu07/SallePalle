@@ -33,7 +33,6 @@ public class ChatController {
     @Inject private FileComponent fileComponent;
     @Inject private ChatGPTService gptService;
     
-    // ChatController.java 내부
     @GetMapping("/chat/chatRoom")
     public String chatRoom(@RequestParam int room_id, Model model, HttpSession session) {
     	log.debug("ChatController: chatRoom() 실행!");
@@ -43,20 +42,20 @@ public class ChatController {
         return "/chat/chatRoom"; 
     }
 
-    // 1. 채팅방 개설 API (상세페이지에서 '채팅하기' 버튼 클릭 시 AJAX로 호출됨)
+    // 채팅방 개설
     @PostMapping("/chat/createRoom")
     @ResponseBody
     public int createRoom(@RequestParam int trade_id, @RequestParam int seller_id, HttpSession session) {
     	log.debug("ChatController: createRoom() 실행!");
         MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
-        if (loginInfo == null) return -1; // 비로그인 예외처리
+        if (loginInfo == null) return -1;
         
         int buyer_id = loginInfo.getMember_id();
         log.debug("ChatController: createRoom() 끝!");
         return chatService.createOrGetRoom(trade_id, buyer_id, seller_id);
     }
 
-    // 2. 채팅 내역 조회 API (채팅창 열었을 때 과거 메시지 불러오기)
+    // 채팅 내역 조회
     @GetMapping("/chat/history")
     @ResponseBody
     public List<ChatMessageVO> getChatHistory(@RequestParam int room_id) {
@@ -65,7 +64,7 @@ public class ChatController {
         return chatService.getMessageHistory(room_id);
     }
 
-    // 3. 내 채팅 목록 페이지로 이동
+    // 내 채팅 목록 페이지로 이동
     @GetMapping("/chat/list")
     public String chatList(HttpSession session, Model model) {
     	log.debug("ChatController: chatList() 실행!");
@@ -75,11 +74,10 @@ public class ChatController {
         List<ChatRoomVO> roomList = chatService.getMyChatRooms(loginInfo.getMember_id());
         model.addAttribute("roomList", roomList);
         log.debug("ChatController: chatList() 끝!");
-        return "/chat/chatList"; // 나중에 만들 JSP 화면
+        return "/chat/chatList";
     }
 
-    // 4. WebSocket (STOMP) 메시지 수신 및 발신
-    // 프론트에서 "/pub/chat/send" 로 메시지를 보내면 이 메서드가 실행됨
+    // WebSocket 메시지 수신 및 발신
     @MessageMapping("/chat/send")
     public void sendMessage(ChatMessageVO message) {
     	log.debug("ChatController: sendMessage() 실행!");
@@ -103,16 +101,14 @@ public class ChatController {
         // 5. ChatGPT를 이용한 외부 거래 유도 감지 필터링
         if ("TEXT".equals(message.getType())) {
             try {
-                // 판단 기준이 될 강력한 시스템 프롬프트 작성
+                // 프롬프트
                 String systemPrompt = "너는 중고거래 사이트 보안 감시관이야. "
                                     + "사용자의 채팅 메시지에 '현금', '계좌이체', '직거래', '카톡', '라인', '수수료 없는 거래' 등 "
                                     + "사이트 내 안전결제를 우회하려는 의도나 외부 연락처를 공유하려는 의도가 포함되어 있다면 오직 'TRUE', "
                                     + "일상적인 대화나 안전결제를 진행하려는 내용이라면 오직 'FALSE'만 출력해. 부가 설명은 절대 하지마.";
 
-                // 만들어두신 ChatGPTService를 호출하여 판별!
                 String gptResponse = gptService.askChatGPT(systemPrompt, message.getMessage_text());
                 
-                // GPT가 TRUE라고 판단했다면 경고 메시지 발송
                 if (gptResponse != null && gptResponse.contains("TRUE")) {
                     ChatMessageVO warningMsg = new ChatMessageVO();
                     warningMsg.setRoom_id(message.getRoom_id());
@@ -120,7 +116,6 @@ public class ChatController {
                     warningMsg.setType("SYSTEM");
                     warningMsg.setMessage_text("🚨 시스템 경고: 외부 메신저 유도 또는 직접 현금 거래 정황이 감지되었습니다. 당사 안전결제 외의 거래는 사기 피해의 위험이 있습니다.\n\n※ 추가로 동일한 발언을 할 경우 운영자가 즉시 호출되며, 채팅방이 강제로 종료될 수 있습니다.");
                     
-                    // 경고 메시지 DB 저장 및 채팅방 발송
                     chatService.saveMessage(warningMsg);
                     messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoom_id(), warningMsg);
                     
@@ -133,7 +128,6 @@ public class ChatController {
         log.debug("ChatController: sendMessage() 끝!");
     }
     
-    // ChatController.java 내부 추가
     @PostMapping("/chat/pay")
     @ResponseBody
     public String processChatPayment(@RequestParam int room_id, HttpSession session) {
@@ -143,27 +137,24 @@ public class ChatController {
 
         log.debug("ChatController: processChatPayment() 끝!");
         try {
-            // 채팅방 정보를 가져와서 거래 대상(상품, 판매자, 구매자) 파악
+            
             ChatRoomVO room = chatService.getRoom(room_id);
             
-            // 본인이 구매자인지 확인
+            
             if (room.getBuyer_id() != loginInfo.getMember_id()) {
                 return "NOT_BUYER";
             }
 
-            // 기존 SaleTradeService의 buyTrade 로직을 호출하거나 
-            // 채팅 전용 결제 서비스 로직을 실행 (아래 ChatService에 구현)
             boolean success = chatService.executePayment(room);
             
             if (success) {
-                // 결제 완료 메시지를 웹소켓으로 전송 (상대방에게도 알림)
                 ChatMessageVO paymentMsg = new ChatMessageVO();
                 paymentMsg.setRoom_id(room_id);
                 paymentMsg.setSender_id(loginInfo.getMember_id());
                 paymentMsg.setMessage_text("💰 결제 및 송금이 완료되었습니다. (거래 완료)");
-                paymentMsg.setType("SYSTEM"); // 시스템 메시지 타입
+                paymentMsg.setType("SYSTEM");
                 
-                sendMessage(paymentMsg); // 기존의 sendMessage 메서드 활용
+                sendMessage(paymentMsg);
                 
                 return "OK";
             } else {
@@ -175,7 +166,7 @@ public class ChatController {
         }
     }
 
-    // 채팅방 나가기 (방 및 메시지 삭제)
+    // 채팅방 나가기
     @PostMapping("/chat/leave")
     @ResponseBody
     public String leaveChatRoom(@RequestParam int room_id, HttpSession session) {
@@ -203,14 +194,12 @@ public class ChatController {
         if (loginInfo == null) return "NO_LOGIN";
         
         try {
-            // 1. DB 업데이트 (읽음 처리)
             chatService.markMessagesAsRead(room_id, loginInfo.getMember_id());
             
-            // ★ 2. 상대방 화면의 '1'을 지우기 위해 웹소켓으로 "READ" 신호 발송 ★
             ChatMessageVO readNotice = new ChatMessageVO();
             readNotice.setRoom_id(room_id);
-            readNotice.setSender_id(loginInfo.getMember_id()); // 읽은 사람(나)
-            readNotice.setType("READ"); // 메시지 타입을 READ로 지정
+            readNotice.setSender_id(loginInfo.getMember_id());
+            readNotice.setType("READ");
             
             messagingTemplate.convertAndSend("/sub/chat/room/" + room_id, readNotice);
             
@@ -221,7 +210,7 @@ public class ChatController {
         }
     }
     
-    // 5. 마이페이지 - 내 전체 채팅 기록 리스트
+    // 마이페이지 - 내 전체 채팅 기록 리스트
     @GetMapping("/chat/historyList")
     public String chatHistoryList(HttpSession session, Model model) throws Exception {
     	log.debug("ChatController: chatHistoryList() 실행!");
@@ -244,7 +233,7 @@ public class ChatController {
             String savedFileName = fileComponent.upload(file);
             
             if (savedFileName != null) {
-                return savedFileName; // 생성된 파일명 반환 (예: 1234abcd.jpg)
+                return savedFileName;
             } else {
                 return "FAIL";
             }
@@ -261,26 +250,19 @@ public class ChatController {
         log.debug("ChatController: adminCloseChat() 실행!");
         MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
         
-        // (실무에서는 여기서 loginInfo의 권한이 관리자인지 한번 더 체크하면 좋습니다)
         if (loginInfo == null) return "NO_LOGIN";
         
         try {
-            // 1. 방에 있는 구매자/판매자에게 '강제 종료' 알림 쏘기
             ChatMessageVO closeMsg = new ChatMessageVO();
             closeMsg.setRoom_id(room_id);
-            closeMsg.setSender_id(1); // 관리자 아이디
-            closeMsg.setType("CLOSE"); // ★ 새로운 메시지 타입 지정!
+            closeMsg.setSender_id(1);
+            closeMsg.setType("CLOSE");
             closeMsg.setMessage_text("🚨 관리자에 의해 채팅방이 강제 해산되었습니다. 사기 거래에 주의하세요.");
             
             messagingTemplate.convertAndSend("/sub/chat/room/" + room_id, closeMsg);
             
-            // 2. 0.5초 정도 웹소켓 전송될 시간을 벌어준 뒤 DB에서 방 상태 변경!
             Thread.sleep(500);
             
-            // 기존 완전 삭제 로직 주석 처리 (또는 삭제)
-            // chatService.adminDeleteRoom(room_id); 
-            
-            // ★ 수정됨: 데이터는 살려두고 관리자 강제해산 상태만 'Y'로 업데이트 (소프트 딜리트)
             chatService.adminSoftCloseRoom(room_id);
             
             return "OK";

@@ -2,11 +2,6 @@ package com.itwillbs.domain;
 
 import lombok.Data;
 
-/*
- * 2.1.2. 토큰발급 API
- * p27 페이지 참조
- */
-
 @Data
 public class RequestTokenVO {
 	

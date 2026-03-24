@@ -37,7 +37,7 @@ public class SaleTradeVO {
 	
     private Integer trade_id;
     private Integer seller_id;
-    private String seller_userid; // JOIN으로 가져올 판매자 아이디
+    private String seller_userid;
 
     private String title;
     private String content;
@@ -64,9 +64,8 @@ public class SaleTradeVO {
 
     private String allow_full_mileage;
 
-    // 리스트 화면 표시용 (JOIN 결과)
-    private String seller_nickname;   // member.nickname
-    private String toplct_name;        // top_location.toplct_name
+    private String seller_nickname;
+    private String toplct_name;
     private String item_ctg_name;
     private String email;
     private String profile_img;

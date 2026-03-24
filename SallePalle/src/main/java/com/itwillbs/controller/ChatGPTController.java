@@ -16,7 +16,8 @@ import com.itwillbs.service.ChatGPTService;
 @Controller
 public class ChatGPTController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ChatGPTController.class);
+	private static final Logger log
+		= LoggerFactory.getLogger(ChatGPTController.class);
 	
 	@Inject
 	private ChatGPTService gptService;
@@ -30,7 +31,7 @@ public class ChatGPTController {
 		public String generateTradeDescription(
 		        @RequestParam("content") String content
 		) throws Exception {
-
+			log.debug(" ChatGPTController: generateTradeDescription()실행! ");
 		    String systemPrompt =
 		    		"너는 중고 거래 플랫폼의 판매글 작성 도우미다. "
 				  + "사용자가 말하듯 입력한 문장을 분석해서 "
@@ -52,6 +53,7 @@ public class ChatGPTController {
 
 				  + "- 결과는 설명 없이 완성된 판매글만 출력한다.";
 
+		    log.debug(" ChatGPTController: generateTradeDescription()끝! ");
 		    return gptService.askChatGPT(systemPrompt, content);
 		}
 	

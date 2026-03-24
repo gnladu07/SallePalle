@@ -60,24 +60,22 @@ public class SaleTradeController {
 							         HttpSession session) throws Exception {
 	    log.info(" saleTradeDetailGET() 실행! trade_id={}", tradeId);
 
-	    // 1. 판매글 상세 조회
+	    // 판매글 상세 조회
 	    SaleTradeVO detail = stService.getSaleTradeDetail(tradeId);
 	    model.addAttribute("detail", detail);
 
-	    // 2. 판매자의 다른 상품
+	    // 판매자의 다른 상품
 	    List<SaleTradeVO> otherList =
 	            stService.getOtherSaleTradeBySeller(detail.getSeller_id(), tradeId);
 	    model.addAttribute("otherList", otherList);
 
-	    // 3. 로그인 여부 전달
 	    if (principal != null) {
 	        model.addAttribute("loginUserid", principal.getName());
 	    }
 	    
-	    // 4. 로그인한 회원이면 '최근 본 글' 테이블에 기록
+	    // 최근 본 글 기록
 	    MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
         if(loginInfo != null) {
-            // 회원 ID와 현재 보고 있는 게시글 번호를 넘겨서 DB에 저장/시간갱신
         	stService.insertOrUpdateRecentView(loginInfo.getMember_id(), tradeId);
         }
 	    
@@ -92,7 +90,7 @@ public class SaleTradeController {
 		log.info(" recommend()실행! ");
 
 	    if (principal == null) {
-	        return -1; // NOT_LOGIN
+	        return -1;
 	    }
 
 	    String userid = principal.getName();
@@ -195,7 +193,6 @@ public class SaleTradeController {
 		log.info(" updateSaleTradeGET() 실행!");
 	    SaleTradeVO detail = stService.getSaleTradeDetail(tradeId);
 
-	    /* ===== 판매자 본인 검증 (중요) ===== */
 	    if (principal == null || 
 	        !principal.getName().equals(detail.getSeller_userid())) {
 	        throw new AccessDeniedException("수정 권한 없음");
@@ -215,7 +212,6 @@ public class SaleTradeController {
 		log.info(" updateSaleTradePOST() 실행!");
 	    SaleTradeVO origin = stService.getSaleTradeDetail(vo.getTrade_id());
 
-	    /* ===== 판매자 본인 검증 (중요) ===== */
 	    if (principal == null ||
 	        !principal.getName().equals(origin.getSeller_userid())) {
 	        throw new AccessDeniedException("수정 권한 없음");
@@ -237,7 +233,6 @@ public class SaleTradeController {
 
 	    SaleTradeVO origin = stService.getSaleTradeDetail(tradeId);
 
-	    /* 판매자 본인 검증 */
 	    if(!principal.getName().equals(origin.getSeller_userid())){
 	        throw new AccessDeniedException("삭제 권한 없음");
 	    }
@@ -305,8 +300,7 @@ public class SaleTradeController {
                                HttpSession session) {
         MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
         if (loginInfo == null) return "fail";
-        
-        // 서비스 호출
+
         int result = stService.updateTradeStatus(trade_id, status, loginInfo.getMember_id());
         return result > 0 ? "success" : "fail";
     }

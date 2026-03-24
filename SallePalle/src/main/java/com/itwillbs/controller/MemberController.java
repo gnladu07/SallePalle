@@ -89,7 +89,7 @@ public class MemberController {
 	public String joinPOST(MemberVO vo,
 			               RedirectAttributes rttr) {
 	    try {
-	        mService.memberJoin(vo); // 중복 이메일일 경우 여기서 DuplicateKeyException 발생
+	        mService.memberJoin(vo);
 	        rttr.addFlashAttribute("joinMsg", "정상적으로 회원가입되었습니다!");
 	        return "redirect:/member/login";
 
@@ -142,7 +142,7 @@ public class MemberController {
 		return "redirect:/member/read";
 	}
 	
-	// 기본 이미지로 초기화 (AJAX)
+	// 기본 이미지로 초기화
 	@PostMapping("/profileReset")
 	@ResponseBody
 	public String profileResetPOST(HttpSession session) {
@@ -180,17 +180,14 @@ public class MemberController {
 	    MemberVO loginInfo = (MemberVO) session.getAttribute("loginInfo");
 	    vo.setUserid(loginInfo.getUserid());
 	    
-	    // 이메일 변경했는데 인증 안했으면 → DB update 금지
 	    if(!loginInfo.getEmail().equals(vo.getEmail()) && !emailVerified){
 	        rttr.addFlashAttribute("msg", "메일 인증을 진행해주세요!");
 	        return "redirect:/member/update";
 	    }
 
 	    try {
-	    	// 서비스 호출 (정보 변경 + 히스토리 기록)
 	    	mService.updateMemberWithHistory(vo);
 	    	
-	    	// 세션 최신화
 	    	session.setAttribute("loginInfo", mService.selectOne(vo.getUserid()));
 	    	rttr.addFlashAttribute("msg", "회원 정보가 수정되었습니다.");
 	    	
@@ -209,7 +206,6 @@ public class MemberController {
 
 	    mService.rollbackMemberInfo(loginInfo.getUserid());
 
-	    // 세션 최신화
 	    session.setAttribute("loginInfo", mService.selectOne(loginInfo.getUserid()));
 
 	    return "success";
@@ -260,10 +256,9 @@ public class MemberController {
 
         if(userid == null) {
             model.addAttribute("msg", "입력한 비밀번호로 조회되는 아이디가 없습니다.");
-            return "/member/findId"; // 그대로 머무름
+            return "/member/findId";
         }
 
-        // login.jsp에서 alert 띄우기 위한 전달값
         rttr.addFlashAttribute("foundId", userid);
 
         logger.info(" findIdPOST()끝! ");
@@ -351,27 +346,24 @@ public class MemberController {
     	
     	logger.info(" naverCallback() 끝! ");
     }
+    
 	@PostMapping("/naverLogin")
 	@ResponseBody
 	public String naverLogin(String provider_id, HttpSession session) {
 		MemberVO member = mService.selectNaverLogin(provider_id);
 		
-		 // 가입된 계정 없음 -> false 반환
 	    if (member == null) {
 	        return "{\"success\": false}";
 	    }
 	    
-	    // 탈퇴 회원 차단
 	    if (member.getDeleted_at() != null) {
 	        return "{\"success\": false, \"reason\":\"deleted\"}";
 	    }
 
-	    // 정지 회원 차단
 	    if ("0".equals(member.getEnable_flag())) {
 	        return "{\"success\": false, \"reason\":\"disabled\"}";
 	    }
 	    
-	    // 권한 보정
 	    if (member.getAuthList() == null || member.getAuthList().isEmpty()) {
 
 	        MemberAuthVO defaultAuth = new MemberAuthVO();
@@ -384,7 +376,7 @@ public class MemberController {
 	        member.setAuthList(list);
 	    }
 	    
-	    // 강제 로그인 처리 (Spring Security)
+	    // 강제 로그인 처리
 	    CustomUserDetails userDetails = new CustomUserDetails(member);
 
 	    UsernamePasswordAuthenticationToken authToken = 
@@ -394,10 +386,8 @@ public class MemberController {
 	    session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
 	            			 SecurityContextHolder.getContext());
 	    
-	    // 기존에 넣던 세션
 	    session.setAttribute("loginInfo", member);
 	    
-	    // 자동 로그인 성공 응답
 		return "{\"success\": true}";
 	}
 	
@@ -493,11 +483,10 @@ public class MemberController {
             return "redirect:/member/login";
         }
         
-        // 서비스 호출하여 최근 본 글(Map 리스트) 가져오기
         List<Map<String, Object>> recentList = stService.getRecentViewList(loginInfo.getMember_id());
         model.addAttribute("recentList", recentList);
         
-        return "/member/recentView"; // JSP 뷰 연결
+        return "/member/recentView";
     }
 
 	

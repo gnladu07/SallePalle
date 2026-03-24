@@ -16,6 +16,6 @@ public class ChatMessageVO {
     private String sender_nickname; // 보낸 사람 닉네임
     private String sender_profile;  // 보낸 사람 프로필 이미지
     
-    // 메시지 타입 (일반 텍스트인지, 시스템 메시지인지, '결제요청' 버튼인지 구분하기 위해 추가)
-    private String type = "TEXT";   // TEXT, SYSTEM, PAYMENT 등 확장 대비
+    // 메시지 타입
+    private String type = "TEXT";
 }
