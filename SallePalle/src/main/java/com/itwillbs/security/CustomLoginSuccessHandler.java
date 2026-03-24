@@ -60,7 +60,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		logger.info(" 회원 정보 확인: {} ", loginInfo);
 		
-		// 권한 리스트 (ROLE_MEMBER, ROLE_ADMIN ...) 조회
+		// 권한 리스트 조회
 		List<String> roleNames = authentication.getAuthorities()
 											   .stream()
 											   .map(GrantedAuthority::getAuthority)

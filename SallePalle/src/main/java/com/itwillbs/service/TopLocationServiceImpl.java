@@ -21,11 +21,11 @@ public class TopLocationServiceImpl implements TopLocationService {
 	
 	@Override
 	public List<TopLocation> getTopLocationList() {
-		logger.info(" getTopLocationList() 실행 ");
+		logger.debug(" TopLocationServiceImpl: getTopLocationList() 실행 ");
 		
 		List<TopLocation> resultList = topLocationDAO.selectListLocation();
 		
-		logger.info(" getTopLocationList() 끝 ");
+		logger.debug(" TopLocationServiceImpl: getTopLocationList() 끝 ");
 		return resultList;
 	}
 

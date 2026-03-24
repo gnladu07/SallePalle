@@ -29,11 +29,11 @@ public class CustomLoginFailureHandler implements AuthenticationFailureHandler {
 		
 		String msg = "로그인에 실패했습니다.";
 
-		// 탈퇴한 계정 (DisabledException → Security 내부에서 InternalAuthenticationServiceException 으로 wrap됨)
+		// 탈퇴한 계정
 	    if (exception.getCause() instanceof DisabledException) {
 	        msg = "탈퇴한 계정입니다. 신규 회원가입 후 이용해주세요.";
 	    }
-	    // 정지된 계정 (LockedException 동일)
+	    // 정지된 계정
 	    else if (exception.getCause() instanceof LockedException) {
 	        msg = "이용사항 위반으로 일시정지 상태입니다. 고객센터에 문의하세요.";
 	    }

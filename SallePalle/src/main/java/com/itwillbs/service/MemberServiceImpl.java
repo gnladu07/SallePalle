@@ -40,33 +40,31 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public MemberVO selectOne(String userid) {
-		logger.info(" MServiceImpl: selectOne() 실행! ");
+		logger.debug(" MServiceImpl: selectOne() 실행! ");
 		
 		MemberVO resultInfo 
 			= memberDAO.selectOne(userid);
 		
 		if(resultInfo != null) {
-			logger.info(" MServiceImpl: selectOne() 결과 seller_status = [" + resultInfo.getSeller_status() + "]");
-			logger.info(" 문자열 길이 = " + (resultInfo.getSeller_status() == null ? "null" : resultInfo.getSeller_status().length()));
+			logger.debug(" MServiceImpl: selectOne() 결과 seller_status = [" + resultInfo.getSeller_status() + "]");
+			logger.debug(" 문자열 길이 = " + (resultInfo.getSeller_status() == null ? "null" : resultInfo.getSeller_status().length()));
 	    } else {
-	    	logger.info(" MServiceImpl: selectOne() 결과가 NULL 입니다.");
+	    	logger.debug(" MServiceImpl: selectOne() 결과가 NULL 입니다.");
 	    }
 		
-		logger.info(" MServiceImpl: selectOne() 끝! ");
+		logger.debug(" MServiceImpl: selectOne() 끝! ");
 		return resultInfo;
 	}
 
 	@Override
 	public void memberJoin(MemberVO vo) {
-		logger.info(" MServiceImpl: memberJoin() 실행! ");
+		logger.debug(" MServiceImpl: memberJoin() 실행! ");
 		
-		// 1) provider 값 분기
 	    if (vo.getUserpw() == null || vo.getUserpw().trim().equals("")) {
 	        throw new IllegalArgumentException("비밀번호는 반드시 입력되어야 합니다.");
 	    }
 	    vo.setUserpw(pwEncoder.encode(vo.getUserpw()));
 
-	    // 3) 기타 값 보정
 	    if (vo.getMobile() != null && vo.getMobile().trim().equals("")) {
 	        vo.setMobile(null);
 	    }
@@ -75,85 +73,73 @@ public class MemberServiceImpl implements MemberService {
 	        vo.setBirth6(null);
 	    }
 
-	    // 4) DB insert
 	    memberDAO.insertMember(vo);
 
-	    // 5) 권한 부여 (LOCAL, NAVER 모두 ROLE_MEMBER)
 	    MemberAuthVO auth = new MemberAuthVO();
 	    auth.setUserid(vo.getUserid());
 	    auth.setAuth("ROLE_MEMBER");
 	    memberDAO.insertAuth(auth);
 		
-		logger.info(" MServiceImpl: memberJoin() 끝! ");
+		logger.debug(" MServiceImpl: memberJoin() 끝! ");
 	}
 	
 	@Override
 	public boolean isUseridExists(String userid) {
-		logger.info(" MServiceImpl: isUseridExists()실행! ");
-		logger.info(" MServiceImpl: isUseridExists()끝! ");
+		logger.debug(" MServiceImpl: isUseridExists()실행! ");
+		logger.debug(" MServiceImpl: isUseridExists()끝! ");
 	    return memberDAO.countUserid(userid) > 0;
 	}
 
 	@Override
 	public int emailSendCode(String email) {
-		logger.info(" MServiceImpl: emailSendCode() 실행! ");
+		logger.debug(" MServiceImpl: emailSendCode() 실행! ");
 		
 		int code = (int) ((Math.random()*900000) + 100000);
 		mailComponent.sendMassage(email, "살래팔래 인증번호", "인증번호: "+code);
 		
-		logger.info(" MServiceImpl: emailSendCode() 끝! ");
+		logger.debug(" MServiceImpl: emailSendCode() 끝! ");
 		return code;
 	}
 
 	@Override
 	public void changeProfileImage(String userid, MultipartFile file) {
-		logger.info(" MServiceImpl: changeProfileImage() 실행! ");
+		logger.debug(" MServiceImpl: changeProfileImage() 실행! ");
 		
 		if (file.isEmpty()) return;
 		
-		// 1) 현재 회원 정보 조회(기존 이미지 확인용)
 		MemberVO current = memberDAO.selectOne(userid);
-		
-		// 2) 새 이미지 업로드
 		String newFileName = fileComponent.upload(file);
-		
-		// 3) 기존 프로필 이미지 삭제 (default_profile.png는 건드리지 않음)
 		String oldFile = current.getProfile_img();
 		if (oldFile != null && !oldFile.equals("default_profile.png")) {
 			fileComponent.deleteFile(oldFile);
 		}
 		
-		// 4) DB 업데이트
 		MemberVO vo = new MemberVO();
 		vo.setUserid(userid);
 		vo.setProfile_img(newFileName);
 		
 		memberDAO.updateProfileImg(vo);
-		logger.info(" MServiceImpl: changeProfileImage() 끝! ");		
+		logger.debug(" MServiceImpl: changeProfileImage() 끝! ");		
 	}
 
 	@Override
 	public void resetProfileImage(String userid) {
-		logger.info(" MServiceImpl: resetProfileImage() 실행! ");
+		logger.debug(" MServiceImpl: resetProfileImage() 실행! ");
 		
-		// 기존 프로필 가져오기
         MemberVO current = memberDAO.selectOne(userid);
         String oldImg = current.getProfile_img();
         
-        // DB 기본 이미지로 업데이트
         memberDAO.updateProfileToDefault(userid);
-
-        // 기존 이미지 삭제 (기본 이미지면 삭제 X)
         if (oldImg != null && !oldImg.equals("default_profile.png")) {
             fileComponent.deleteFile(oldImg);
         }
 		
-		logger.info(" MServiceImpl: resetProfileImage() 끝! ");
+		logger.debug(" MServiceImpl: resetProfileImage() 끝! ");
 	}
 
 	@Override
 	public void updateMemberWithHistory(MemberVO vo) {
-		logger.info(" MServiceImpl: resetProfileImage() 실행! ");
+		logger.debug(" MServiceImpl: resetProfileImage() 실행! ");
 		
 		MemberVO old = memberDAO.selectOne(vo.getUserid());
 		
@@ -215,63 +201,57 @@ public class MemberServiceImpl implements MemberService {
         // 실제 DB 업데이트 호출
         memberDAO.updateMember(vo);
 		
-		logger.info(" MServiceImpl: resetProfileImage() 끝! ");
+		logger.debug(" MServiceImpl: resetProfileImage() 끝! ");
 	}
 
 	@Override
 	public void rollbackMemberInfo(String userid) {
-		logger.info(" MServiceImpl: rollbackMemberInfo() 실행! ");
+		logger.debug(" MServiceImpl: rollbackMemberInfo() 실행! ");
 		
 		memberDAO.rollbackMemberInfo(userid);
 		
-		logger.info(" MServiceImpl: rollbackMemberInfo() 끝! ");
+		logger.debug(" MServiceImpl: rollbackMemberInfo() 끝! ");
 	}
 
 	@Override
 	public boolean checkPassword(String userid, String userpw) {
-		logger.info(" MServiceImpl: checkPassword() 실행! ");
+		logger.debug(" MServiceImpl: checkPassword() 실행! ");
 		
 		MemberVO vo = memberDAO.selectOne(userid);
 		
-		logger.info(" MServiceImpl: checkPassword() 끝! ");
+		logger.debug(" MServiceImpl: checkPassword() 끝! ");
 		return pwEncoder.matches(userpw, vo.getUserpw());
 	}
 
 	@Override
 	public void deactivateMember(String userid) {
-		logger.info(" MServiceImpl: deactivateMember() 실행! ");
+		logger.debug(" MServiceImpl: deactivateMember() 실행! ");
 		
 		memberDAO.deactivateMember(userid);
+		memberDAO.insertMemberHistory(new MemberHistoryVO(userid, "account_status", "active", "deleted", userid));
 		
-		// 히스토리 테이블에도 기록
-		memberDAO.insertMemberHistory(new MemberHistoryVO(userid, 
-				                                          "account_status", 
-				                                          "active", 
-				                                          "deleted", 
-				                                          userid));
-		logger.info(" MServiceImpl: deactivateMember() 끝! ");
+		logger.debug(" MServiceImpl: deactivateMember() 끝! ");
 	}
 
 	@Override
 	public String findUseridByPassword(String inputPw) {
-		logger.info(" MServiceImpl: findUseridByPassword() 실행! ");
+		logger.debug(" MServiceImpl: findUseridByPassword() 실행! ");
 		
 		List<MemberVO> list = memberDAO.findAllMembersForIdSearch();
 		
-		 // 모든 회원의 암호화된 비밀번호와 비교
         for(MemberVO vo : list) {
             if(pwEncoder.matches(inputPw, vo.getUserpw())) {
                 return vo.getUserid(); 
             }
         }
 		
-		logger.info(" MServiceImpl: findUseridByPassword() 끝! ");
+		logger.debug(" MServiceImpl: findUseridByPassword() 끝! ");
 		return null;
 	}
 
 	@Override
 	public boolean sendResetLink(String userid, String email) {
-		logger.info(" MServiceImpl: sendResetLink() 실행! ");
+		logger.debug(" MServiceImpl: sendResetLink() 실행! ");
 		
         MemberVO input = new MemberVO();
         input.setUserid(userid);
@@ -292,8 +272,6 @@ public class MemberServiceImpl implements MemberService {
         memberDAO.insertResetToken(tokenVO);
 
         String link = "http://localhost:8088/member/resetPw?token=" + token;
-
-        // HTML 메일 본문
         String html = ""
             + "<p>아래 링크를 클릭하여 비밀번호를 재설정하세요.</p>"
             + "<p><a href='" + link + "' style='font-size:16px; color:blue;'>비밀번호 재설정하기</a></p>"
@@ -307,24 +285,24 @@ public class MemberServiceImpl implements MemberService {
             html
         );
 		
-		logger.info(" MServiceImpl: sendResetLink() 끝! ");
+		logger.debug(" MServiceImpl: sendResetLink() 끝! ");
 		return true;
 	}
 
 	@Override
 	public boolean validateToken(String token) {
-		logger.info(" MServiceImpl: validateToken() 실행! ");
+		logger.debug(" MServiceImpl: validateToken() 실행! ");
 		
 		PasswordResetTokenVO vo = memberDAO.findByToken(token);
 		if(vo == null) return false;
 		
-		logger.info(" MServiceImpl: validateToken() 끝! ");
+		logger.debug(" MServiceImpl: validateToken() 끝! ");
 		return vo.getExpire_time().isAfter(LocalDateTime.now());
 	}
 
 	@Override
 	public boolean resetPassword(String token, String newPw) {
-		logger.info(" MServiceImpl: resetPassword() 실행! ");
+		logger.debug(" MServiceImpl: resetPassword() 실행! ");
 		
 		PasswordResetTokenVO tokenVO = memberDAO.findByToken(token);
         if(tokenVO == null) return false;
@@ -338,60 +316,55 @@ public class MemberServiceImpl implements MemberService {
         // 토큰 삭제
         memberDAO.deleteToken(token);
 		
-		logger.info(" MServiceImpl: resetPassword() 끝! ");
+		logger.debug(" MServiceImpl: resetPassword() 끝! ");
 		return true;
 	}
 
 	@Override
 	public MemberVO selectNaverLogin(String provider_id) {
-		logger.info(" MServiceImpl: selectNaverLogin() 실행! ");
+		logger.debug(" MServiceImpl: selectNaverLogin() 실행! ");
 		
 		MemberVO resultVO = memberDAO.selectNaverLogin(provider_id);
 		
-		logger.info(" MServiceImpl: selectNaverLogin() 끝! ");
+		logger.debug(" MServiceImpl: selectNaverLogin() 끝! ");
 		return resultVO;
 	}
 
 	@Override
 	public void updateSellerStatus(int member_id, String status) {
-		logger.info(" MServiceImpl: updateSellerStatus() 실행! ");
+		logger.debug(" MServiceImpl: updateSellerStatus() 실행! ");
 		
 		memberDAO.updateSellerStatus(member_id, status);
 		
-		logger.info(" MServiceImpl: updateSellerStatus() 끝! ");
+		logger.debug(" MServiceImpl: updateSellerStatus() 끝! ");
 	}
 
 	@Override
 	public void insertAuth(MemberAuthVO vo) {
-		logger.info(" MServiceImpl: insertAuth() 실행! ");
+		logger.debug(" MServiceImpl: insertAuth() 실행! ");
 		
 		vo.setUserid(vo.getUserid());
 		vo.setAuth(vo.getAuth());
 		
 		memberDAO.insertAuth(vo);		
-		logger.info(" MServiceImpl: insertAuth() 끝! ");
+		logger.debug(" MServiceImpl: insertAuth() 끝! ");
 	}
-
-//	@Override
-//    public MemberVO readByMemberId(int member_id) {
-//		logger.info(" MServiceImpl: readByMemberId() 실행! ");
-//		logger.info(" MServiceImpl: readByMemberId() 끝! ");
-//        return memberDAO.readByMemberId(member_id);
-//    }
 
 	@Override
 	public void setNotifyFlag(int member_id, String flag) {
-		logger.info(" MServiceImpl: setNotifyFlag() 실행! ");
+		logger.debug(" MServiceImpl: setNotifyFlag() 실행! ");
+		
 		Map<String,Object> map = new HashMap<>();
 	    map.put("member_id", member_id);
 	    map.put("flag", flag);
 	    memberDAO.setNotifyFlag(map);
-	    logger.info(" MServiceImpl: setNotifyFlag() 끝! ");
+	    
+	    logger.debug(" MServiceImpl: setNotifyFlag() 끝! ");
 	}
 
 	@Override
 	public void updateNotifyFlag(String userid, String flag) {
-		logger.info(" MServiceImpl: updateNotifyFlag() 실행!");
+		logger.debug(" MServiceImpl: updateNotifyFlag() 실행!");
 
 	    Map<String, Object> map = new HashMap<>();
 	    map.put("userid", userid);
@@ -399,69 +372,69 @@ public class MemberServiceImpl implements MemberService {
 
 	    memberDAO.updateNotifyFlag(map);
 
-	    logger.info(" MServiceImpl: updateNotifyFlag() 끝!");
+	    logger.debug(" MServiceImpl: updateNotifyFlag() 끝!");
 		
 	}
 
 	@Override
 	public List<MemberVO> getMemberList() {
-		logger.info(" MServiceImpl: getMemberList() 실행!");
+		logger.debug(" MServiceImpl: getMemberList() 실행!");
 		
 		List<MemberVO> resultVO = memberDAO.getMemberList();
 		
-		logger.info(" MServiceImpl: getMemberList() 끝!");
+		logger.debug(" MServiceImpl: getMemberList() 끝!");
 		return resultVO;
 	}
 
 	@Override
 	public void disableMember(int member_id) {
-		logger.info(" MServiceImpl: disableMember() 실행!");
+		logger.debug(" MServiceImpl: disableMember() 실행!");
 		
 		memberDAO.disableMember(member_id);
 		
-		logger.info(" MServiceImpl: disableMember() 끝!");
+		logger.debug(" MServiceImpl: disableMember() 끝!");
 	}
 
 	@Override
 	public void deleteMember(int member_id) {
-		logger.info(" MServiceImpl: deleteMember() 실행! ");
+		logger.debug(" MServiceImpl: deleteMember() 실행! ");
 		
 		memberDAO.deleteMember(member_id);
 		
-		logger.info(" MServiceImpl: deleteMember() 끝! ");
+		logger.debug(" MServiceImpl: deleteMember() 끝! ");
 	}
 
 	@Override
 	public void enableMember(int member_id) {
-		logger.info(" MServiceImpl: enableMember() 실행! ");
+		logger.debug(" MServiceImpl: enableMember() 실행! ");
 		
 		memberDAO.enableMember(member_id);
 		
-		logger.info(" MServiceImpl: enableMember() 끝! ");
+		logger.debug(" MServiceImpl: enableMember() 끝! ");
 	}
 
 	@Override
 	public MemberVO getMemberById(int member_id) {
-		logger.info(" MServiceImpl: getMemberById() 실행! ");
+		logger.debug(" MServiceImpl: getMemberById() 실행! ");
 		
 		MemberVO resultVO = memberDAO.getMemberById(member_id);
 		
-		logger.info(" MServiceImpl: getMemberById() 끝! ");
+		logger.debug(" MServiceImpl: getMemberById() 끝! ");
 		return resultVO;
 	}
 
 	@Override
 	public void updateOpenBankingToken(MemberVO vo) {
-		logger.info(" MServiceImpl: updateOpenBankingToken() 실행! ");
+		logger.debug(" MServiceImpl: updateOpenBankingToken() 실행! ");
 
 		memberDAO.updateOpenBankingToken(vo);
 		
-		logger.info(" MServiceImpl: updateOpenBankingToken() 끝! ");
+		logger.debug(" MServiceImpl: updateOpenBankingToken() 끝! ");
 	}
 
 	@Override
 	public Map<String, Object> getPaymentHistory(int member_id, boolean isSeller) {
-		logger.info(" MServiceImpl: getPaymentHistory() 실행! ");
+		logger.debug(" MServiceImpl: getPaymentHistory() 실행! ");
 	    List<PaymentHistoryVO> walletList =
 	            memberDAO.selectHistoryLimit50(member_id);
 
@@ -472,7 +445,7 @@ public class MemberServiceImpl implements MemberService {
 	        result.put("sellList",
 	                memberDAO.selectSellHistory(member_id));
 	    }
-	    logger.info(" MServiceImpl: getPaymentHistory() 끝! ");
+	    logger.debug(" MServiceImpl: getPaymentHistory() 끝! ");
 	    return result;
 	}
 

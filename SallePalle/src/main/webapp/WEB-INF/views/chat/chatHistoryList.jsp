@@ -33,7 +33,7 @@
         </thead>
         <tbody>
             <c:choose>
-                <%-- 1. 채팅 기록이 아예 없을 때 (리스트가 비어있거나 null일 경우) --%>
+                <%-- 채팅 기록이 아예 없을 때 --%>
                 <c:when test="${empty historyLog}">
                     <tr>
                         <td colspan="6" style="padding: 100px 0; text-align: center; color: #888; font-size: 16px;">
@@ -43,7 +43,7 @@
                     </tr>
                 </c:when>
                 
-                <%-- 2. 채팅 기록이 있을 때 (기존 출력 로직) --%>
+                <%-- 채팅 기록이 있을 때 --%>
                 <c:otherwise>
                     <c:forEach var="log" items="${historyLog}">
                         <c:set var="isBuyer" value="${log.buyer_id == loginInfo.member_id}" />

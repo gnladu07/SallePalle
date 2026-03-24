@@ -332,10 +332,14 @@ public class SaleTradeDAOImpl implements SaleTradeDAO {
 
 	@Override
     public int updateTradeStatus(int trade_id, String status, int seller_id) {
+		log.info(" SaleTradeDAOImpl: updateTradeStatus() 실행!");
+		
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("trade_id", trade_id);
         paramMap.put("status", status);
         paramMap.put("seller_id", seller_id);
+        
+        log.info(" SaleTradeDAOImpl: updateTradeStatus() 끝!");
         return sqlSession.update(NAMESPACE + "updateTradeStatus", paramMap);
     }
 

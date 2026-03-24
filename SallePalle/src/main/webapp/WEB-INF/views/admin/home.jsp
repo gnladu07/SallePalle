@@ -464,10 +464,7 @@
 </div>
 <script type="text/javascript">
 	$(function() {
-	
 	    console.log("초기 판매 승인 대기 수:", "${slistsize}");
-	
-	    // ★ 5초마다 자동 갱신
 	    setInterval(function() {
 	        console.log("AJAX 요청: 판매 승인 대기 수 갱신 시도");
 	
@@ -478,7 +475,6 @@
 	            success: function(data){
 	                console.log("서버 응답:", data);
 	
-	                // 화면 업데이트
 	                $("#pendingCountText").text(data.count);
 	            },
 	            error: function(xhr){
@@ -486,13 +482,11 @@
 	            }
 	        });
 	
-	    }, 5000); // 5초마다
+	    }, 5000);
 	});
+	
 	$(function() {
-	
 	    console.log("초기 판매 승인 대기 수:", "${listsize}");
-	
-	    // ★ 5초마다 자동 갱신
 	    setInterval(function() {
 	        console.log("AJAX 요청: 판매 승인 대기 수 갱신 시도");
 	
@@ -502,8 +496,6 @@
 	            dataType: "json",
 	            success: function(data){
 	                console.log("서버 응답:", data);
-	
-	                // 화면 업데이트
 	                $("#memberPendingCountText").text(data.count);
 	            },
 	            error: function(xhr){
@@ -511,7 +503,7 @@
 	            }
 	        });
 	
-	    }, 5000); // 5초마다
+	    }, 5000); 
 	});
 </script>
 

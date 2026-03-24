@@ -24,7 +24,4 @@ public interface SellerDAO {
 	// 요청 거절 처리
 	public void rejectRequest(int seller_req_id);
 
-	// 회원 정보 조회
-	public int getMemberIdByReq(int request_id);
-
 }

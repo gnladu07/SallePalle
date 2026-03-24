@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../include/header.jsp" %>
 <style>
-    /* ★ 상단 헤더에 가려지지 않도록 margin-top을 100px로 수정했습니다 ★ */
     .chat-list-container { max-width: 800px; margin: 100px auto 40px; }
     .chat-room-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; }
     .chat-room-item:hover { background: #f9f9f9; }
@@ -47,7 +46,7 @@
 <script>
 // 채팅방 나가기 함수
 function leaveRoom(event, roomId) {
-    event.stopPropagation(); // 이 코드가 없으면 방에 입장하는 클릭 이벤트도 같이 실행됩니다.
+    event.stopPropagation();
 
     swal({
         title: "채팅방 나가기",
@@ -67,7 +66,7 @@ function leaveRoom(event, roomId) {
                 success: function(res) {
                     if(res === "OK") {
                         swal("완료", "채팅방에서 나갔습니다.", "success").then(() => {
-                            location.reload(); // 성공 시 목록 새로고침
+                            location.reload();
                         });
                     } else {
                         swal("오류", "처리에 실패했습니다.", "error");

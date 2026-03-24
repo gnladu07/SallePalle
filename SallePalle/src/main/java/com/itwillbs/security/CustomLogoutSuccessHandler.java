@@ -16,8 +16,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 			                    HttpServletResponse response, 
 			                    Authentication authentication)
 			throws IOException, ServletException {
-		// 어떤 상황에서든 로그아웃 요청이 오면 여기로 오게 됨
-        response.sendRedirect("/main/header");  // 원하는 페이지로 강제 이동
+        response.sendRedirect("/main/header");
 		
 	}
 

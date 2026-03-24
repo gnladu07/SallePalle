@@ -70,10 +70,4 @@ public class SellerDAOIpml implements SellerDAO {
         sqlSession.update(NAMESPACE + "rejectRequest", request_id);
     }
 
-	@Override
-	public int getMemberIdByReq(int request_id) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }

@@ -36,7 +36,6 @@
     .chat-input-area { display: flex; padding: 15px; background: white; border-top: 1px solid #ddd; }
     .chat-input-area input { flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; outline: none; }
     .chat-input-area button { margin-left: 10px; padding: 10px 20px; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer; }
-	/* 기존 CSS 아래에 추가 */
     .unread-mark { font-size: 12px; color: #FF6F61; font-weight: bold; margin-right: 5px; margin-bottom: 2px; }
 </style>
 
@@ -69,13 +68,12 @@
     const myId = "${loginInfo.member_id}";
     const myNickname = "${loginInfo.nickname}";
     
- 	// 서버에 읽음 처리 요청을 보내는 함수
     function markAsRead() {
         $.ajax({
             url: "/chat/markAsRead",
             type: "POST",
             data: {
-                room_id: roomId, // 현재 접속한 방 번호 (JSP 상단에서 선언한 변수명에 맞게 맞춰주세요)
+                room_id: roomId,
                 "${_csrf.parameterName}": "${_csrf.token}"
             },
             success: function(res) {
@@ -91,7 +89,7 @@
         loadHistory(); 
         markAsRead();
         
-     	// [강제 해산] 버튼 이벤트 (관리자 전용)
+     	// [강제 해산] 버튼 이벤트
         $("#btnAdminClose").on("click", function() {
             swal({
                 title: "채팅방 강제 해산",
@@ -112,8 +110,8 @@
                             if (res === "OK") {
                                 swal("해산 완료", "채팅방이 강제로 폭파되었습니다.", "success")
                                 .then(() => {
-                                    window.close(); // 관리자는 팝업창을 닫거나
-                                    location.href = "/admin/chatList"; // 목록으로 이동
+                                    window.close(); 
+                                    location.href = "/admin/chatList"; 
                                 });
                             }
                         }
@@ -141,7 +139,7 @@
                         success: function(res) {
                             if (res === "OK") {
                                 swal("결제 완료", "판매자에게 포인트 송금이 완료되었습니다.", "success");
-                                $("#btnPay").hide(); // 결제 성공 시 버튼 숨김
+                                $("#btnPay").hide(); 
                             } else if (res === "INSUFFICIENT_POINTS") {
                                 swal("잔액 부족", "살래포인트가 부족합니다. 충전 후 이용해주세요.", "error");
                             } else if (res === "NOT_BUYER") {
@@ -162,15 +160,9 @@
     function connect() {
         const socket = new SockJS('/ws-stomp');
         stompClient = Stomp.over(socket);
-        
-        // 콘솔 로그 숨기기 (선택)
-        // stompClient.debug = null; 
-        
         stompClient.connect({}, function (frame) {
             stompClient.subscribe('/sub/chat/room/' + roomId, function(message) {
                 const msg = JSON.parse(message.body);
-                
-             	// [추가] 관리자가 방을 폭파했을 때!!
                 if (msg.type === "CLOSE") {
                     swal({
                         title: "강제 해산 🚨",
@@ -178,25 +170,20 @@
                         icon: "error",
                         button: "확인"
                     }).then(() => {
-                        // 확인 누르면 가차 없이 메인 화면으로 쫓아냄!
                         location.href = "/"; 
                     });
-                    return; // 화면에 말풍선 그리지 않고 바로 종료
+                    return;
                 }
                 
-                // [추가] 누군가 메시지를 읽었다는 신호(READ)가 오면?
                 if (msg.type === "READ") {
-                    // 내가 보낸 신호가 아닐 때(상대방이 읽었을 때) 내 화면의 숫자 1을 싹 다 지움
                     if (msg.sender_id != myId) {
                         $(".unread-mark").remove(); 
                     }
-                    return; // 화면에 말풍선을 그리지 않고 여기서 함수 종료!
+                    return;
                 }
                 
-                // 일반 메시지라면 화면에 말풍선 그리기
                 drawMessage(msg); 
                 
-                // 내가 보낸 메시지가 아니라면 즉시 읽음 처리!
                 if(msg.sender_id != myId) {
                     markAsRead();
                 }
@@ -229,7 +216,6 @@
         });
     }
 
- 	// 메시지 화면에 그리기 함수
     function drawMessage(msg) {
         const chatArea = $("#chatArea");
         let html = "";
@@ -249,8 +235,7 @@
             html += "<div class='" + boxClass + "'>";
             
             let displayContent = msg.message_text;
-            let contentStyle = ""; // 사진일 때는 말풍선 배경을 투명하게 만들기 위한 변수
-            
+            let contentStyle = ""; 
             if (msg.type === 'IMAGE') {
                 displayContent = "<img src='/upload/" + msg.message_text + "' style='max-width: 200px; border-radius: 8px; cursor: pointer;' onclick='window.open(this.src)'/>";
                 contentStyle = "background: transparent; padding: 0; border: none;"; // 사진은 말풍선 배경 없앰
@@ -258,18 +243,17 @@
                 displayContent = "<a href='/upload/" + msg.message_text + "' download style='color: blue; text-decoration: underline; font-weight:bold;'>📁 파일 다운로드</a>";
             }
             
-            // 내 메시지일 때: [ 1 ] [ 말풍선/사진 ]
+            // 내 메시지일 때
             if (isMe) {
                 html += "<div class='msg-wrapper' style='display:flex; flex-direction:row; align-items:flex-end;'>";
-                // 안 읽은 메시지('N')라면 1을 붙임
                 if (msg.is_read === 'N') {
                     html += "<span class='unread-mark'>1</span>";
                 }
-                // 기존 msg.message_text 대신 displayContent 삽입!
                 html += "<div class='msg-content' style='" + contentStyle + "'>" + displayContent + "</div>";
                 html += "</div>";
             } 
-            // 상대방 메시지일 때: [ 닉네임 ] [ 말풍선/사진 ]
+            
+            // 상대방 메시지일 때
             else {
                 html += "<div class='msg-wrapper'>";
                 html += "<div class='msg-nickname'>" + msg.sender_nickname + "</div>";
@@ -279,12 +263,10 @@
                 html += "</div>";
             }
             
-            html += "</div>"; // msg-box 끝
+            html += "</div>";
         }
 
         chatArea.append(html);
-        
-        // 스크롤 맨 아래로 부드럽게 이동
         chatArea.scrollTop(chatArea[0].scrollHeight);
     }
  	
@@ -294,10 +276,9 @@
         if(fileInput.files.length === 0) return;
 
         const file = fileInput.files[0];
-        const fileName = file.name; // 파일 원본 이름
-        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2); // 파일 용량 (MB 단위로 변환)
+        const fileName = file.name;
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
 
-        // ★ 파일을 바로 보내지 않고, 예쁜 팝업창을 먼저 띄워서 물어봅니다!
         swal({
             title: "파일 전송",
             text: "[" + fileName + "] (" + fileSizeMB + "MB)\n이 파일을 채팅방에 전송하시겠습니까?",
@@ -305,7 +286,6 @@
             buttons: ["취소", "전송하기"],
         }).then((willSend) => {
             
-            // '전송하기' 버튼을 눌렀을 때만 업로드 시작
             if (willSend) {
                 const formData = new FormData();
                 formData.append("file", file);
@@ -319,12 +299,9 @@
                     contentType: false,
                     success: function(savedFileName) {
                         if(savedFileName !== "FAIL") {
-                            // 확장자로 이미지/파일 구분
                             const ext = savedFileName.split('.').pop().toLowerCase();
                             const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
                             const msgType = isImage ? "IMAGE" : "FILE";
-
-                            // 웹소켓으로 메시지 쏘기
                             const chatMessage = {
                                 room_id: roomId,
                                 sender_id: myId,
@@ -338,12 +315,10 @@
                         } else {
                             swal("오류", "파일 업로드에 실패했습니다.", "error");
                         }
-                        // 완료 후 input 초기화
                         $("#chatFileInput").val(""); 
                     }
                 });
             } else {
-                // '취소'를 눌렀을 때도 다음 번 선택을 위해 input 안을 비워줌
                 $("#chatFileInput").val("");
             }
         });
