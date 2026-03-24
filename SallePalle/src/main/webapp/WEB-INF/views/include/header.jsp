@@ -115,7 +115,7 @@
         /* justify-content: space-between; */
         padding: 0 430px;
         box-sizing: border-box;
-        z-index: 99;
+        z-index: 9999;
     }
 
     .logo {
