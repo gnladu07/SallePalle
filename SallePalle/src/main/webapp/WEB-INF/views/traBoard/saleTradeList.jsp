@@ -102,8 +102,8 @@
 			        </div>
 				   
                     <div class="saleTradeList-content">
-                        <div class="saleTradeList-title">${s.title} <span style="color:red;">[상태값: ${s.status}]</span></div>
-                        <div class="saleTradeList-price">${s.price_point} P</div>
+                        <div class="saleTradeList-title">${s.title} <%-- <span style="color:red;">[상태값: ${s.status}]</span> --%> </div>
+                        <div class="saleTradeList-price"><fmt:formatNumber value="${s.price_point}" />P</div>
                         <div class="saleTradeList-info">
                             <span class="saleTradeList-location">
                                 <svg viewBox="0 0 24 24" fill="#999">
