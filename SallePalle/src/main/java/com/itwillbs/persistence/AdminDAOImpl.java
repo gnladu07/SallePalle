@@ -63,5 +63,19 @@ public class AdminDAOImpl implements AdminDAO {
 		return resultVO;
 	}
 
+	@Override
+	public int getTotalProductCount() throws Exception {
+		log.debug(" AdminDAOImpl: getTotalProductCount() 실행! ");
+		log.debug(" AdminDAOImpl: getTotalProductCount() 끝! ");
+		return sqlSession.selectOne(NAMESPACE + "getTotalProductCount");
+	}
+
+	@Override
+	public int getActiveChatRoomCount() throws Exception {
+		log.debug(" AdminDAOImpl: getActiveChatRoomCount() 실행! ");
+		log.debug(" AdminDAOImpl: getActiveChatRoomCount() 끝! ");
+		return sqlSession.selectOne(NAMESPACE + "getActiveChatRoomCount");
+	}
+
 
 }

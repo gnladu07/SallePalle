@@ -182,6 +182,24 @@ public class AdminController {
         log.debug(" AdminController: adminChatList() 끝! ");
         return "/admin/chatList";
     }
+    
+    // 대시보드 실시간 카운트 갱신 (물품 수)
+    @GetMapping("/dashboardCounts")
+    @ResponseBody
+    public Map<String, Object> getDashboardCounts() throws Exception {
+        log.debug(" AdminController: getDashboardCounts() 실행! ");
+        
+        Map<String, Object> map = new HashMap<>();
+        
+        int productCount = aService.getTotalProductCount();
+        int activeChatCount = aService.getActiveChatRoomCount();
+        
+        map.put("productCount", productCount);
+        map.put("activeChatCount", activeChatCount);
+        
+        log.debug(" AdminController: getDashboardCounts() 끝! ");
+        return map;
+    }
 
 
 }

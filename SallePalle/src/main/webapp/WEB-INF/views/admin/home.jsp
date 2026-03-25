@@ -400,7 +400,7 @@
                 </div>
                 <div class="home-stat-info">
                     <h3>등록된 물품</h3>
-                    <p>8,340</p>
+                    <p id="productCountText">0</p>
                 </div>
             </div>
 
@@ -411,8 +411,8 @@
                     </svg>
                 </div>
                 <div class="home-stat-info">
-                    <h3>오늘의 거래</h3>
-                    <p>156</p>
+                    <h3>거래 진행방</h3>
+                    <p id="activeChatCountText">0</p>
                 </div>
             </div>
         </div>
@@ -505,6 +505,27 @@
 	
 	    }, 5000); 
 	});
+	
+    $(function() {
+        updateDashboardCounts();
+        setInterval(updateDashboardCounts, 5000);
+        
+        function updateDashboardCounts() {
+            $.ajax({
+                url: "/admin/dashboardCounts",
+                type: "get",
+                dataType: "json",
+                success: function(data) {
+                    console.log("대시보드 카운트 갱신:", data);
+                    $("#productCountText").text(data.productCount.toLocaleString());
+                    $("#activeChatCountText").text(data.activeChatCount.toLocaleString());
+                },
+                error: function(xhr) {
+                    console.log("대시보드 카운트 갱신 실패", xhr);
+                }
+            });
+        }
+    });
 </script>
 
 </body>

@@ -162,5 +162,16 @@
 	
 	    limit #{amount} offset #{pageStart}
 	
-	</select>  
+	</select>
+	
+	<select id="getTotalProductCount" resultType="int">
+        SELECT COUNT(*) 
+        FROM saletrade_board
+    </select>  
+    
+    <select id="getActiveChatRoomCount" resultType="int">
+        SELECT COUNT(*) 
+        FROM chat_room 
+        WHERE admin_closed = 'N'
+    </select>
 </mapper>
