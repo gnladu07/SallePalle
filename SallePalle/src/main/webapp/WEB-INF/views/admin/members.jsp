@@ -68,8 +68,7 @@
         transition: 0.2s;
     }
 
-    .admin-menu-item:hover,
-    .admin-menu-item.active {
+    .admin-menu-item:hover {
         background: rgba(255,255,255,0.15);
         padding-left: 30px;
     }
@@ -86,28 +85,62 @@
     }
 
     .members-container {
-        max-width: 1600px;
+        max-width: 1400px;
     }
 
     /* 헤더 */
-    .members-header {
+	.home-header {
         background: white;
         padding: 25px 30px;
         border-radius: 15px;
-        margin-bottom: 25px;
+        margin-bottom: 30px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    .members-header h1 {
+    .home-header-left h1 {
         font-size: 26px;
         font-weight: 700;
         color: #333;
         margin-bottom: 8px;
     }
 
-    .members-header p {
+    .home-header-left p {
         font-size: 14px;
         color: #888;
+    }
+
+    .home-header-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 20px;
+        background: linear-gradient(135deg, #FF6F61, #9B59B6);
+        border-radius: 25px;
+    }
+
+    .home-admin-badge {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .home-admin-badge svg {
+        width: 20px;
+        height: 20px;
+        fill: #FF6F61;
+    }
+
+    .home-admin-name {
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
     }
 
     /* 검색 & 정렬 박스 */
@@ -364,9 +397,19 @@
     <div class="members-container">
         
         <!-- 헤더 -->
-        <div class="members-header">
-            <h1>회원 관리</h1>
-            <p>전체 회원 조회 및 관리, 회원 정지/삭제, 권한 관리</p>
+        <div class="home-header">
+            <div class="home-header-left">
+                <h1>🤝 회원 관리</h1>
+            	<p>전체 회원 조회 및 관리, 회원 정지/삭제, 권한 관리</p>
+            </div>
+            <div class="home-header-right">
+                <div class="home-admin-badge">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                    </svg>
+                </div>
+                <span class="home-admin-name">${loginInfo.username} 관리자님</span>
+            </div>
         </div>
 
         <!-- 검색 & 정렬 -->
