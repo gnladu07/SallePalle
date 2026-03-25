@@ -9,9 +9,15 @@ public interface AdminDAO {
 
 	List<MemberVO> getMemberListPaged(Criteria cri);
 
-	int getTotalCount();
-	int getSellerCount();
+	public int getTotalCount();
+	public int getSellerCount();
 
-	int getTotalCountFiltered(Criteria cri);
+	public int getTotalCountFiltered(Criteria cri);
+	
+	// 전체 중고 물품 수
+    public int getTotalProductCount() throws Exception;
+    
+    // 거래 진행방(활성 채팅방) 수
+    public int getActiveChatRoomCount() throws Exception;
 
 }

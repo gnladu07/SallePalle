@@ -60,4 +60,18 @@ public class AdminServiceImpl implements AdminService {
 		return resultVO;
 	}
 
+	@Override
+	public int getTotalProductCount() throws Exception {
+		log.debug(" AdminServiceImpl: getTotalProductCount() 실행! ");
+		log.debug(" AdminServiceImpl: getTotalProductCount() 끝! ");
+		return aDAO.getTotalProductCount();
+	}
+
+	@Override
+	public int getActiveChatRoomCount() throws Exception {
+		log.debug(" AdminServiceImpl: getActiveChatRoomCount() 실행! ");
+		log.debug(" AdminServiceImpl: getActiveChatRoomCount() 끝! ");
+		return aDAO.getActiveChatRoomCount();
+	}
+
 }

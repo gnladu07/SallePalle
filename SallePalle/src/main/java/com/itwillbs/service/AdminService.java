@@ -13,5 +13,11 @@ public interface AdminService {
 	public int getSellerCount();
 
 	public int getTotalCountFiltered(Criteria cri);
+	
+	// 전체 중고 물품 수
+    public int getTotalProductCount() throws Exception;
+    
+    // 거래 진행방(활성 채팅방) 수
+    public int getActiveChatRoomCount() throws Exception;
 
 }
