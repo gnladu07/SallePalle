@@ -201,13 +201,36 @@ public class AdminController {
         return map;
     }
     
-    // 중고 물품 관리 페이지
+    // 중고 물품 관리 페이지 (리스트 출력)
     @GetMapping("/goodsManagement")
-    public String getGoodsManagment() {
-    	log.debug(" AdminController: getGoodsManagment()실행! ");
-    	log.debug(" AdminController: getGoodsManagment()끝! ");
-    	return "/admin/goodsManagement";
-    } 
+    public String getGoodsManagement(Model model) throws Exception {
+        log.debug(" AdminController: getGoodsManagement() 실행! ");
+        
+        List<Map<String, Object>> goodsList = aService.getAdminGoodsList();
+        model.addAttribute("goodsList", goodsList);
+        
+        log.debug(" AdminController: getGoodsManagement() 끝! ");
+        return "/admin/goodsManagement";
+    }
+
+    // 관리자 - 물품 상태 변경 (모달창 폼 제출 처리)
+    @PostMapping("/updateGoodsStatus")
+    public String updateGoodsStatus(
+            @RequestParam int trade_id,
+            @RequestParam String actionType,
+            @RequestParam String reason,
+            @RequestParam String seller_email,
+            RedirectAttributes rttr) throws Exception {
+        
+        log.debug(" AdminController: updateGoodsStatus() 실행! ");
+        
+        // 상태 업데이트 및 메일 발송 서비스 호출
+        aService.adminUpdateGoodsStatus(trade_id, actionType, reason, seller_email);
+        
+        rttr.addFlashAttribute("msg", "SUCCESS"); // 처리 완료 알림용
+        
+        return "redirect:/admin/goodsManagement";
+    }
 
 
 }

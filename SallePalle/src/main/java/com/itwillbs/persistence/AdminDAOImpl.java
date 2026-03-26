@@ -1,6 +1,7 @@
 package com.itwillbs.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -76,6 +77,16 @@ public class AdminDAOImpl implements AdminDAO {
 		log.debug(" AdminDAOImpl: getActiveChatRoomCount() 끝! ");
 		return sqlSession.selectOne(NAMESPACE + "getActiveChatRoomCount");
 	}
+
+	@Override
+    public List<Map<String, Object>> getAdminGoodsList() throws Exception {
+        return sqlSession.selectList(NAMESPACE + "getAdminGoodsList");
+    }
+
+    @Override
+    public void adminUpdateGoodsStatus(Map<String, Object> params) throws Exception {
+        sqlSession.update(NAMESPACE + "adminUpdateGoodsStatus", params);
+    }
 
 
 }

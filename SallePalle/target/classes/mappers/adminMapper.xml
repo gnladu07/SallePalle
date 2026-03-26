@@ -174,4 +174,26 @@
         FROM chat_room 
         WHERE admin_closed = 'N'
     </select>
+    
+    <select id="getAdminGoodsList" resultType="map">
+        SELECT 
+            s.trade_id,
+            s.regdate,
+            m.userid,
+            m.nickname,
+            m.email AS seller_email,
+            s.title,
+            c.item_ctg_name AS category_name,
+            s.status
+        FROM saletrade_board s
+        JOIN member m ON s.seller_id = m.member_id
+        JOIN item_category c ON s.item_ctg_id = c.item_ctg_id
+        ORDER BY s.regdate DESC
+    </select>
+
+    <update id="adminUpdateGoodsStatus">
+        UPDATE saletrade_board
+        SET status = #{status}
+        WHERE trade_id = #{trade_id}
+    </update>
 </mapper>
