@@ -1,6 +1,7 @@
 package com.itwillbs.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import com.itwillbs.domain.Criteria;
 import com.itwillbs.domain.MemberVO;
@@ -19,5 +20,11 @@ public interface AdminDAO {
     
     // 거래 진행방(활성 채팅방) 수
     public int getActiveChatRoomCount() throws Exception;
+    
+    // 전체 물품 리스트 조회
+    public List<Map<String, Object>> getAdminGoodsList() throws Exception;
+    
+    // 물품 상태 강제 변경
+    public void adminUpdateGoodsStatus(Map<String, Object> params) throws Exception;
 
 }
