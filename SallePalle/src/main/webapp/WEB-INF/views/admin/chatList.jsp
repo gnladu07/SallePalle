@@ -195,11 +195,18 @@
             <span>판매 권한 신청</span>
         </a>
         
-        <a href="/admin/items" class="admin-menu-item">
+        <a href="/admin/goodsManagement" class="admin-menu-item">
             <svg viewBox="0 0 24 24" fill="white">
                 <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
             </svg>
             <span>물품 관리</span>
+        </a>
+        
+        <a href="/admin/chatList" class="admin-menu-item">
+            <svg viewBox="0 0 24 24" fill="white">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            </svg>
+            <span>채팅 모니터링</span>
         </a>
     </div>
 </div>
@@ -211,8 +218,8 @@
         <!-- 헤더 -->
         <div class="home-header">
             <div class="home-header-left">
-                <h1>🚨 실시간 채팅 모니터링</h1>
-                <p>모든 중고거래 채팅을 관리/조율/경고</p>
+                <h1>💬 실시간 채팅 모니터링</h1>
+                <p>모든 중고거래 채팅을 관리/조율/경고하고 해산시킬 수 있습니다.</p>
             </div>
             <div class="home-header-right">
                 <div class="home-admin-badge">

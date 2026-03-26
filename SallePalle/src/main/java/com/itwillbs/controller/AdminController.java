@@ -200,6 +200,14 @@ public class AdminController {
         log.debug(" AdminController: getDashboardCounts() 끝! ");
         return map;
     }
+    
+    // 중고 물품 관리 페이지
+    @GetMapping("/goodsManagement")
+    public String getGoodsManagment() {
+    	log.debug(" AdminController: getGoodsManagment()실행! ");
+    	log.debug(" AdminController: getGoodsManagment()끝! ");
+    	return "/admin/goodsManagement";
+    } 
 
 
 }
