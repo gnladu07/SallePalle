@@ -22,7 +22,7 @@ public interface AdminDAO {
     public int getActiveChatRoomCount() throws Exception;
     
     // 전체 물품 리스트 조회
-    public List<Map<String, Object>> getAdminGoodsList() throws Exception;
+    public List<Map<String, Object>> getAdminGoodsList(Map<String, Object> paramMap) throws Exception;
     
     // 물품 상태 강제 변경
     public void adminUpdateGoodsStatus(Map<String, Object> params) throws Exception;

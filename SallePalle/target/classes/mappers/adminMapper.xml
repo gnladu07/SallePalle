@@ -183,10 +183,56 @@
             m.nickname,
             m.email AS seller_email,
             s.title,
-            c.item_ctg_name AS category_name,  s.status
+            c.item_ctg_name AS category_name,
+            s.status
         FROM saletrade_board s
         JOIN member m ON s.seller_id = m.member_id
-        JOIN saletrade_item_category c ON s.item_ctg_id = c.item_ctg_id  ORDER BY s.regdate DESC
+        JOIN saletrade_item_category c ON s.item_ctg_id = c.item_ctg_id
+        
+        <where>
+            <if test="keyword != null and keyword != ''">
+                <choose>
+                    <when test="type == 'userid'">
+                        AND m.userid LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="type == 'nickname'">
+                        AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="type == 'title'">
+                        AND s.title LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="type == 'status'">
+                        <choose>
+                            <when test="keyword == '판매중'">
+                                AND s.status IN ('S', 'N')
+                            </when>
+                            <when test="keyword == '판매중지'">
+                                AND s.status = 'R'
+                            </when>
+                            <when test="keyword == '삭제'">
+                                AND s.status = 'D'
+                            </when>
+                            <otherwise>
+                                AND s.status = #{keyword}
+                            </otherwise>
+                        </choose>
+                    </when>
+                </choose>
+            </if>
+        </where>
+        
+        ORDER BY 
+        <choose>
+            <when test="sort == 'on_sale'">
+                CASE WHEN s.status IN ('S', 'N') THEN 1 ELSE 2 END, s.regdate DESC
+            </when>
+            <when test="sort == 'stopped'">
+                CASE WHEN s.status = 'R' THEN 1 ELSE 2 END, s.regdate DESC
+            </when>
+            <otherwise>
+                s.regdate DESC
+            </otherwise>
+        </choose>
     </select>
 
     <update id="adminUpdateGoodsStatus">
