@@ -175,7 +175,7 @@
         WHERE admin_closed = 'N'
     </select>
     
-    <select id="getAdminGoodsList" resultType="map">
+	<select id="getAdminGoodsList" resultType="map">
         SELECT 
             s.trade_id,
             s.regdate,
@@ -183,12 +183,10 @@
             m.nickname,
             m.email AS seller_email,
             s.title,
-            c.item_ctg_name AS category_name,
-            s.status
+            c.item_ctg_name AS category_name,  s.status
         FROM saletrade_board s
         JOIN member m ON s.seller_id = m.member_id
-        JOIN item_category c ON s.item_ctg_id = c.item_ctg_id
-        ORDER BY s.regdate DESC
+        JOIN saletrade_item_category c ON s.item_ctg_id = c.item_ctg_id  ORDER BY s.regdate DESC
     </select>
 
     <update id="adminUpdateGoodsStatus">
