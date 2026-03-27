@@ -184,6 +184,73 @@
         border-bottom: 1px solid #eee;
         vertical-align: middle;
     }
+    
+     /* 검색 & 정렬 박스 */
+    .goods-controls {
+        background: white;
+        padding: 20px 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .goods-search-form {
+        display: flex;
+        gap: 10px;
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .goods-select {
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .goods-select:focus {
+        border-color: #FF6F61;
+    }
+
+    .goods-input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .goods-input:focus {
+        border-color: #FF6F61;
+    }
+
+    .goods-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .goods-btn-search {
+        background: linear-gradient(135deg, #FF6F61, #9B59B6);
+        color: white;
+    }
+
+    .goods-btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3);
+    }
 
     .goods-table tbody tr { transition: background 0.2s; }
     .goods-table tbody tr:hover { background: #f8f9fa; }
@@ -285,6 +352,37 @@
                 </div>
                 <span class="home-admin-name">${loginInfo.username} 관리자님</span>
             </div>
+        </div>
+        
+        <!-- 검색 & 정렬 -->
+		<div class="goods-controls">
+            <form method="get" action="/admin/goodsManagement" class="goods-search-form">
+                <select name="type" class="goods-select">
+                    <option value="userid" ${param.type == 'userid' ? 'selected' : ''}>아이디</option>
+                    <option value="nickname" ${param.type == 'nickname' ? 'selected' : ''}>닉네임</option>
+                    <option value="title" ${param.type == 'title' ? 'selected' : ''}>제목</option>
+                    <option value="status" ${param.type == 'status' ? 'selected' : ''}>상태</option>
+                </select>
+
+                <input type="text" 
+                       name="keyword" 
+                       class="goods-input" 
+                       value="${param.keyword}" 
+                       placeholder="상태는 '판매중', '판매중지', '삭제' 입력">
+
+                <button type="submit" class="goods-btn goods-btn-search">검색</button>
+            </form>
+
+            <form id="sortForm" method="get" action="/admin/goodsManagement">
+                <input type="hidden" name="type" value="${param.type}">
+                <input type="hidden" name="keyword" value="${param.keyword}">
+
+                <select name="sort" class="goods-select" onchange="document.getElementById('sortForm').submit()">
+                    <option value="regdate" ${param.sort == 'regdate' || empty param.sort ? 'selected' : ''}>최신등록일순</option>
+                    <option value="on_sale" ${param.sort == 'on_sale' ? 'selected' : ''}>판매중</option>
+                    <option value="stopped" ${param.sort == 'stopped' ? 'selected' : ''}>판매중지</option>
+                </select>
+            </form>
         </div>
     
         <div class="content-box">

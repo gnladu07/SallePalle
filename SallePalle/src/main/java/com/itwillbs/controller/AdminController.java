@@ -203,10 +203,21 @@ public class AdminController {
     
     // 중고 물품 관리 페이지 (리스트 출력)
     @GetMapping("/goodsManagement")
-    public String getGoodsManagement(Model model) throws Exception {
+    public String getGoodsManagement(
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false, defaultValue = "regdate") String sort,
+            Model model) throws Exception {
+        
         log.debug(" AdminController: getGoodsManagement() 실행! ");
         
-        List<Map<String, Object>> goodsList = aService.getAdminGoodsList();
+        // 검색/정렬 데이터를 Map에 담아서 전달
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("type", type);
+        paramMap.put("keyword", keyword);
+        paramMap.put("sort", sort);
+        
+        List<Map<String, Object>> goodsList = aService.getAdminGoodsList(paramMap);
         model.addAttribute("goodsList", goodsList);
         
         log.debug(" AdminController: getGoodsManagement() 끝! ");

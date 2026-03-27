@@ -79,13 +79,19 @@ public class AdminDAOImpl implements AdminDAO {
 	}
 
 	@Override
-    public List<Map<String, Object>> getAdminGoodsList() throws Exception {
-        return sqlSession.selectList(NAMESPACE + "getAdminGoodsList");
+    public List<Map<String, Object>> getAdminGoodsList(Map<String, Object> paramMap) throws Exception {
+		log.debug(" AdminDAOImpl: getAdminGoodsList() 실행! ");
+		log.debug(" AdminDAOImpl: getAdminGoodsList() 끝! ");
+        return sqlSession.selectList(NAMESPACE + "getAdminGoodsList", paramMap);
     }
 
     @Override
     public void adminUpdateGoodsStatus(Map<String, Object> params) throws Exception {
+    	log.debug(" AdminDAOImpl: adminUpdateGoodsStatus() 실행! ");
+    	
         sqlSession.update(NAMESPACE + "adminUpdateGoodsStatus", params);
+        
+        log.debug(" AdminDAOImpl: adminUpdateGoodsStatus() 끝! ");
     }
 
 
