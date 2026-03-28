@@ -117,4 +117,11 @@ public class AdminServiceImpl implements AdminService {
         log.debug(" AdminServiceImpl: adminUpdateGoodsStatus() 끝! ");
     }
 
+    @Override
+    public int getTotalGoodsCount(Map<String, Object> paramMap) throws Exception {
+    	log.debug(" AdminServiceImpl: getTotalGoodsCount() 실행! ");
+		log.debug(" AdminServiceImpl: getTotalGoodsCount() 끝! ");
+        return aDAO.getTotalGoodsCount(paramMap);
+    }
+
 }

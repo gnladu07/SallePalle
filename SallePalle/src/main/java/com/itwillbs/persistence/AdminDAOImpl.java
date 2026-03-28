@@ -94,5 +94,12 @@ public class AdminDAOImpl implements AdminDAO {
         log.debug(" AdminDAOImpl: adminUpdateGoodsStatus() 끝! ");
     }
 
+    @Override
+    public int getTotalGoodsCount(Map<String, Object> paramMap) throws Exception {
+    	log.debug(" AdminDAOImpl: getTotalGoodsCount() 실행! ");
+		log.debug(" AdminDAOImpl: getTotalGoodsCount() 끝! ");
+        return sqlSession.selectOne("getTotalGoodsCount", paramMap);
+    }
+
 
 }
