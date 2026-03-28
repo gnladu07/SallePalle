@@ -204,6 +204,7 @@ public class AdminController {
     // 중고 물품 관리 페이지 (리스트 출력)
     @GetMapping("/goodsManagement")
     public String getGoodsManagement(
+    		Criteria cri,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false, defaultValue = "regdate") String sort,
@@ -216,9 +217,16 @@ public class AdminController {
         paramMap.put("type", type);
         paramMap.put("keyword", keyword);
         paramMap.put("sort", sort);
+        paramMap.put("pageStart", cri.getPageStart());
+        paramMap.put("amount", cri.getAmount());
         
         List<Map<String, Object>> goodsList = aService.getAdminGoodsList(paramMap);
+        int total = aService.getTotalGoodsCount(paramMap);
+        
+        PageVO pageDTO = new PageVO(cri, total);
+        
         model.addAttribute("goodsList", goodsList);
+        model.addAttribute("pageMaker", pageDTO);
         
         log.debug(" AdminController: getGoodsManagement() 끝! ");
         return "/admin/goodsManagement";

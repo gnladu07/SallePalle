@@ -24,6 +24,9 @@ public interface AdminService {
     // 물품 관리 리스트
     public List<Map<String, Object>> getAdminGoodsList(Map<String, Object> paramMap) throws Exception;
     
+    // 물품 총 개수 (페이징용)
+    public int getTotalGoodsCount(Map<String, Object> paramMap) throws Exception;
+    
     // 물품 상태 변경 및 메일 발송용
     public void adminUpdateGoodsStatus(int trade_id, String actionType, String reason, String seller_email) throws Exception;
 

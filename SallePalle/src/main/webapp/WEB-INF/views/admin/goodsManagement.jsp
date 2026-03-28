@@ -289,6 +289,12 @@
     .btn-cancel:hover { background: #e9ecef; }
     .btn-submit { background: linear-gradient(135deg, #FF6F61, #9B59B6); color: white; }
     .btn-submit:hover { opacity: 0.9; }
+    
+    /* 페이지네이션 */
+    .goods-pagination { display: flex; justify-content: center; list-style: none; gap: 8px; margin-top: 30px; }
+    .goods-pagination li a { display: block; padding: 8px 14px; background: white; border: 1px solid #ddd; border-radius: 8px; color: #666; text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.2s; }
+    .goods-pagination li a:hover { border-color: #FF6F61; color: #FF6F61; }
+    .goods-pagination li.active a { background: linear-gradient(135deg, #FF6F61, #9B59B6); color: white; border-color: transparent; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -440,6 +446,21 @@
                     </tbody>
                 </table>
             </div>
+            <ul class="goods-pagination">
+                <c:if test="${pageMaker.prev}">
+                    <li><a href="?page=${pageMaker.startPage - 1}&sort=${param.sort}&type=${param.type}&keyword=${param.keyword}">이전</a></li>
+                </c:if>
+                
+                <c:forEach var="p" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+                    <li class="${p == pageMaker.cri.page ? 'active' : ''}">
+                        <a href="?page=${p}&sort=${param.sort}&type=${param.type}&keyword=${param.keyword}">${p}</a>
+                    </li>
+                </c:forEach>
+                
+                <c:if test="${pageMaker.next}">
+                    <li><a href="?page=${pageMaker.endPage + 1}&sort=${param.sort}&type=${param.type}&keyword=${param.keyword}">다음</a></li>
+                </c:if>
+            </ul>
         </div>
         
     </div>
