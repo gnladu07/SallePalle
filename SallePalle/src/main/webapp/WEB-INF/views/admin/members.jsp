@@ -211,6 +211,13 @@
     }
 
     /* 테이블 */
+    .content-box {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
     .members-table-wrapper {
         background: white;
         border-radius: 15px;
@@ -452,125 +459,127 @@
         </div>
 
         <!-- 테이블 -->
-        <div class="members-table-wrapper">
-            <table class="members-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>아이디</th>
-                        <th>이름</th>
-                        <th>닉네임</th>
-                        <th>이메일</th>
-                        <th>살래P</th>
-                        <th>팔래M</th>
-                        <th>판매 권한</th>
-                        <th>활성 상태</th>
-                        <th>가입일</th>
-                        <th>탈퇴일</th>
-                        <th>관리</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <c:forEach var="m" items="${memberList}">
-                        <tr>
-                            <td>${m.member_id}</td>
-                            <td>${m.userid}</td>
-                            <td>${m.username}</td>
-                            <td>${m.nickname}</td>
-                            <td>${m.email}</td>
-                            <td>${m.wallet_balance}</td>
-                            <td>${m.wallet_mileage}</td>
-                            
-                            <!-- 판매 상태 -->
-                            <td>
-                                <c:choose>
-                                    <c:when test="${m.seller_status == 'Y'}">
-                                        <span class="members-badge green">판매자</span>
-                                    </c:when>
-                                    <c:when test="${m.seller_status == 'W'}">
-                                        <span class="members-badge blue">대기중</span>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span class="members-badge gray">일반회원</span>
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-
-                            <!-- 활성 상태 -->
-                            <td>
-                                <c:choose>
-                                    <c:when test="${m.enable_flag == '1'}">
-                                        <span class="members-badge green">활성</span>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span class="members-badge red">비활성</span>
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-
-                            <td>${m.regdate}</td>
-                            <td>${m.deleted_at}</td>
-
-                            <td>
-                                <!-- 정지 / 정지 해제 버튼 -->
-                                <c:choose>
-                                    <c:when test="${m.enable_flag == '1'}">
-                                        <form action="/admin/disableMember" method="post" style="display:inline;">
-                                            <input type="hidden" name="member_id" value="${m.member_id}">
-                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-                                            <button class="members-action-btn warning" type="submit">정지</button>
-                                        </form>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <form action="/admin/enableMember" method="post" style="display:inline;">
-                                            <input type="hidden" name="member_id" value="${m.member_id}">
-                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-                                            <button class="members-action-btn success" type="submit">정지 해제</button>
-                                        </form>
-                                    </c:otherwise>
-                                </c:choose>
-
-                                <c:if test="${m.deleted_at != null or m.enable_flag == '0'}">
-                                    <form action="/admin/deleteMember" method="post" style="display:inline;">
-                                        <input type="hidden" name="member_id" value="${m.member_id}">
-                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-                                        <button class="members-action-btn danger" type="submit">삭제</button>
-                                    </form>
-                                </c:if>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
+        <div class="content-box">
+	        <div class="members-table-wrapper">
+	            <table class="members-table">
+	                <thead>
+	                    <tr>
+	                        <th>ID</th>
+	                        <th>아이디</th>
+	                        <th>이름</th>
+	                        <th>닉네임</th>
+	                        <th>이메일</th>
+	                        <th>살래P</th>
+	                        <th>팔래M</th>
+	                        <th>판매 권한</th>
+	                        <th>활성 상태</th>
+	                        <th>가입일</th>
+	                        <th>탈퇴일</th>
+	                        <th>관리</th>
+	                    </tr>
+	                </thead>
+	
+	                <tbody>
+	                    <c:forEach var="m" items="${memberList}">
+	                        <tr>
+	                            <td>${m.member_id}</td>
+	                            <td>${m.userid}</td>
+	                            <td>${m.username}</td>
+	                            <td>${m.nickname}</td>
+	                            <td>${m.email}</td>
+	                            <td>${m.wallet_balance}</td>
+	                            <td>${m.wallet_mileage}</td>
+	                            
+	                            <!-- 판매 상태 -->
+	                            <td>
+	                                <c:choose>
+	                                    <c:when test="${m.seller_status == 'Y'}">
+	                                        <span class="members-badge green">판매자</span>
+	                                    </c:when>
+	                                    <c:when test="${m.seller_status == 'W'}">
+	                                        <span class="members-badge blue">대기중</span>
+	                                    </c:when>
+	                                    <c:otherwise>
+	                                        <span class="members-badge gray">일반회원</span>
+	                                    </c:otherwise>
+	                                </c:choose>
+	                            </td>
+	
+	                            <!-- 활성 상태 -->
+	                            <td>
+	                                <c:choose>
+	                                    <c:when test="${m.enable_flag == '1'}">
+	                                        <span class="members-badge green">활성</span>
+	                                    </c:when>
+	                                    <c:otherwise>
+	                                        <span class="members-badge red">비활성</span>
+	                                    </c:otherwise>
+	                                </c:choose>
+	                            </td>
+	
+	                            <td>${m.regdate}</td>
+	                            <td>${m.deleted_at}</td>
+	
+	                            <td>
+	                                <!-- 정지 / 정지 해제 버튼 -->
+	                                <c:choose>
+	                                    <c:when test="${m.enable_flag == '1'}">
+	                                        <form action="/admin/disableMember" method="post" style="display:inline;">
+	                                            <input type="hidden" name="member_id" value="${m.member_id}">
+	                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+	                                            <button class="members-action-btn warning" type="submit">정지</button>
+	                                        </form>
+	                                    </c:when>
+	                                    <c:otherwise>
+	                                        <form action="/admin/enableMember" method="post" style="display:inline;">
+	                                            <input type="hidden" name="member_id" value="${m.member_id}">
+	                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+	                                            <button class="members-action-btn success" type="submit">정지 해제</button>
+	                                        </form>
+	                                    </c:otherwise>
+	                                </c:choose>
+	
+	                                <c:if test="${m.deleted_at != null or m.enable_flag == '0'}">
+	                                    <form action="/admin/deleteMember" method="post" style="display:inline;">
+	                                        <input type="hidden" name="member_id" value="${m.member_id}">
+	                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+	                                        <button class="members-action-btn danger" type="submit">삭제</button>
+	                                    </form>
+	                                </c:if>
+	                            </td>
+	                        </tr>
+	                    </c:forEach>
+	                </tbody>
+	            </table>
+	        </div>
+	
+	        <!-- 페이지네이션 -->
+	        <ul class="members-pagination">
+	            <c:if test="${pageMaker.prev}">
+	                <li>
+	                    <a href="?page=${pageMaker.startPage - 1}&sort=${param.sort}&type=${param.type}&keyword=${param.keyword}">
+	                        이전
+	                    </a>
+	                </li>
+	            </c:if>
+	
+	            <c:forEach var="p" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+	                <li class="${p == pageMaker.cri.page ? 'active' : ''}">
+	                    <a href="?page=${p}&sort=${param.sort}&type=${param.type}&keyword=${param.keyword}">
+	                        ${p}
+	                    </a>
+	                </li>
+	            </c:forEach>
+	
+	            <c:if test="${pageMaker.next}">
+	                <li>
+	                    <a href="?page=${pageMaker.endPage + 1}&sort=${param.sort}&type=${param.type}&keyword=${param.keyword}">
+	                        다음
+	                    </a>
+	                </li>
+	            </c:if>
+	        </ul>
         </div>
-
-        <!-- 페이지네이션 -->
-        <ul class="members-pagination">
-            <c:if test="${pageMaker.prev}">
-                <li>
-                    <a href="?page=${pageMaker.startPage - 1}&sort=${param.sort}&type=${param.type}&keyword=${param.keyword}">
-                        이전
-                    </a>
-                </li>
-            </c:if>
-
-            <c:forEach var="p" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
-                <li class="${p == pageMaker.cri.page ? 'active' : ''}">
-                    <a href="?page=${p}&sort=${param.sort}&type=${param.type}&keyword=${param.keyword}">
-                        ${p}
-                    </a>
-                </li>
-            </c:forEach>
-
-            <c:if test="${pageMaker.next}">
-                <li>
-                    <a href="?page=${pageMaker.endPage + 1}&sort=${param.sort}&type=${param.type}&keyword=${param.keyword}">
-                        다음
-                    </a>
-                </li>
-            </c:if>
-        </ul>
 
     </div>
 </div>
