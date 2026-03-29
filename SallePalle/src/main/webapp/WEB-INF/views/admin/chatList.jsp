@@ -8,9 +8,7 @@
 <meta charset="UTF-8">
 <title>채팅 모니터링 - 관리자</title>
 <style>
-    /* ==========================================
-       [공통] 베이스 레이아웃 (home.jsp 스타일)
-       ========================================== */
+    /* [공통] 베이스 레이아웃 */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Noto Sans KR', sans-serif; background: #f5f6fa; }
 
@@ -37,9 +35,7 @@
     .home-admin-badge svg { width: 20px; height: 20px; fill: #FF6F61; }
     .home-admin-name { color: white; font-size: 14px; font-weight: 600; }
 
-    /* ==========================================
-       검색창 & 컨텐츠 영역
-       ========================================== */
+    /* 검색창 & 컨텐츠 영역 */
     .chat-controls { background: white; padding: 20px 25px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
     .chat-search-form { display: flex; gap: 10px; flex: 1; min-width: 300px; }
     .chat-select, .chat-input { padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: 0.2s; }
