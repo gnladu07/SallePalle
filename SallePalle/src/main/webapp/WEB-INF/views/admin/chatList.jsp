@@ -76,6 +76,73 @@
         height: 20px;
     }
     
+    /* 검색 & 정렬 박스 */
+    .members-controls {
+        background: white;
+        padding: 20px 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .members-search-form {
+        display: flex;
+        gap: 10px;
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .members-select {
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .members-select:focus {
+        border-color: #FF6F61;
+    }
+
+    .members-input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .members-input:focus {
+        border-color: #FF6F61;
+    }
+
+    .members-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .members-btn-search {
+        background: linear-gradient(135deg, #FF6F61, #9B59B6);
+        color: white;
+    }
+
+    .members-btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3);
+    }
+    
     /* 메인 컨텐츠 */
     .main-chatList {
         margin-left: 260px;
@@ -84,6 +151,13 @@
 
     .chatList-container {
         max-width: 1400px;
+    }
+    
+    .content-box {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
     /* 헤더 */
@@ -145,10 +219,40 @@
     .page-title { font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #333; }
     
     /* 테이블 스타일 */
-    .admin-table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .admin-table th, .admin-table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-    .admin-table th { background: #333; color: white; font-weight: 500; }
-    .admin-table tr:hover { background: #f9f9f9; }
+    .goods-table-wrapper {
+        overflow-x: auto;
+        border-radius: 12px;
+        border: 1px solid #eee;
+    }
+
+    .goods-table {
+        width: 100%;
+        border-collapse: collapse;
+        white-space: nowrap;
+    }
+
+    .goods-table thead {
+        background: linear-gradient(135deg, #FF6F61, #9B59B6);
+    }
+
+    .goods-table th {
+        padding: 15px 20px;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .goods-table td {
+        padding: 15px 20px;
+        font-size: 14px;
+        color: #444;
+        border-bottom: 1px solid #eee;
+        vertical-align: middle;
+    }
+    
+    .goods-table tbody tr { transition: background 0.2s; }
+    .goods-table tbody tr:hover { background: #f8f9fa; }
     
     /* 위험 감지 행 강조 스타일 */
     .flagged-row { background: #fff0f0 !important; }
@@ -231,59 +335,93 @@
             </div>
         </div>
         
+        <!-- 검색 & 정렬 -->
+        <div class="members-controls">
+            <!-- 검색 폼 -->
+            <form method="get" action="/admin/members" class="members-search-form">
+                <select name="type" class="members-select">
+                    <option value="userid" ${param.type == 'userid' ? 'selected' : ''}>아이디</option>
+                    <option value="username" ${param.type == 'username' ? 'selected' : ''}>이름</option>
+                    <option value="nickname" ${param.type == 'nickname' ? 'selected' : ''}>닉네임</option>
+                </select>
+
+                <input type="text" 
+                       name="keyword" 
+                       class="members-input" 
+                       value="${param.keyword}" 
+                       placeholder="검색어 입력">
+
+                <button type="submit" class="members-btn members-btn-search">검색</button>
+            </form>
+
+            <!-- 정렬 드롭다운 -->
+            <form id="sortForm" method="get" action="/admin/members">
+                <input type="hidden" name="type" value="${param.type}">
+                <input type="hidden" name="keyword" value="${param.keyword}">
+
+                <select name="sort" class="members-select" onchange="document.getElementById('sortForm').submit()">
+                    <option value="regdate" ${param.sort == 'regdate' || empty param.sort ? 'selected' : ''}>가입일 최신순</option>
+                    <option value="disabled" ${param.sort == 'disabled' ? 'selected' : ''}>정지 회원 우선</option>
+                    <option value="deleted" ${param.sort == 'deleted' ? 'selected' : ''}>탈퇴 회원 우선</option>
+                </select>
+            </form>
+        </div>
         
-	    <div class="main-content">
-	        <table class="admin-table">
-	            <thead>
-	                <tr>
-	                    <th>방 번호</th>
-	                    <th>상태</th>
-	                    <th>거래 물품명</th>
-	                    <th>참여자 (구매자 ↔ 판매자)</th>
-	                    <th>마지막 메시지</th>
-	                    <th>시간</th>
-	                    <th>관리</th>
-	                </tr>
-	            </thead>
-	            <tbody>
-	                <c:forEach var="room" items="${chatList}">
-	                    <tr class="${room.admin_closed == 'Y' ? 'closed-row' : (room.is_flagged == 'Y' ? 'flagged-row' : '')}">
-	                        <td>${room.room_id}</td>
-	                        <td>
-	                            <c:choose>
-	                                <%-- 1순위: 이미 강제 해산된 방인지 체크 --%>
-	                                <c:when test="${room.admin_closed == 'Y'}">
-	                                    <span class="badge badge-closed">해산 완료</span>
-	                                </c:when>
-	                                <%-- 2순위: 해산 안 됐지만, GPT가 위험을 감지한 방인지 체크 --%>
-	                                <c:when test="${room.is_flagged == 'Y'}">
-	                                    <span class="badge badge-danger">위험 감지</span>
-	                                </c:when>
-	                                <%-- 3순위: 아무 문제 없는 깨끗한 방 --%>
-	                                <c:otherwise>
-	                                    <span class="badge badge-safe">정상</span>
-	                                </c:otherwise>
-	                            </c:choose>
-	                        </td>
-	                        <td>${room.trade_title}</td>
-	                        <td>${room.buyer_nickname} ↔ ${room.seller_nickname}</td>
-	                        <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-	                            ${room.last_message}
-	                        </td>
-	                        <td><fmt:formatDate value="${room.last_message_time}" pattern="MM/dd HH:mm"/></td>
-	                        <td>
-	                            <a href="/chat/chatRoom?room_id=${room.room_id}" class="btn-view" target="_blank">열람하기</a>
-	                        </td>
-	                    </tr>
-	                </c:forEach>
-	                
-	                <c:if test="${empty chatList}">
-	                    <tr>
-	                        <td colspan="7" style="text-align:center; padding: 30px;">개설된 채팅방이 없습니다.</td>
-	                    </tr>
-	                </c:if>
-	            </tbody>
-	        </table>
+        <!-- 메인 컨텐츠 -->
+	    <div class="content-box">
+		    <div class="goods-table-wrapper">
+		        <table class="goods-table">
+		            <thead>
+		                <tr>
+		                    <th>방 번호</th>
+		                    <th>상태</th>
+		                    <th>거래 물품명</th>
+		                    <th>참여자 (구매자 ↔ 판매자)</th>
+		                    <th>마지막 메시지</th>
+		                    <th>시간</th>
+		                    <th>관리</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+		                <c:forEach var="room" items="${chatList}">
+		                    <tr class="${room.admin_closed == 'Y' ? 'closed-row' : (room.is_flagged == 'Y' ? 'flagged-row' : '')}">
+		                        <td>${room.room_id}</td>
+		                        <td>
+		                            <c:choose>
+		                                <%-- 1순위: 이미 강제 해산된 방인지 체크 --%>
+		                                <c:when test="${room.admin_closed == 'Y'}">
+		                                    <span class="badge badge-closed">해산 완료</span>
+		                                </c:when>
+		                                <%-- 2순위: 해산 안 됐지만, GPT가 위험을 감지한 방인지 체크 --%>
+		                                <c:when test="${room.is_flagged == 'Y'}">
+		                                    <span class="badge badge-danger">위험 감지</span>
+		                                </c:when>
+		                                <%-- 3순위: 아무 문제 없는 깨끗한 방 --%>
+		                                <c:otherwise>
+		                                    <span class="badge badge-safe">정상</span>
+		                                </c:otherwise>
+		                            </c:choose>
+		                        </td>
+		                        <td>${room.trade_title}</td>
+		                        <td>${room.buyer_nickname} ↔ ${room.seller_nickname}</td>
+		                        <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+		                            ${room.last_message}
+		                        </td>
+		                        <td><fmt:formatDate value="${room.last_message_time}" pattern="MM/dd HH:mm"/></td>
+		                        <td>
+		                            <a href="/chat/chatRoom?room_id=${room.room_id}" class="btn-view" target="_blank">열람하기</a>
+		                        </td>
+		                    </tr>
+		                </c:forEach>
+		                
+		                <c:if test="${empty chatList}">
+		                    <tr>
+		                        <td colspan="7" style="text-align:center; padding: 30px;">개설된 채팅방이 없습니다.</td>
+		                    </tr>
+		                </c:if>
+		            </tbody>
+		        </table>
+		    </div>
 	    </div>
 	</div>
 </div>
