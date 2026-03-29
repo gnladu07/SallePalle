@@ -20,7 +20,10 @@ public interface ChatDAO {
     public void flagChatRoom(int room_id) throws Exception;
     
     // 관리자용 채팅 리스트
-    public List<ChatRoomVO> getAdminChatList() throws Exception;
+    public List<ChatRoomVO> getAdminChatList(Map<String, Object> paramMap) throws Exception;
+    
+    // 관리자용 전체 채팅 개수 (페이징용)
+    public int getTotalAdminChatCount(Map<String, Object> paramMap) throws Exception;
     
     // 관리자 채팅방 강제 해산 (소프트 딜리트)
     public void adminSoftCloseRoom(int room_id) throws Exception; 

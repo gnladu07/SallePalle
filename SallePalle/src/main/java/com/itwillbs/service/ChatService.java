@@ -1,6 +1,8 @@
 package com.itwillbs.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.itwillbs.domain.ChatMessageVO;
 import com.itwillbs.domain.ChatRoomVO;
 
@@ -36,12 +38,15 @@ public interface ChatService {
     // AI 안전결제 필터링: 위험 채팅방 감지 시 상태값(Flag) 변경
     public void flagChatRoom(int room_id) throws Exception;
     
-    // [관리자] 전체 채팅방 모니터링 목록 조회 (위험 감지 방 최상단 정렬)
-    public List<ChatRoomVO> getAdminChatList() throws Exception;
+    // 관리자용 채팅 리스트
+    public List<ChatRoomVO> getAdminChatList(Map<String, Object> paramMap) throws Exception;
+    
+    // 관리자용 전체 채팅 개수 (페이징용)
+    public int getTotalAdminChatCount(Map<String, Object> paramMap) throws Exception;
 
-    // [관리자] 사기 의심 채팅방 강제 해산 처리
+    // 관리자 채팅방 강제 해산 (소프트 딜리트)
     public void adminSoftCloseRoom(int room_id) throws Exception;
     
-    // [관리자] 강제 해산(폭파)된 채팅방 목록 및 증거 조회
+    // 관리자 강제 해산된 채팅방 목록 조회
     public List<ChatRoomVO> getAdminClosedChatList() throws Exception;
 }

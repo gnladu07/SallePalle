@@ -88,12 +88,10 @@
         ORDER BY cr.created_at DESC
     </select>
     
-    <select id="getAdminChatList" resultType="ChatRoomVO">
+	<select id="getAdminChatList" resultType="ChatRoomVO">
         SELECT 
-            cr.room_id,
-            cr.created_at,
-            cr.is_flagged,
-            cr.admin_closed,  sb.title AS trade_title,
+            cr.room_id, cr.created_at, cr.is_flagged, cr.admin_closed,
+            sb.title AS trade_title,
             buyer.nickname AS buyer_nickname,
             seller.nickname AS seller_nickname,
             (SELECT message_text FROM chat_message WHERE room_id = cr.room_id ORDER BY send_time DESC LIMIT 1) AS last_message,
@@ -102,7 +100,56 @@
         JOIN saletrade_board sb ON cr.trade_id = sb.trade_id
         JOIN member buyer ON cr.buyer_id = buyer.member_id
         JOIN member seller ON cr.seller_id = seller.member_id
-        ORDER BY cr.is_flagged DESC, last_message_time DESC
+        <where>
+            <if test="keyword != null and keyword != ''">
+                <choose>
+                    <when test="type == 'room_id'"> AND cr.room_id = #{keyword} </when>
+                    <when test="type == 'trade_title'"> AND sb.title LIKE CONCAT('%', #{keyword}, '%') </when>
+                    <when test="type == 'seller_name'"> AND seller.nickname LIKE CONCAT('%', #{keyword}, '%') </when>
+                    <when test="type == 'buyer_name'"> AND buyer.nickname LIKE CONCAT('%', #{keyword}, '%') </when>
+                    <when test="type == 'status'">
+                        <choose>
+                            <when test="keyword == '정상'"> AND cr.is_flagged = 'N' AND cr.admin_closed = 'N' </when>
+                            <when test="keyword == '위험 감지'"> AND cr.is_flagged = 'Y' AND cr.admin_closed = 'N' </when>
+                            <when test="keyword == '해산 완료'"> AND cr.admin_closed = 'Y' </when>
+                        </choose>
+                    </when>
+                </choose>
+            </if>
+        </where>
+        ORDER BY 
+        <choose>
+            <when test="sort == 'normal'"> CASE WHEN cr.is_flagged = 'N' AND cr.admin_closed = 'N' THEN 1 ELSE 2 END, last_message_time DESC </when>
+            <when test="sort == 'flagged'"> CASE WHEN cr.is_flagged = 'Y' AND cr.admin_closed = 'N' THEN 1 ELSE 2 END, last_message_time DESC </when>
+            <when test="sort == 'closed'"> CASE WHEN cr.admin_closed = 'Y' THEN 1 ELSE 2 END, last_message_time DESC </when>
+            <otherwise> last_message_time DESC </otherwise>
+        </choose>
+        LIMIT #{pageStart}, #{amount}
+    </select>
+    
+    <select id="getTotalAdminChatCount" resultType="int">
+        SELECT COUNT(*)
+        FROM chat_room cr
+        JOIN saletrade_board sb ON cr.trade_id = sb.trade_id
+        JOIN member buyer ON cr.buyer_id = buyer.member_id
+        JOIN member seller ON cr.seller_id = seller.member_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                <choose>
+                    <when test="type == 'room_id'"> AND cr.room_id = #{keyword} </when>
+                    <when test="type == 'trade_title'"> AND sb.title LIKE CONCAT('%', #{keyword}, '%') </when>
+                    <when test="type == 'seller_name'"> AND seller.nickname LIKE CONCAT('%', #{keyword}, '%') </when>
+                    <when test="type == 'buyer_name'"> AND buyer.nickname LIKE CONCAT('%', #{keyword}, '%') </when>
+                    <when test="type == 'status'">
+                        <choose>
+                            <when test="keyword == '정상'"> AND cr.is_flagged = 'N' AND cr.admin_closed = 'N' </when>
+                            <when test="keyword == '위험 감지'"> AND cr.is_flagged = 'Y' AND cr.admin_closed = 'N' </when>
+                            <when test="keyword == '해산 완료'"> AND cr.admin_closed = 'Y' </when>
+                        </choose>
+                    </when>
+                </choose>
+            </if>
+        </where>
     </select>
 	
 	<update id="markMessagesAsRead">

@@ -104,10 +104,17 @@ public class ChatDAOImpl implements ChatDAO {
     }
 
     @Override
-    public List<ChatRoomVO> getAdminChatList() throws Exception {
+    public List<ChatRoomVO> getAdminChatList(Map<String, Object> paramMap) throws Exception {
     	log.debug(" ChatDAOImpl: getAdminChatList() 실행!");
     	log.debug(" ChatDAOImpl: getAdminChatList() 끝!");
-        return sqlSession.selectList(NAMESPACE + "getAdminChatList");
+        return sqlSession.selectList(NAMESPACE + "getAdminChatList", paramMap);
+    }
+    
+    @Override
+    public int getTotalAdminChatCount(Map<String, Object> paramMap) throws Exception {
+    	log.debug(" ChatDAOImpl: getTotalAdminChatCount() 실행!");
+    	log.debug(" ChatDAOImpl: getTotalAdminChatCount() 끝!");
+        return sqlSession.selectOne(NAMESPACE + "getTotalAdminChatCount", paramMap);
     }
 
     @Override
