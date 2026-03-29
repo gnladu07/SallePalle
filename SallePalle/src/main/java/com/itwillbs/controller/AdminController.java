@@ -172,12 +172,28 @@ public class AdminController {
     }
     
     // 관리자 - 채팅 모니터링 페이지
-    @GetMapping("/admin/chatList")
-    public String adminChatList(Model model) throws Exception {
+    @GetMapping("/chatList")
+    public String adminChatList(
+            Criteria cri,
+            @RequestParam(required = false, defaultValue = "regdate") String sort,
+            Model model) throws Exception {
+        
         log.debug(" AdminController: adminChatList() 실행! ");
         
-        List<ChatRoomVO> adminChatList = chatService.getAdminChatList();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("type", cri.getType());
+        paramMap.put("keyword", cri.getKeyword());
+        paramMap.put("sort", sort);
+        paramMap.put("pageStart", cri.getPageStart());
+        paramMap.put("amount", cri.getAmount());
+        
+        List<ChatRoomVO> adminChatList = chatService.getAdminChatList(paramMap);
+        int total = chatService.getTotalAdminChatCount(paramMap);
+        
+        PageVO pageDTO = new PageVO(cri, total);
+        
         model.addAttribute("chatList", adminChatList);
+        model.addAttribute("pageMaker", pageDTO);
         
         log.debug(" AdminController: adminChatList() 끝! ");
         return "/admin/chatList";

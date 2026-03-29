@@ -142,10 +142,17 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-    public List<ChatRoomVO> getAdminChatList() throws Exception {
-		log.debug(" ChatServiceImpl: getAdminChatList() 실행! ");
-    	log.debug(" ChatServiceImpl: getAdminChatList() 실행! ");
-        return chatDAO.getAdminChatList();
+    public List<ChatRoomVO> getAdminChatList(Map<String, Object> paramMap) throws Exception {
+        log.debug(" ChatServiceImpl: getAdminChatList() 실행! ");
+        log.debug(" ChatServiceImpl: getAdminChatList() 끝! ");
+        return chatDAO.getAdminChatList(paramMap);
+    }
+	
+	@Override
+    public int getTotalAdminChatCount(Map<String, Object> paramMap) throws Exception {
+        log.debug(" ChatServiceImpl: getTotalAdminChatCount() 실행! ");
+        log.debug(" ChatServiceImpl: getTotalAdminChatCount() 끝! ");
+        return chatDAO.getTotalAdminChatCount(paramMap);
     }
 
 	@Override
