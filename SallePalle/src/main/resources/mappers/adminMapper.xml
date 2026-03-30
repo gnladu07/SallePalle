@@ -41,37 +41,6 @@
 	    	<result property="auth" column="auth" />
 	    </collection>
 	</resultMap>
-
-<!-- 	<select id="getSortedMembers" resultType="MemberVO">
-	    select *
-	    from member
-	    order by
-	        <choose>
-	
-	            가입일 기준 최신순
-	            <when test="sort == 'regdate'">
-	                regdate desc
-	            </when>
-	
-	            정지 회원 우선 (enable_flag = 0 먼저)
-	            <when test="sort == 'disabled'">
-	                enable_flag asc,
-	                regdate desc
-	            </when>
-	
-	            탈퇴 회원 우선 (deleted_at NOT NULL 먼저)
-	            <when test="sort == 'deleted'">
-	                case when deleted_at is null then 1 else 0 end asc,
-	                regdate desc
-	            </when>
-	
-	            default
-	            <otherwise>
-	                regdate desc
-	            </otherwise>
-	
-	        </choose>
-	</select> -->
 	
 	<select id="getTotalCount" resultType="int">
 		select count(*)
@@ -108,59 +77,49 @@
 	
 	<!-- 페이징 + 정렬된 회원 목록 조회 -->
 	<select id="getMemberListPaged" resultMap="memberMap">
-	
-	    select 
-	        m.*,
-	
-	        ifnull(pw.balance, 0)  as wallet_balance,
-	        ifnull(mw.mileage, 0)  as wallet_mileage
-	
-	    from member m
-	    left join pay_wallet pw
-	        on m.member_id = pw.member_id
-	    left join mileage_wallet mw
-	        on m.member_id = mw.member_id
-	
-	    where 1=1
-	    
-	    <!-- 검색 조건 추가 -->
-	    <if test="keyword != null and keyword != ''">
+		    SELECT 
+		        m.*,
+		        pw.balance AS wallet_balance,
+		        mw.mileage AS wallet_mileage
+		
+		    FROM member m
+		    LEFT JOIN pay_wallet pw ON m.member_id = pw.member_id
+		    LEFT JOIN mileage_wallet mw ON m.member_id = mw.member_id
+		
+		    WHERE 1=1
+		    AND m.userid != 'admin' <if test="keyword != null and keyword != ''">
 	        <choose>
 	            <when test="type == 'userid'">
-	               and userid like concat('%', #{keyword}, '%')
+	               AND m.userid LIKE CONCAT('%', #{keyword}, '%')
 	            </when>
 	            <when test="type == 'username'">
-	                and username like concat('%', #{keyword}, '%')
+	                AND m.username LIKE CONCAT('%', #{keyword}, '%')
 	            </when>
 	            <when test="type == 'nickname'">
-	                and nickname like concat('%', #{keyword}, '%')
+	                AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
 	            </when>
 	        </choose>
 	    </if>
 	
 	    <choose>
-	        <!-- 가입일 최신순 -->
 	        <when test="sort == 'regdate'">
-	            order by regdate desc
+	            ORDER BY m.regdate DESC
 	        </when>
 	
-	        <!-- 정지 회원 우선 -->
 	        <when test="sort == 'disabled'">
-	            order by (enable_flag = '0') desc, regdate desc
+	            ORDER BY (m.enable_flag = '0') DESC, m.regdate DESC
 	        </when>
 	
-	        <!-- 탈퇴 회원 우선 -->
 	        <when test="sort == 'deleted'">
-	            order by (deleted_at is not null) desc, regdate desc
+	            ORDER BY (m.deleted_at IS NOT NULL) DESC, m.regdate DESC
 	        </when>
 	
-	        <!-- 기본값 -->
 	        <otherwise>
-	            order by regdate desc
+	            ORDER BY m.regdate DESC
 	        </otherwise>
 	    </choose>
 	
-	    limit #{amount} offset #{pageStart}
+	    LIMIT #{amount} OFFSET #{pageStart}
 	
 	</select>
 	
