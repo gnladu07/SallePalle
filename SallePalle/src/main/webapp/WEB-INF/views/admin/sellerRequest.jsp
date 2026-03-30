@@ -76,6 +76,80 @@
         width: 20px;
         height: 20px;
     }
+    
+        /* 검색 & 정렬 박스 */
+    .members-controls {
+        background: white;
+        padding: 20px 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .members-search-form {
+        display: flex;
+        gap: 10px;
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .members-select {
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .members-select:focus {
+        border-color: #FF6F61;
+    }
+
+    .members-input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .members-input:focus {
+        border-color: #FF6F61;
+    }
+
+    .members-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .members-btn-search {
+        background: linear-gradient(135deg, #FF6F61, #9B59B6);
+        color: white;
+    }
+
+    .members-btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3);
+    }
+    
+    .content-box {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
 
     /* 메인 컨텐츠 */
     .main-sellerRequest {
@@ -358,86 +432,120 @@
                 <span class="home-admin-name">${loginInfo.username} 관리자님</span>
             </div>
         </div>
+        
+                <!-- 검색 & 정렬 -->
+        <div class="members-controls">
+            <!-- 검색 폼 -->
+            <form method="get" action="/admin/members" class="members-search-form">
+                <select name="type" class="members-select">
+                    <option value="userid" ${param.type == 'userid' ? 'selected' : ''}>아이디</option>
+                    <option value="username" ${param.type == 'username' ? 'selected' : ''}>이름</option>
+                    <option value="nickname" ${param.type == 'nickname' ? 'selected' : ''}>닉네임</option>
+                </select>
+
+                <input type="text" 
+                       name="keyword" 
+                       class="members-input" 
+                       value="${param.keyword}" 
+                       placeholder="검색어 입력">
+
+                <button type="submit" class="members-btn members-btn-search">검색</button>
+            </form>
+
+            <!-- 정렬 드롭다운 -->
+            <form id="sortForm" method="get" action="/admin/members">
+                <input type="hidden" name="type" value="${param.type}">
+                <input type="hidden" name="keyword" value="${param.keyword}">
+
+                <select name="sort" class="members-select" onchange="document.getElementById('sortForm').submit()">
+                    <option value="regdate" ${param.sort == 'regdate' || empty param.sort ? 'selected' : ''}>가입일 최신순</option>
+                    <option value="disabled" ${param.sort == 'disabled' ? 'selected' : ''}>정지 회원 우선</option>
+                    <option value="deleted" ${param.sort == 'deleted' ? 'selected' : ''}>탈퇴 회원 우선</option>
+                </select>
+            </form>
+        </div>
 
         <!-- 빈 목록 -->
-        <c:if test="${empty list}">
-            <div class="sellerRequest-empty">
-                <div class="sellerRequest-empty-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                    </svg>
-                </div>
-                <h3>대기중인 신청이 없습니다</h3>
-                <p>새로운 판매자 신청이 있으면 여기에 표시됩니다</p>
-            </div>
-        </c:if>
-
-        <!-- 테이블 -->
-        <c:if test="${!empty list}">
-            <div class="sellerRequest-table-wrapper">
-                <table class="sellerRequest-table">
-                    <thead>
-                        <tr>
-                            <th>신청번호</th>
-                            <th>회원ID</th>
-                            <th>닉네임</th>
-                            <th>이메일</th>
-                            <th>신청일</th>
-                            <th>상태</th>
-                            <th>관리</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <c:forEach var="req" items="${list}">
-                            <tr>
-                                <td>${req.request_id}</td>
-                                <td>${req.userid}</td>
-                                <td>${req.nickname}</td>
-                                <td>${req.email}</td>
-                                <td>${req.regdate}</td>
-
-                                <td>
-                                    <c:choose>
-                                        <c:when test="${req.status == 'W'}">
-                                            <span class="sellerRequest-status waiting">대기중</span>
-                                        </c:when>
-                                        <c:when test="${req.status == 'A'}">
-                                            <span class="sellerRequest-status approved">승인됨</span>
-                                        </c:when>
-                                        <c:when test="${req.status == 'R'}">
-                                            <span class="sellerRequest-status rejected">거절됨</span>
-                                        </c:when>
-                                    </c:choose>
-                                </td>
-
-                                <td>
-                                    <c:if test="${req.status == 'W'}">
-                                        <form action="/admin/seller/approve" method="post" style="display:inline;">
-                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-                                            <input type="hidden" name="request_id" value="${req.request_id}">
-                                            <input type="hidden" name="member_id" value="${req.member_id}">
-                                            <button class="sellerRequest-action-btn approve">승인</button>
-                                        </form>
-
-                                        <form action="/admin/seller/reject" method="post" style="display:inline;">
-                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-                                            <input type="hidden" name="request_id" value="${req.request_id}">
-                                            <input type="hidden" name="member_id" value="${req.member_id}">
-                                            <button class="sellerRequest-action-btn reject">거절</button>
-                                        </form>
-                                    </c:if>
-
-                                    <c:if test="${req.status != 'W'}">
-                                        <span class="sellerRequest-completed">처리 완료</span>
-                                    </c:if>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-            </div>
-        </c:if>
+        <div class="content-box">
+	        <c:if test="${empty list}">
+	            <div class="sellerRequest-empty">
+	                <div class="sellerRequest-empty-icon">
+	                    <svg viewBox="0 0 24 24">
+	                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+	                    </svg>
+	                </div>
+	                <h3>대기중인 신청이 없습니다</h3>
+	                <p>새로운 판매자 신청이 있으면 여기에 표시됩니다</p>
+	            </div>
+	        </c:if>
+	
+	        <!-- 테이블 -->
+	        <c:if test="${!empty list}">
+	            <div class="sellerRequest-table-wrapper">
+	                <table class="sellerRequest-table">
+	                    <thead>
+	                        <tr>
+	                            <th>신청번호</th>
+	                            <th>회원ID</th>
+	                            <th>닉네임</th>
+	                            <th>이메일</th>
+	                            <th>신청일</th>
+	                            <th>상태</th>
+	                            <th>관리</th>
+	                        </tr>
+	                    </thead>
+	
+	                    <tbody>
+	                        <c:forEach var="req" items="${list}">
+	                            <tr>
+	                                <td>${req.request_id}</td>
+	                                <td>${req.userid}</td>
+	                                <td>${req.nickname}</td>
+	                                <td>${req.email}</td>
+	                                <td>${req.regdate}</td>
+	
+	                                <td>
+	                                    <c:choose>
+	                                        <c:when test="${req.status == 'W'}">
+	                                            <span class="sellerRequest-status waiting">대기중</span>
+	                                        </c:when>
+	                                        <c:when test="${req.status == 'A'}">
+	                                            <span class="sellerRequest-status approved">승인됨</span>
+	                                        </c:when>
+	                                        <c:when test="${req.status == 'R'}">
+	                                            <span class="sellerRequest-status rejected">거절됨</span>
+	                                        </c:when>
+	                                    </c:choose>
+	                                </td>
+	
+	                                <td>
+	                                    <c:if test="${req.status == 'W'}">
+	                                        <form action="/admin/seller/approve" method="post" style="display:inline;">
+	                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+	                                            <input type="hidden" name="request_id" value="${req.request_id}">
+	                                            <input type="hidden" name="member_id" value="${req.member_id}">
+	                                            <button class="sellerRequest-action-btn approve">승인</button>
+	                                        </form>
+	
+	                                        <form action="/admin/seller/reject" method="post" style="display:inline;">
+	                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+	                                            <input type="hidden" name="request_id" value="${req.request_id}">
+	                                            <input type="hidden" name="member_id" value="${req.member_id}">
+	                                            <button class="sellerRequest-action-btn reject">거절</button>
+	                                        </form>
+	                                    </c:if>
+	
+	                                    <c:if test="${req.status != 'W'}">
+	                                        <span class="sellerRequest-completed">처리 완료</span>
+	                                    </c:if>
+	                                </td>
+	                            </tr>
+	                        </c:forEach>
+	                    </tbody>
+	                </table>
+	            </div>
+	        </c:if>
+        </div>
 
     </div>
 </div>
