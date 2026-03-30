@@ -45,6 +45,7 @@
 	<select id="getTotalCount" resultType="int">
 		select count(*)
 	    from member 
+	    where userid != 'admin'
 	</select>
 	
 	<select id="getSellerCount" resultType="int">
