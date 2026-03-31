@@ -8,11 +8,16 @@ import com.itwillbs.domain.MemberVO;
 
 public interface AdminService {
 
+	// 전체 회원 목록 조회
 	public List<MemberVO> getMemberListPaged(Criteria cri);
 
+	// 전체 회원 수 카운트
 	public int getTotalCount();
+	
+	// 판매 권한 대기중 회원 수 카운트
 	public int getSellerCount();
 
+	// 필터링된 회원 수 카운트
 	public int getTotalCountFiltered(Criteria cri);
 	
 	// 전체 중고 물품 수

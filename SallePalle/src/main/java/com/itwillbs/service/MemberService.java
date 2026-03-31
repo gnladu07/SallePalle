@@ -63,9 +63,6 @@ public interface MemberService {
 	// 권한 추가
     public void insertAuth(MemberAuthVO vo);
 
-    // (어드민)멤버 정보 조회
-//	public MemberVO readByMemberId(int member_id);
-
 	// 메일 발송 정보 조회
 	public void setNotifyFlag(int member_id, String flag);
 
@@ -87,6 +84,7 @@ public interface MemberService {
 	// 포인트 충전 후 최신 정보
 	public MemberVO getMemberById(int member_id);
 
+	// 토큰 및 사용자 일련번호 업데이트
 	public void updateOpenBankingToken(MemberVO vo);
 	
 	// 통합 결제/적립 내역 조회
