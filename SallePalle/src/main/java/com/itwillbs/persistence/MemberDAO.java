@@ -56,9 +56,6 @@ public interface MemberDAO {
 	// 판매 상태 업데이트
 	public void updateSellerStatus(int member_id, String status);
 
-	// (어드민)멤버 정보 조회
-//	public MemberVO readByMemberId(int member_id);
-
 	// 메일 발송 정보 조회
 	public void setNotifyFlag(Map<String, Object> map);
 
@@ -80,16 +77,13 @@ public interface MemberDAO {
 	// 포인트 충전 후 최신 정보
 	public MemberVO getMemberById(int member_id);
 	
+	// 토큰 및 사용자 일련번호 업데이트
 	public void updateOpenBankingToken(MemberVO vo);
 
+	// 통합 결제 및 마일리지 적립 내역 조회 (페이징/히스토리용)
 	public List<PaymentHistoryVO> selectHistoryLimit50(int member_id);
-	
-	// 추가: 구매 내역
-//	public List<TradeHistoryViewVO> selectBuyHistory(int member_id);
 
-    // 추가: 판매 수익 내역
+    // 판매 수익 내역
 	public List<TradeHistoryViewVO> selectSellHistory(int member_id);
-	
-//	public int countHistory(int member_id);
 
 }

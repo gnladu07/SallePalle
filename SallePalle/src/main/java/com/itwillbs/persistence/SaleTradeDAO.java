@@ -16,19 +16,19 @@ public interface SaleTradeDAO {
 	// 판매자의 다른 상품
 	public List<SaleTradeVO> selectOtherSaleTradeBySeller(Integer seller_id, int tradeId);
 
-	// 1. 중복 추천 체크
+	// 중복 추천 체크
 	public int existsRecommend(int tradeId, String userid);
 
-	// 2. 추천 등록
+	// 추천 등록
 	public void insertRecommend(int tradeId, String userid);
 
-	// 3. 추천 수 증가
+	// 추천 수 증가
 	public void increaseRecommendCnt(int tradeId);
 
-	// 4. 최신 추천 수 조회
+	// 최신 추천 수 조회
 	public int selectRecommendCnt(int tradeId);
 
-
+	// 유저 아이디로 회원 번호 조회
 	public int selectMemberIdByUserid(String userid);
 	
 	// 구매 전 포인트 잔액 검증
@@ -93,6 +93,7 @@ public interface SaleTradeDAO {
     
     public List<Map<String, Object>> getRecentViewList(int member_id) throws Exception;
 
+    // 중고 물품 거래 상태 업데이트
 	public int updateTradeStatus(int trade_id, String status, int seller_id);
 
 }
