@@ -83,12 +83,30 @@ public class AdminController {
 	}
 	
 	// 판매 권한 신청 리스트
-    @GetMapping("/sellerRequest")
-    public String sellerRequestList(Model model) {
-    	log.debug(" AdminController: sellerRequestList() 실행! ");
+	@GetMapping("/sellerRequest")
+    public String sellerRequestList(
+            Criteria cri,
+            @RequestParam(required = false, defaultValue = "desc") String sort,
+            Model model) throws Exception {
+        
+        log.debug(" AdminController: sellerRequestList() 실행! "); 
+        
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("type", cri.getType());
+        paramMap.put("keyword", cri.getKeyword());
+        paramMap.put("sort", sort);
+        paramMap.put("pageStart", cri.getPageStart());
+        paramMap.put("amount", cri.getAmount());
 
-        List<SellerRequestVO> list = sService.getWaitingRequests();
+        // Service 호출
+        List<SellerRequestVO> list = sService.getSellerRequestListPaged(paramMap);
+        int total = sService.getTotalSellerRequestCount(paramMap);
+        
+        // 페이징 객체 생성
+        PageVO pageDTO = new PageVO(cri, total);
+
         model.addAttribute("list", list);
+        model.addAttribute("pageMaker", pageDTO);
 
         log.debug(" AdminController: sellerRequestList() 끝! ");
         return "/admin/sellerRequest";

@@ -1,6 +1,7 @@
 package com.itwillbs.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import com.itwillbs.domain.SellerRequestVO;
 
@@ -15,8 +16,11 @@ public interface SellerDAO {
 	// 요청 상태 변경(W, A, R)
 	public void updateSellerRequestStatus(int request_id, String status);
 
-	// 요청 리스트
-	public List<SellerRequestVO> getWaitingRequests();
+	// 판매 권한 신청 리스트 조회 (검색/정렬/페이징)
+    public List<SellerRequestVO> getSellerRequestListPaged(Map<String, Object> paramMap) throws Exception;
+    
+    // 판매 권한 총 신청 개수 (페이징용)
+    public int getTotalSellerRequestCount(Map<String, Object> paramMap) throws Exception;
 
 	// 요청 승인 처리
 	public void approveRequest(int request_id);
