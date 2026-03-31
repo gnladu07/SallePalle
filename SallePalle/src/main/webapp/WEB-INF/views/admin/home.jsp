@@ -394,7 +394,7 @@
                     </svg>
                 </div>
                 <div class="home-stat-info">
-                    <h3>판매 권한 신청 인원</h3>
+                    <h3>권한 신청 대기 인원</h3>
                     <p id="pendingCountText" >${slistsize }</p>
                 </div>
             </div>

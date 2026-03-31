@@ -1,6 +1,7 @@
 package com.itwillbs.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -53,11 +54,18 @@ public class SellerServiceImpl implements SellerService {
 	}
 
 	@Override
-	public List<SellerRequestVO> getWaitingRequests() {
-		log.debug(" SellerServiceImpl: getWaitingRequests() 실행!");
-		log.debug(" SellerServiceImpl: getWaitingRequests() 끝!");
-		return sellerDAO.getWaitingRequests();
-	}
+    public List<SellerRequestVO> getSellerRequestListPaged(Map<String, Object> paramMap) throws Exception {
+		log.debug(" SellerServiceImpl: getSellerRequestListPaged()실행! ");
+		log.debug(" SellerServiceImpl: getSellerRequestListPaged()끝! ");
+        return sellerDAO.getSellerRequestListPaged(paramMap);
+    }
+
+    @Override
+    public int getTotalSellerRequestCount(Map<String, Object> paramMap) throws Exception {
+    	log.debug(" SellerServiceImpl: getTotalSellerRequestCount()실행! ");
+		log.debug(" SellerServiceImpl: getTotalSellerRequestCount()끝! ");
+        return sellerDAO.getTotalSellerRequestCount(paramMap);
+    }
 
 	@Override
 	public void approveRequest(int request_id, int member_id) {

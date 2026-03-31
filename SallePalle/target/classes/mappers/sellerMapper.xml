@@ -34,8 +34,8 @@
     </update>
     
     <!-- 권한 신청 리스트 -->
-    <select id="getWaitingRequests" resultType="SellerRequestVO">
-        select 
+	<select id="getSellerRequestListPaged" resultType="SellerRequestVO">
+        SELECT 
             sr.request_id,
             sr.member_id,
             sr.status,
@@ -44,10 +44,36 @@
             m.username,
             m.nickname,
             m.email
-        from seller_request sr
-        join member m on sr.member_id = m.member_id
-        where sr.status = 'W'
-        order by sr.regdate desc 
+        FROM seller_request sr
+        JOIN member m ON sr.member_id = m.member_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                <choose>
+                    <when test="type == 'userid'"> AND m.userid LIKE CONCAT('%', #{keyword}, '%') </when>
+                    <when test="type == 'username'"> AND m.username LIKE CONCAT('%', #{keyword}, '%') </when>
+                    <when test="type == 'email'"> AND m.email LIKE CONCAT('%', #{keyword}, '%') </when>
+                </choose>
+            </if>
+        </where>
+        ORDER BY 
+        <choose>
+            <when test="sort == 'asc'"> sr.regdate ASC </when> <otherwise> sr.regdate DESC </otherwise> </choose>
+        LIMIT #{pageStart}, #{amount}
+    </select>
+
+    <select id="getTotalSellerRequestCount" resultType="int">
+        SELECT COUNT(*)
+        FROM seller_request sr
+        JOIN member m ON sr.member_id = m.member_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                <choose>
+                    <when test="type == 'userid'"> AND m.userid LIKE CONCAT('%', #{keyword}, '%') </when>
+                    <when test="type == 'username'"> AND m.username LIKE CONCAT('%', #{keyword}, '%') </when>
+                    <when test="type == 'email'"> AND m.email LIKE CONCAT('%', #{keyword}, '%') </when>
+                </choose>
+            </if>
+        </where>
     </select>
     
     <!-- 승인 처리 (seller_request 상태 변경) -->
