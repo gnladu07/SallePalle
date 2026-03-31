@@ -32,13 +32,13 @@ public interface ChatDAO {
 	// 채팅방 삭제
 	public void deleteChatRoom(int room_id) throws Exception;
 	
-	// 메시지 읽음 처리
+	// 채팅 메시지 읽음 처리
     public void markMessagesAsRead(Map<String, Object> paramMap) throws Exception;
     
-    // 채팅 참여 히스토리 로그 조회
+    // 마이페이지용 회원의 전체 채팅 기록 로그 조회
     public List<ChatRoomVO> getChatHistoryLog(int member_id) throws Exception;
     
-    // 관리자용 모니터링 상태값 없데이트(is_flagged = 'Y' 처리)
+    // AI 안전결제 필터링: 위험 채팅방 감지 시 상태값(Flag) 변경
     public void flagChatRoom(int room_id) throws Exception;
     
     // 관리자용 채팅 리스트

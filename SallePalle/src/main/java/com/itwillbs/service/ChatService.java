@@ -20,7 +20,7 @@ public interface ChatService {
     // 로그인한 회원의 참여 중인 채팅방 목록 조회
     public List<ChatRoomVO> getMyChatRooms(int member_id);
     
-    // 특정 채팅방의 상세 정보 조회
+    // 채팅방의 상세 정보 조회
     public ChatRoomVO getRoom(int room_id);
     
     // 채팅방 내 물품 대금 결제 처리

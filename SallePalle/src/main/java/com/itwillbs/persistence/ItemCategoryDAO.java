@@ -6,7 +6,7 @@ import com.itwillbs.domain.ItemCategoryVO;
 
 public interface ItemCategoryDAO {
 	
-	// 사용 가능한 상품 종류 목록
+	// 전체 중고 물품 카테고리 목록 조회
     public List<ItemCategoryVO> selectItemCategoryList();
 
 }
