@@ -151,7 +151,7 @@
                            class="write-input"
                            id="detailAddress"
                            name="detail_address"
-                           value="${loginInfo.detail_address}"
+                           value="${loginInfo.address} ${loginInfo.detail_address}"
                            placeholder="주소 검색 버튼을 눌러주세요"
                            readonly
                            required>
